@@ -282,3 +282,26 @@ void Game::BallHitsPaddle()
 	if (mBallVel.x < 0.f && !outOfPaddleArea && hitsPaddleRightSide)
 		mBallVel.x *= -1.0f;
 }
+
+void Game::AddActor(Actor* actor)
+{
+	if (mUpdatingActors)
+		mPendingActors.emplace_back(actor);
+	else
+		mActors.emplace_back(actor);
+}
+
+void Game::RemoveActor(Actor* actor)
+{
+	if (VectorContainsActor(mActors, actor))
+		remove(mActors.begin(), mActors.end(), actor);
+	if (VectorContainsActor(mPendingActors, actor))
+		remove(mPendingActors.begin(), mPendingActors.end(), actor);
+}
+
+bool Game::VectorContainsActor(std::vector<Actor*> v, Actor* actor)
+{
+	if (std::find(v.begin(), v.end(), actor) != v.end())
+		return true;
+	return false;
+}

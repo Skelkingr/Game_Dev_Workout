@@ -1,7 +1,10 @@
 #pragma once
 
+#include <algorithm>
 #include <string>
 #include <SDL.h>
+
+#include "Actor.h"
 
 struct Vector2
 {
@@ -28,6 +31,11 @@ private:
 	void BallHitsBorders();
 	void BallHitsPaddle();
 private:
+	void AddActor(Actor* actor);
+	void RemoveActor(Actor* actor);
+	bool VectorContainsActor(std::vector<Actor*> v, Actor* actor);
+
+private:
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
 	bool mIsRunning;
@@ -42,4 +50,8 @@ private:
 	Uint32 mTicksCount;
 	int mPaddleH;
 	int mPaddleDir;
+private:
+	bool mUpdatingActors;
+	std::vector<Actor*> mActors;
+	std::vector<Actor*> mPendingActors;
 };
