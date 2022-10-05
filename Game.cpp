@@ -16,14 +16,18 @@ Game::Game()
 		static_cast<float>(mThickness),
 		static_cast<float>((mWindowHeight / 2.f) - mPaddleH / 2.f)
 	};
+	mPaddleDir = 0;
+
 	mBallPos = {
 		mWindowWidth / 2.f,
 		mWindowHeight / 2.f
 	};
+	mBallVel = {
+		-200.F,
+		235.f
+	};
 
 	mTicksCount = 0;
-
-	mPaddleDir = 0;
 }
 
 bool Game::Initialize()
@@ -103,6 +107,7 @@ void Game::UpdateGame()
 	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.f;
 	mTicksCount = SDL_GetTicks();
 
+	/* Paddle */
 	mPaddleDir = MovePaddle();
 
 	if (mPaddleDir != 0)
@@ -119,6 +124,15 @@ void Game::UpdateGame()
 
 		mPaddlePos.y += mPaddleDir * 300.f * deltaTime;
 	}
+	/* */
+
+	/* Ball */
+	mBallPos.x += mBallVel.x * deltaTime;
+	mBallPos.y += mBallVel.y * deltaTime;
+
+	BallHitsBorders();
+	BallHitsPaddle();
+	/* */
 }
 
 void Game::GenerateOutput()
@@ -132,8 +146,8 @@ void Game::GenerateOutput()
 	/* Ball */
 	SetRenderDrawColor(255, 255, 255, 255);
 	SDL_Rect ball = GenerateRect(
-		static_cast<int>(mBallPos.x - mThickness / 2),
-		static_cast<int>(mBallPos.y - mThickness / 2),
+		static_cast<int>(mBallPos.x - mThickness / 2.f),
+		static_cast<int>(mBallPos.y - mThickness / 2.f),
 		mThickness,
 		mThickness
 	);
@@ -143,8 +157,8 @@ void Game::GenerateOutput()
 	/* Paddle */
 	SetRenderDrawColor(255, 255, 255, 255);
 	SDL_Rect paddle = GenerateRect(
-		static_cast<int>(mPaddlePos.x * 3 - mThickness / 2),
-		mPaddlePos.y,
+		static_cast<int>(mPaddlePos.x * 3 - mThickness / 2.f),
+		static_cast<int>(mPaddlePos.y),
 		mThickness,
 		mPaddleH
 	);
@@ -231,11 +245,40 @@ int Game::MovePaddle()
 
 std::string Game::PaddleHitsBorders()
 {
-	if (mPaddlePos.y + static_cast<float>(mThickness / 2.f) <= mThickness / 2.f)
+	if (mPaddlePos.y <= static_cast<float>(mThickness / 2.f))
 		return "top";
 		
 	if ((mPaddlePos.y + mPaddleH >= (mWindowHeight - static_cast<float>(mThickness / 2.f))))
 		return "bottom";
 
 	return "none";
+}
+
+void Game::BallHitsBorders()
+{	
+	float left = static_cast<float>(mThickness / 2.f);
+	float right = (mWindowWidth - static_cast<float>(mThickness / 2.f));
+
+	float top = static_cast<float>(mThickness / 2.f);
+	float bottom = (mWindowHeight - static_cast<float>(mThickness / 2.f));
+
+	// Ball hits left of right border
+	if (mBallPos.x <= left || mBallPos.x >= right)
+		mBallVel.x *= -1.0f;
+
+	// Ball hits top or bottom border
+	if (mBallPos.y <= top || mBallPos.y >= bottom)
+		mBallVel.y *= -1.0f;
+}
+
+void Game::BallHitsPaddle()
+{
+	float paddleTop = mPaddlePos.y;
+	float paddleBottom = mPaddlePos.y + mPaddleH;
+
+	bool outOfPaddleArea = (mBallPos.y < paddleTop || mBallPos.y > paddleBottom);
+	bool hitsPaddleRightSide = mBallPos.x <= static_cast<int>(mPaddlePos.x * 3 + mThickness / 2.f);
+
+	if (mBallVel.x < 0.f && !outOfPaddleArea && hitsPaddleRightSide)
+		mBallVel.x *= -1.0f;
 }
