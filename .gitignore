@@ -1,5 +1,4 @@
 .vs/**
 **.sln
-**vcxproj**
 x64/**
 **.dll
