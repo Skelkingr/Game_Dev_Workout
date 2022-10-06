@@ -1,5 +1,3 @@
-#include <vector>
-
 #include "Game.h"
 
 Game::Game()
@@ -83,6 +81,11 @@ void Game::RunLoop()
 
 void Game::ShutDown()
 {
+	while (!mActors.empty())
+	{
+		delete mActors.back();
+	}
+
 	SDL_DestroyWindow(mWindow);
 	SDL_DestroyRenderer(mRenderer);
 	SDL_Quit();
@@ -105,34 +108,33 @@ void Game::ProcessInput()
 void Game::UpdateGame()
 {
 	float deltaTime = (SDL_GetTicks() - mTicksCount) / 1000.f;
-	mTicksCount = SDL_GetTicks();
 
-	/* Paddle */
-	mPaddleDir = MovePaddle();
-
-	if (mPaddleDir != 0)
+	mUpdatingActors = true;
+	for (auto actor : mActors)
 	{
-		std::string borderHit = PaddleHitsBorders();
+		actor->Update(deltaTime);
+	}	
+	mUpdatingActors = false;
 
-		if (borderHit == "top")
-			mPaddlePos.y = static_cast<float>(mThickness / 2.f);
-
-		if (borderHit == "bottom")
-		{
-			mPaddlePos.y = mWindowHeight - static_cast<float>(mThickness / 2.f) - static_cast<float>(mPaddleH);
-		}
-
-		mPaddlePos.y += mPaddleDir * 300.f * deltaTime;
+	for (auto pending : mPendingActors)
+	{
+		mActors.emplace_back(pending);
 	}
-	/* */
+	mPendingActors.clear();
 
-	/* Ball */
-	mBallPos.x += mBallVel.x * deltaTime;
-	mBallPos.y += mBallVel.y * deltaTime;
+	std::vector<Actor*> deadActors;
+	for (auto actor : mActors)
+	{
+		if (actor->GetState() == Actor::EDead)
+		{
+			deadActors.emplace_back(actor);
+		}
+	}
 
-	BallHitsBorders();
-	BallHitsPaddle();
-	/* */
+	for (auto actor : deadActors)
+	{
+		delete actor;
+	}
 }
 
 void Game::GenerateOutput()

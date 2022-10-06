@@ -22,6 +22,8 @@ public:
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
+	int GetState() const { return this->mState; }
+
 	void AddComponent(Component* component);
 	void RemoveComponent(Component* component);
 private:
