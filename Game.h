@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <SDL.h>
+#include <SDL_image.h>
 
 #include "Actor.h"
 
@@ -30,6 +31,8 @@ private:
 	std::string PaddleHitsBorders();
 	void BallHitsBorders();
 	void BallHitsPaddle();
+private:
+	SDL_Texture* LoadTexture(const char* fileName);
 private:
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);

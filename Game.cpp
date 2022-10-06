@@ -66,6 +66,9 @@ bool Game::Initialize()
 		return false;
 	}
 
+	IMG_Init(IMG_INIT_PNG);
+	LoadTexture("img\\viking.png");
+
 	return true;
 }
 
@@ -283,6 +286,26 @@ void Game::BallHitsPaddle()
 
 	if (mBallVel.x < 0.f && !outOfPaddleArea && hitsPaddleRightSide)
 		mBallVel.x *= -1.0f;
+}
+
+SDL_Texture* Game::LoadTexture(const char* fileName)
+{
+	SDL_Surface* surf = IMG_Load(fileName);
+	if (!surf)
+	{
+		SDL_Log("[ERR] Failed to load texture file: %s", fileName);
+		return nullptr;
+	}
+
+	SDL_Texture* text = SDL_CreateTextureFromSurface(mRenderer, surf);
+	SDL_FreeSurface(surf);
+	if (!text)
+	{
+		SDL_Log("[ERR] Failed to convert surface to texture file: %s", fileName);
+		return nullptr;
+	}
+
+	return text;
 }
 
 void Game::AddActor(Actor* actor)
