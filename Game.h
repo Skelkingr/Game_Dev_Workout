@@ -25,6 +25,8 @@ private:
 	SDL_Rect GenerateRect(int x, int y, int width, int height);
 	int MovePaddle();
 	std::string PaddleHitsBorders();
+	void BallHitsBorders();
+	void BallHitsPaddle();
 private:
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
@@ -36,6 +38,7 @@ private:
 	const int mThickness = 15;
 	Vector2 mPaddlePos;
 	Vector2 mBallPos;
+	Vector2 mBallVel;
 	Uint32 mTicksCount;
 	int mPaddleH;
 	int mPaddleDir;
