@@ -1,4 +1,5 @@
-**.vs/**
+.vs/**
+**.sln
+**vcxproj**
 x64/**
-**.vcxproj**
-**.vcxproj.filters**
+**.dll
