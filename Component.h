@@ -9,6 +9,7 @@ public:
 	virtual ~Component();
 
 	virtual void Update(float deltaTime);
+
 	int GetUpdateOrder() const { return this->mUpdateOrder; }
 protected:
 	Actor* mOwner;

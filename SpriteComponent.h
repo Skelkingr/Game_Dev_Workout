@@ -9,6 +9,7 @@ class SpriteComponent : public Component
 public:
 	SpriteComponent(Actor* actor, int drawOrder = 100);
 	~SpriteComponent();
+
 	virtual void Draw(SDL_Renderer* renderer);
 	virtual void SetTexture(SDL_Texture* texture);
 
