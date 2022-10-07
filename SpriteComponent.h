@@ -14,6 +14,8 @@ public:
 	int GetDrawOrder() { return this->mDrawOrder; }
 	int GetTexWidth() { return this->mTexWidth; }
 	int GetTexHeight() { return this->mTexHeight; }
+
+	void SetTexture(SDL_Texture* texture);
 private:
 	SDL_Texture* mTexture;
 	int mDrawOrder;
