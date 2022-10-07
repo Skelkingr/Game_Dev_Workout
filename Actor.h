@@ -22,6 +22,7 @@ public:
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
+	float GetScale() const { return this->mScale; }
 	int GetState() const { return this->mState; }
 
 	void AddComponent(Component* component);
