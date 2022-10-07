@@ -2,6 +2,7 @@
 
 #include "Actor.h"
 #include "Component.h"
+#include "Math.h"
 
 class SpriteComponent : public Component
 {
