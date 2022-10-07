@@ -23,6 +23,7 @@ public:
 	virtual void UpdateActor(float deltaTime);
 
 	Vector2 GetPosition() const { return this->mPosition; }
+	float GetRotation() const { return this->mRotation; }
 	float GetScale() const { return this->mScale; }
 	int GetState() const { return this->mState; }
 
