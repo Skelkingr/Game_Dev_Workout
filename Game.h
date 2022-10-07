@@ -6,6 +6,7 @@
 #include <SDL_image.h>
 
 #include "Actor.h"
+#include "SpriteComponent.h"
 
 struct Vector2
 {
@@ -37,7 +38,8 @@ private:
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
 	bool VectorContainsActor(std::vector<Actor*> v, Actor* actor);
-
+private:
+	void AddSprite(SpriteComponent* sprite);
 private:
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
@@ -57,4 +59,5 @@ private:
 	bool mUpdatingActors;
 	std::vector<Actor*> mActors;
 	std::vector<Actor*> mPendingActors;
+	std::vector<SpriteComponent*> mSprites;
 };

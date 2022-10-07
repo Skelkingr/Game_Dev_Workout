@@ -330,3 +330,19 @@ bool Game::VectorContainsActor(std::vector<Actor*> v, Actor* actor)
 		return true;
 	return false;
 }
+
+void Game::AddSprite(SpriteComponent* sprite)
+{
+	int myFuckingDrawOrder = sprite->GetDrawOrder();
+
+	auto iter = mSprites.begin();
+	for (; iter != mSprites.end(); ++iter)
+	{
+		if (myFuckingDrawOrder < (*iter)->GetDrawOrder())
+		{
+			break;
+		}
+	}
+
+	mSprites.insert(iter, sprite);
+}
