@@ -9,8 +9,8 @@ void SpriteComponent::Draw(SDL_Renderer* renderer)
 		rect.w = static_cast<int>(mTexWidth * mOwner->GetScale());
 		rect.h = static_cast<int>(mTexHeight * mOwner->GetScale());
 
-		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2);
-		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2);
+		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2.f);
+		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2.f);
 
 		SDL_RenderCopyEx(
 			renderer,
