@@ -142,38 +142,6 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	/* Background */
-	SetRenderDrawColor(0, 0, 0, 255);
-	SDL_Rect background = GenerateRect(0, 0, mWindowWidth, mWindowHeight);
-	SDL_RenderFillRect(mRenderer, &background);
-	/* */
-
-	/* Ball */
-	SetRenderDrawColor(255, 255, 255, 255);
-	SDL_Rect ball = GenerateRect(
-		static_cast<int>(mBallPos.x - mThickness / 2.f),
-		static_cast<int>(mBallPos.y - mThickness / 2.f),
-		mThickness,
-		mThickness
-	);
-	SDL_RenderFillRect(mRenderer, &ball);
-	/* */
-
-	/* Paddle */
-	SetRenderDrawColor(255, 255, 255, 255);
-	SDL_Rect paddle = GenerateRect(
-		static_cast<int>(mPaddlePos.x * 3 - mThickness / 2.f),
-		static_cast<int>(mPaddlePos.y),
-		mThickness,
-		mPaddleH
-	);
-	SDL_RenderFillRect(mRenderer, &paddle);
-	/* */
-
-	/* Borders */
-	GenerateBorders(true);
-	/* */
-	
 	SDL_RenderPresent(mRenderer);
 	SDL_RenderClear(mRenderer);
 }
@@ -319,15 +287,23 @@ void Game::AddActor(Actor* actor)
 void Game::RemoveActor(Actor* actor)
 {
 	if (VectorContainsActor(mActors, actor))
+	{
 		remove(mActors.begin(), mActors.end(), actor);
+	}
+		
 	if (VectorContainsActor(mPendingActors, actor))
+	{
 		remove(mPendingActors.begin(), mPendingActors.end(), actor);
+	}	
 }
 
 bool Game::VectorContainsActor(std::vector<Actor*> v, Actor* actor)
 {
 	if (std::find(v.begin(), v.end(), actor) != v.end())
+	{
 		return true;
+	}
+		
 	return false;
 }
 

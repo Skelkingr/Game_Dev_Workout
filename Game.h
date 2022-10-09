@@ -37,7 +37,7 @@ private:
 private:
 	void AddActor(Actor* actor);
 	void RemoveActor(Actor* actor);
-	bool VectorContainsActor(std::vector<Actor*> v, Actor* actor);
+	static bool VectorContainsActor(std::vector<Actor*> v, Actor* actor);
 private:
 	void AddSprite(SpriteComponent* sprite);
 private:
