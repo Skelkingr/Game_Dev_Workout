@@ -4,6 +4,7 @@
 
 #include "Component.h"
 #include "Game.h"
+#include "Math.h"
 
 class Actor
 {
@@ -20,12 +21,14 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
-	virtual void UpdateActor(float deltaTime);
+	virtual void UpdateActor(float deltaTime) = 0;
 
 	Vector2 GetPosition() const { return this->mPosition; }
 	float GetRotation() const { return this->mRotation; }
 	float GetScale() const { return this->mScale; }
 	int GetState() const { return this->mState; }
+
+	void SetPosition(Vector2 position) { this->mPosition = position; }
 
 	void AddComponent(Component* component);
 	void RemoveComponent(Component* component);

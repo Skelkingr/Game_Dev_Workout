@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Component.h"
-#include "Math.h"
 
 class SpriteComponent : public Component
 {

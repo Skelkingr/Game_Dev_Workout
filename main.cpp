@@ -8,6 +8,6 @@ int main(int argc, char** argv)
 	if (initSuccess)
 		game.RunLoop();
 
-	game.ShutDown();
+	game.Shutdown();
 	return 0;
 }
