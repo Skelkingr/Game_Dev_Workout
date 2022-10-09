@@ -6,7 +6,7 @@ class Component
 {
 public:
 	Component(Actor* owner, int updateOrder = 100);
-	virtual ~Component() = 0;
+	virtual ~Component();
 
 	virtual void Update(float deltaTime) = 0;
 
