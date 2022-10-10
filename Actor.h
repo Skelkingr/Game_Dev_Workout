@@ -21,7 +21,7 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
-	virtual void UpdateActor(float deltaTime) = 0;
+	virtual void UpdateActor(float deltaTime);
 
 	Game* GetGame() const { return this->mGame; }
 	Vector2 GetPosition() const { return this->mPosition; }
