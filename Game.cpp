@@ -1,40 +1,26 @@
 #include "Game.h"
+#include "SDL_image.h"
+#include <algorithm>
+#include "Actor.h"
+#include "SpriteComponent.h"
+#include "Ship.h"
+#include "BGSpriteComponent.h"
 
 Game::Game()
-{
-	mWindow = nullptr;
-	mRenderer = nullptr;
-	mIsRunning = false;
-
-	mWindowWidth = 1024;
-	mWindowHeight = 768;
-
-	mPaddleH = mWindowHeight / 4;
-	mPaddlePos = {
-		static_cast<float>(mThickness),
-		static_cast<float>((mWindowHeight / 2.f) - mPaddleH / 2.f)
-	};
-	mPaddleDir = 0;
-
-	mBallPos = {
-		mWindowWidth / 2.f,
-		mWindowHeight / 2.f
-	};
-	mBallVel = {
-		-200.F,
-		235.f
-	};
-
-	mTicksCount = 0;
-}
+	:
+	mWindow(nullptr),
+	mRenderer(nullptr),
+	mIsRunning(true),
+	mUpdatingActors(false)
+{}
 
 bool Game::Initialize()
 {
-	int sdlInit = SDL_Init(SDL_INIT_VIDEO);
+	int sdlInit = SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
 	if (sdlInit != 0)
 	{
-		SDL_Log("[ERROR] Unable to initialize SDL: %s", SDL_GetError());
+		SDL_Log("[ERR] Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
 
@@ -42,8 +28,8 @@ bool Game::Initialize()
 		"Skelkingr",
 		200,
 		200,
-		static_cast<int>(mWindowWidth),
-		static_cast<int>(mWindowHeight),
+		1024,
+		768,
 		0
 	);
 	mIsRunning = true;
@@ -66,8 +52,15 @@ bool Game::Initialize()
 		return false;
 	}
 
-	IMG_Init(IMG_INIT_PNG);
-	LoadTexture("img\\viking.png");
+	if (IMG_Init(IMG_INIT_PNG) == 0)
+	{
+		SDL_Log("[ERR] Unable to initialize image: %s", SDL_GetError());
+		return false;
+	}
+
+	LoadData();
+
+	mTicksCount = SDL_GetTicks();
 
 	return true;
 }
@@ -82,15 +75,12 @@ void Game::RunLoop()
 	}
 }
 
-void Game::ShutDown()
+void Game::Shutdown()
 {
-	while (!mActors.empty())
-	{
-		delete mActors.back();
-	}
-
-	SDL_DestroyWindow(mWindow);
+	UnloadData();
+	IMG_Quit();
 	SDL_DestroyRenderer(mRenderer);
+	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }
 
@@ -146,165 +136,68 @@ void Game::GenerateOutput()
 	SDL_RenderClear(mRenderer);
 }
 
-int Game::SetRenderDrawColor(int red, int green, int blue, int alpha)
+void Game::LoadData()
 {
-	return SDL_SetRenderDrawColor(
-		this->mRenderer,
-		red,
-		green,
-		blue,
-		alpha
-	);
-}
+	mShip = new Ship(this);
+	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetScale(1.5f);
 
-void Game::GenerateBorders(bool topAndBottom)
-{
-	SetRenderDrawColor(255, 114, 118, 255);
+	Actor* temp = new Actor(this);
+	temp->SetPosition(Vector2(512.0f, 384.0f));
 
-	/* Left and right borders */
-	SDL_Rect left = GenerateRect(0, 0, mThickness / 2, mWindowHeight);
-	SDL_Rect right = GenerateRect(mWindowWidth - mThickness / 2, 0, mThickness / 2, mWindowHeight);
-	/* */
-
-	/* Top and bottom borders */
-	SDL_Rect top{ 0, 0 }, bottom{ 0, 0 };
-
-	if (topAndBottom)
-	{
-		top = GenerateRect(0, 0, mWindowWidth, mThickness / 2);
-		bottom = GenerateRect(0, mWindowHeight - mThickness / 2, mWindowWidth, mThickness / 2);
-	}
-	/* */
-	
-	std::vector<SDL_Rect> borders;
-	borders.push_back(left);
-	borders.push_back(right);
-
-	if (topAndBottom)
-	{
-		borders.push_back(top);
-		borders.push_back(bottom);
-	}
-	
-	for (SDL_Rect border : borders)
-		SDL_RenderFillRect(mRenderer, &border);
-}
-
-SDL_Rect Game::GenerateRect(int x, int y, int width, int height)
-{
-	return SDL_Rect{
-		x,
-		y,
-		width,
-		height
+	BGSpriteComponent* bg = new BGSpriteComponent(temp);
+	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	std::vector<SDL_Texture*> bgtexs = {
+		GetTexture("Assets/Farback01.png"),
+		GetTexture("Assets/Farback02.png")
 	};
-}
+	bg->SetBGTextures(bgtexs);
+	bg->SetScrollSpeed(-100.0f);
 
-int Game::MovePaddle()
-{
-	mPaddleDir = 0;
-	
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-
-	if (state[SDL_SCANCODE_UP])
-		mPaddleDir -= 1;
-		
-		
-	if (state[SDL_SCANCODE_DOWN])
-		mPaddleDir += 1;
-
-	return mPaddleDir;
-}
-
-std::string Game::PaddleHitsBorders()
-{
-	if (mPaddlePos.y <= static_cast<float>(mThickness / 2.f))
-		return "top";
-		
-	if ((mPaddlePos.y + mPaddleH >= (mWindowHeight - static_cast<float>(mThickness / 2.f))))
-		return "bottom";
-
-	return "none";
-}
-
-void Game::BallHitsBorders()
-{	
-	float left = static_cast<float>(mThickness / 2.f);
-	float right = (mWindowWidth - static_cast<float>(mThickness / 2.f));
-
-	float top = static_cast<float>(mThickness / 2.f);
-	float bottom = (mWindowHeight - static_cast<float>(mThickness / 2.f));
-
-	// Ball hits left of right border
-	if (mBallPos.x <= left || mBallPos.x >= right)
-		mBallVel.x *= -1.0f;
-
-	// Ball hits top or bottom border
-	if (mBallPos.y <= top || mBallPos.y >= bottom)
-		mBallVel.y *= -1.0f;
-}
-
-void Game::BallHitsPaddle()
-{
-	float paddleTop = mPaddlePos.y;
-	float paddleBottom = mPaddlePos.y + mPaddleH;
-
-	bool outOfPaddleArea = (mBallPos.y < paddleTop || mBallPos.y > paddleBottom);
-	bool hitsPaddleRightSide = mBallPos.x <= static_cast<int>(mPaddlePos.x * 3 + mThickness / 2.f);
-
-	if (mBallVel.x < 0.f && !outOfPaddleArea && hitsPaddleRightSide)
-		mBallVel.x *= -1.0f;
-}
-
-SDL_Texture* Game::LoadTexture(const char* fileName)
-{
-	SDL_Surface* surf = IMG_Load(fileName);
-	if (!surf)
-	{
-		SDL_Log("[ERR] Failed to load texture file: %s", fileName);
-		return nullptr;
-	}
-
-	SDL_Texture* text = SDL_CreateTextureFromSurface(mRenderer, surf);
-	SDL_FreeSurface(surf);
-	if (!text)
-	{
-		SDL_Log("[ERR] Failed to convert surface to texture file: %s", fileName);
-		return nullptr;
-	}
-
-	return text;
+	bg = new BGSpriteComponent(temp, 50);
+	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
+	bgtexs = {
+		GetTexture("Assets/Stars.png"),
+		GetTexture("Assets/Stars.png")
+	};
+	bg->SetBGTextures(bgtexs);
+	bg->SetScrollSpeed(-200.0f);
 }
 
 void Game::AddActor(Actor* actor)
 {
 	if (mUpdatingActors)
+	{
 		mPendingActors.emplace_back(actor);
+	}
 	else
+	{
 		mActors.emplace_back(actor);
+	}	
 }
 
 void Game::RemoveActor(Actor* actor)
 {
-	if (VectorContainsActor(mActors, actor))
+	auto iter = std::find(mPendingActors.begin(), mPendingActors.end(), actor);
+	if (iter != mPendingActors.end())
 	{
-		remove(mActors.begin(), mActors.end(), actor);
+		std::iter_swap(iter, mPendingActors.end() - 1);
+		mPendingActors.pop_back();
 	}
-		
-	if (VectorContainsActor(mPendingActors, actor))
+
+	iter = std::find(mActors.begin(), mActors.end(), actor);
+	if (iter != mActors.end())
 	{
-		remove(mPendingActors.begin(), mPendingActors.end(), actor);
-	}	
+		std::iter_swap(iter, mActors.end() - 1);
+	}
 }
 
-bool Game::VectorContainsActor(std::vector<Actor*> v, Actor* actor)
+void Game::UnloadData()
 {
-	if (std::find(v.begin(), v.end(), actor) != v.end())
+	while (!mActors.empty())
 	{
-		return true;
+		delete mActors.back();
 	}
-		
-	return false;
 }
 
 void Game::AddSprite(SpriteComponent* sprite)
@@ -321,4 +214,42 @@ void Game::AddSprite(SpriteComponent* sprite)
 	}
 
 	mSprites.insert(iter, sprite);
+}
+
+void Game::RemoveSprite(SpriteComponent* sprite)
+{
+	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
+	mSprites.erase(iter);
+}
+
+SDL_Texture* Game::GetTexture(const std::string& fileName)
+{
+	SDL_Texture* tex = nullptr;
+
+	auto iter = mTextures.find(fileName);
+	if (iter != mTextures.end())
+	{
+		tex = iter->second;
+	}
+	else
+	{
+		SDL_Surface* surf = IMG_Load(fileName.c_str());
+		if (!surf)
+		{
+			SDL_Log("[ERR] Failed to load texture file %s", fileName.c_str());
+			return nullptr;
+		}
+
+		// Create texture from surface
+		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
+		SDL_FreeSurface(surf);
+		if (!tex)
+		{
+			SDL_Log("[ERR] Failed to convert surface to texture for %s", fileName.c_str());
+			return nullptr;
+		}
+
+		mTextures.emplace(fileName.c_str(), tex);
+	}
+	return tex;
 }

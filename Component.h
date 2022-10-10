@@ -5,12 +5,12 @@
 class Component
 {
 public:
-	Component(Actor* owner, int updateOrder = 100);
+	Component(class Actor* owner, int updateOrder = 100);
 	virtual ~Component();
 
-	virtual void Update(float deltaTime) = 0;
+	virtual void Update(float deltaTime);
 
-	Actor* GetOwner() const { return this->mOwner; }
+	class Actor* GetOwner() const { return this->mOwner; }
 	int GetUpdateOrder() const { return this->mUpdateOrder; }
 protected:
 	Actor* mOwner;

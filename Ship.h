@@ -1,6 +1,8 @@
 #pragma once
 
-#include "AnimSpriteComponent.h"
+#include "Actor.h"
+#include "AnimSpriteComponent.h"*
+#include "Game.h"
 
 class Ship : public Actor
 {

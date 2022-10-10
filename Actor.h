@@ -23,7 +23,7 @@ public:
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
-	Game* GetGame() const { return this->mGame; }
+	class Game* GetGame() { return this->mGame; }
 	Vector2 GetPosition() const { return this->mPosition; }
 	float GetRotation() const { return this->mRotation; }
 	float GetScale() const { return this->mScale; }
@@ -32,13 +32,13 @@ public:
 	void SetPosition(Vector2 position) { this->mPosition = position; }
 	void SetScale(float scale) { this->mScale = scale; }
 
-	void AddComponent(Component* component);
-	void RemoveComponent(Component* component);
+	void AddComponent(class Component* component);
+	void RemoveComponent(class Component* component);
 private:
 	State mState;
 	Vector2 mPosition;
 	float mScale;
 	float mRotation;
-	std::vector<Component*> mComponents;
+	std::vector<class Component*> mComponents;
 	Game* mGame;
 };
