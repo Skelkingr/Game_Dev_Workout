@@ -30,6 +30,7 @@ public:
 	int GetState() const { return this->mState; }
 
 	void SetPosition(Vector2 position) { this->mPosition = position; }
+	void SetScale(float scale) { this->mScale = scale; }
 
 	void AddComponent(Component* component);
 	void RemoveComponent(Component* component);
