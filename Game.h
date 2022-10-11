@@ -1,63 +1,47 @@
 #pragma once
 
-#include <algorithm>
+#include "SDL.h"
+
 #include <string>
-#include <SDL.h>
-#include <SDL_image.h>
-
-#include "Actor.h"
-#include "SpriteComponent.h"
-
-struct Vector2
-{
-	float x;
-	float y;
-};
+#include <unordered_map>
+#include <vector>
 
 class Game
 {
 public:
 	Game();
+
 	bool Initialize();
 	void RunLoop();
-	void ShutDown();
+	void Shutdown();
+
+	void AddActor(class Actor* actor);
+	void RemoveActor(class Actor* actor);
+
+	void AddSprite(class SpriteComponent* sprite);
+	void RemoveSprite(class SpriteComponent* sprite);
+
+	SDL_Texture* GetTexture(const std::string& fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
-	int SetRenderDrawColor(int red, int green, int blue, int alpha);
-	void GenerateBorders(bool topAndBottom);
-	SDL_Rect GenerateRect(int x, int y, int width, int height);
-	int MovePaddle();
-	std::string PaddleHitsBorders();
-	void BallHitsBorders();
-	void BallHitsPaddle();
-private:
-	SDL_Texture* LoadTexture(const char* fileName);
-private:
-	void AddActor(Actor* actor);
-	void RemoveActor(Actor* actor);
-	bool VectorContainsActor(std::vector<Actor*> v, Actor* actor);
-private:
-	void AddSprite(SpriteComponent* sprite);
-private:
+	void LoadData();
+	void UnloadData();
+
+	std::unordered_map<std::string, SDL_Texture*> mTextures;
+
+	std::vector<class Actor*> mActors;
+
+	std::vector<class Actor*> mPendingActors;
+
+	std::vector<class SpriteComponent*> mSprites;
+
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
-	bool mIsRunning;
-	const std::string mWindowTitle = "Skelkingr";
-	int mWindowWidth;
-	int mWindowHeight;
-private:
-	const int mThickness = 15;
-	Vector2 mPaddlePos;
-	Vector2 mBallPos;
-	Vector2 mBallVel;
 	Uint32 mTicksCount;
-	int mPaddleH;
-	int mPaddleDir;
-private:
+	bool mIsRunning;
 	bool mUpdatingActors;
-	std::vector<Actor*> mActors;
-	std::vector<Actor*> mPendingActors;
-	std::vector<SpriteComponent*> mSprites;
+
+	class Ship* mShip;
 };

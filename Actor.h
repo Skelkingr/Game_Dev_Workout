@@ -1,9 +1,8 @@
 #pragma once
 
-#include <vector>
+#include "Math.h"
 
-#include "Component.h"
-#include "Game.h"
+#include <vector>
 
 class Actor
 {
@@ -15,25 +14,29 @@ public:
 		EDead
 	};
 public:
-	Actor(Game* game);
+	Actor(class Game* game);
 	virtual ~Actor();
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
-	Vector2 GetPosition() const { return this->mPosition; }
-	float GetRotation() const { return this->mRotation; }
-	float GetScale() const { return this->mScale; }
-	int GetState() const { return this->mState; }
+	class Game* GetGame() const { return mGame; }
+	Vector2 GetPosition() const { return mPosition; }
+	float GetRotation() const { return mRotation; }
+	float GetScale() const { return mScale; }
+	int GetState() const { return mState; }
 
-	void AddComponent(Component* component);
-	void RemoveComponent(Component* component);
+	void SetPosition(Vector2 position) { mPosition = position; }
+	void SetScale(float scale) { mScale = scale; }
+
+	void AddComponent(class Component* component);
+	void RemoveComponent(class Component* component);
 private:
 	State mState;
 	Vector2 mPosition;
 	float mScale;
 	float mRotation;
-	std::vector<Component*> mComponents;
-	Game* mGame;
+	std::vector<class Component*> mComponents;
+	class Game* mGame;
 };

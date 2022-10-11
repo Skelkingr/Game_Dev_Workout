@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Actor.h"
+#include "SDL.h"
 #include "SpriteComponent.h"
 
 class AnimSpriteComponent : public SpriteComponent
 {
 public:
-	AnimSpriteComponent(Actor* owner, int drawOrder = 100);
+	AnimSpriteComponent(class Actor* owner, int drawOrder = 100);
 	
 	void Update(float deltaTime) override;
 	
-	float GetAnimFPS() const { return this->mAnimFPS; }
-	float GetCurrFrame() const { return this->mCurrFrame; }
-	std::vector<SDL_Texture*> GetAnimTextures() const { return this->mAnimTextures; }
+	float GetAnimFPS() const { return mAnimFPS; }
+	void SetAnimFPS(float animFPS) { mAnimFPS = animFPS; }
+	std::vector<SDL_Texture*> GetAnimTextures() const { return mAnimTextures; }
 	
 	void SetAnimTextures(const std::vector<SDL_Texture*>& textures);
 private:

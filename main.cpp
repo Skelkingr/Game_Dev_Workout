@@ -4,10 +4,13 @@ int main(int argc, char** argv)
 {
 	Game game;
 
-	bool initSuccess = game.Initialize();
-	if (initSuccess)
-		game.RunLoop();
+	bool success = game.Initialize();
 
-	game.ShutDown();
+	if (success)
+	{
+		game.RunLoop();
+	}
+
+	game.Shutdown();
 	return 0;
 }
