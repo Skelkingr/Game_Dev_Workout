@@ -1,3 +1,5 @@
+#include "AnimSpriteComponent.h"
+#include "Game.h"
 #include "Ship.h"
 
 Ship::Ship(Game* game)
@@ -40,7 +42,7 @@ void Ship::ProcessKeyboard(const uint8_t* state)
 	{
 		mRightSpeed += 250.0f;
 	}
-	if (state[SDL_SCANCODE_Q])
+	if (state[SDL_SCANCODE_A])
 	{
 		mRightSpeed -= 250.0f;
 	}
@@ -49,7 +51,7 @@ void Ship::ProcessKeyboard(const uint8_t* state)
 	{
 		mDownSpeed += 300.0f;
 	}
-	if (state[SDL_SCANCODE_Z])
+	if (state[SDL_SCANCODE_W])
 	{
 		mDownSpeed -= 300.0f;
 	}
