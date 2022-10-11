@@ -1,13 +1,10 @@
 #pragma once
 
-#include <algorithm>
+#include "SDL.h"
+
 #include <string>
 #include <unordered_map>
-#include <SDL.h>
-#include <SDL_image.h>
-
-#include "Ship.h"
-#include "SpriteComponent.h"
+#include <vector>
 
 class Game
 {
@@ -34,9 +31,9 @@ private:
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
-	std::vector<Actor*> mActors;
+	std::vector<class Actor*> mActors;
 
-	std::vector<Actor*> mPendingActors;
+	std::vector<class Actor*> mPendingActors;
 
 	std::vector<class SpriteComponent*> mSprites;
 
