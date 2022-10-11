@@ -1,7 +1,7 @@
 #pragma once
 
-#include "SDL.h"
-
+#include <SDL.h>
+#include <SDL_mixer.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -27,6 +27,7 @@ private:
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
+	void PlayMusic();
 	void UnloadData();
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
@@ -39,6 +40,8 @@ private:
 
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
+	Mix_Music* mMusic;
+
 	Uint32 mTicksCount;
 	bool mIsRunning;
 	bool mUpdatingActors;
