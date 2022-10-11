@@ -1,9 +1,10 @@
 #include "AnimSpriteComponent.h"
 
-AnimSpriteComponent::AnimSpriteComponent(Actor* owner, int drawOrder)
-	:SpriteComponent(owner, drawOrder)
-	, mCurrFrame(0.0f)
-	, mAnimFPS(24.0f)
+AnimSpriteComponent::AnimSpriteComponent(class Actor* owner, int drawOrder)
+	:
+	SpriteComponent(owner, drawOrder),
+	mCurrFrame(0.0f),
+	mAnimFPS(24.0f)
 {}
 
 void AnimSpriteComponent::Update(float deltaTime)
@@ -12,7 +13,7 @@ void AnimSpriteComponent::Update(float deltaTime)
 
 	if (mAnimTextures.size() > 0)
 	{
-		mCurrFrame += mAnimFPS + deltaTime;
+		mCurrFrame += mAnimFPS + deltaTime * 3;
 
 		while (mCurrFrame >= mAnimTextures.size())
 		{
