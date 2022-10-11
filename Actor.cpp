@@ -1,4 +1,5 @@
 #include "Actor.h"
+#include "Game.h"
 
 #include <algorithm>
 
@@ -46,14 +47,14 @@ void Actor::UpdateActor(float deltaTime)
 
 void Actor::AddComponent(Component* component)
 {
-	int myOrder = component->GetUpdateOrder();
+	int myFuckingOrder = component->GetUpdateOrder();
 
 	auto iter = mComponents.begin();
 	for (;
 		iter != mComponents.end();
 		++iter)
 	{
-		if (myOrder < (*iter)->GetUpdateOrder())
+		if (myFuckingOrder < (*iter)->GetUpdateOrder())
 		{
 			break;
 		}
