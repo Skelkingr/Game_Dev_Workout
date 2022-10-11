@@ -1,21 +1,22 @@
 #pragma once
 
 #include "Component.h"
+#include "SDL.h"
 
 class SpriteComponent : public Component
 {
 public:
-	SpriteComponent(Actor* actor, int drawOrder = 100);
+	SpriteComponent(class Actor* actor, int drawOrder = 100);
 	~SpriteComponent();
 
 	virtual void Draw(SDL_Renderer* renderer);
 	virtual void SetTexture(SDL_Texture* texture);
 
-	int GetDrawOrder() { return this->mDrawOrder; }
-	int GetTexWidth() { return this->mTexWidth; }
-	int GetTexHeight() { return this->mTexHeight; }
+	int GetDrawOrder() const { return mDrawOrder; }
+	int GetTexWidth() const { return mTexWidth; }
+	int GetTexHeight() const { return mTexHeight; }
 
-	void SetTexture(SDL_Texture* texture);
+	void SetDrawOrder(int drawOrder) { mDrawOrder = drawOrder; }
 private:
 	SDL_Texture* mTexture;
 	int mDrawOrder;
