@@ -13,6 +13,6 @@ public:
 	class Actor* GetOwner() const { return this->mOwner; }
 	int GetUpdateOrder() const { return this->mUpdateOrder; }
 protected:
-	Actor* mOwner;
+	class Actor* mOwner;
 	int mUpdateOrder;
 };
