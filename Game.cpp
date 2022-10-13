@@ -1,13 +1,15 @@
 #include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
-#include "SDL_image.h"
 #include "Ship.h"
+
+#include <SDL_image.h>
 
 Game::Game()
 	:
 	mWindow(nullptr),
 	mRenderer(nullptr),
+	mMusic(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
@@ -38,11 +40,18 @@ bool Game::Initialize()
 
 	if (IMG_Init(IMG_INIT_PNG) == 0)
 	{
-		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
+		SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
+		return false;
+	}
+
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		SDL_Log("Unable to initialize SDL_mixer: %s", Mix_GetError());
 		return false;
 	}
 
 	LoadData();
+	PlayMusic("Musics/MoonTheme.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -161,6 +170,22 @@ void Game::LoadData()
 	bg->SetScrollSpeed(-200.0f);
 }
 
+void Game::PlayMusic(const char* fileName)
+{
+	mMusic = Mix_LoadMUS(fileName);
+
+	if (mMusic == nullptr)
+	{
+		SDL_Log("Failed to load music: %s", Mix_GetError());
+		return;
+	}
+
+	if (Mix_PlayingMusic() == 0)
+	{
+		Mix_PlayMusic(mMusic, -1);
+	}
+}
+
 void Game::UnloadData()
 {
 	while (!mActors.empty())
@@ -173,6 +198,9 @@ void Game::UnloadData()
 		SDL_DestroyTexture(i.second);
 	}
 	mTextures.clear();
+
+	Mix_FreeMusic(mMusic);
+	mMusic = nullptr;
 }
 
 SDL_Texture* Game::GetTexture(const std::string& fileName)
@@ -210,6 +238,7 @@ void Game::Shutdown()
 {
 	UnloadData();
 	IMG_Quit();
+	Mix_Quit();
 	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
