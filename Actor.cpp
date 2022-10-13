@@ -46,6 +46,11 @@ void Actor::UpdateActor(float deltaTime)
 {
 }
 
+Vector2 Actor::GetForward() const
+{
+	return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation));
+}
+
 void Actor::AddComponent(Component* component)
 {
 	int myFuckingOrder = component->GetUpdateOrder();
