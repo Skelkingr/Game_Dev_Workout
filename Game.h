@@ -27,7 +27,7 @@ private:
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
-	void PlayMusic();
+	void PlayMusic(const char* fileName);
 	void UnloadData();
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;

@@ -52,7 +52,7 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic();
+	PlayMusic("Musics\\UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -178,9 +178,9 @@ void Game::LoadData()
 	bg->SetShip(mShip);
 }
 
-void Game::PlayMusic()
+void Game::PlayMusic(const char* fileName)
 {
-	mMusic = Mix_LoadMUS("Musics\\UnchartedWorlds.mp3");
+	mMusic = Mix_LoadMUS(fileName);
 
 	if (mMusic == nullptr)
 	{
