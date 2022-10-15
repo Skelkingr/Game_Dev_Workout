@@ -52,7 +52,7 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic("Musics\\UnchartedWorlds.mp3");
+	PlayMusic("Musics\\MoonTheme.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
