@@ -3,7 +3,8 @@
 BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 	:
 	SpriteComponent(owner, drawOrder),
-	mScrollSpeed(0.0f)
+	mScrollSpeed(0.0f),
+	mShip(nullptr)
 {}
 
 void BGSpriteComponent::Update(float deltaTime)

@@ -1,3 +1,4 @@
+#include "Asteroid.h"
 #include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
@@ -81,13 +82,18 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 
-	mShip->ProcessKeyboard(state);
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -145,7 +151,7 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetPosition(Vector2(480.0f, 369.5f));
 	mShip->SetScale(1.5f);
 
 	Actor* temp = new Actor(this);
@@ -153,21 +159,23 @@ void Game::LoadData()
 
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgtexs = {
+	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
 		GetTexture("Assets/Farback02.png")
 	};
-	bg->SetBGTextures(bgtexs);
+	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(-100.0f);
+	bg->SetShip(mShip);
 
 	bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
+	bgTexs = {
 		GetTexture("Assets/Stars.png"),
 		GetTexture("Assets/Stars.png")
 	};
-	bg->SetBGTextures(bgtexs);
+	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(-200.0f);
+	bg->SetShip(mShip);
 }
 
 void Game::PlayMusic(const char* fileName)
