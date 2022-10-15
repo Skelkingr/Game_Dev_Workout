@@ -1,6 +1,7 @@
 #pragma once
 
 #include "SDL.h"
+#include "Ship.h"
 #include "SpriteComponent.h"
 
 class BGSpriteComponent : public SpriteComponent
@@ -12,11 +13,12 @@ public:
 	void Draw(SDL_Renderer* renderer) override;
 
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
-
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
+	void SetShip(Ship* ship) { mShip = ship; }
 
-	float GetScrollSpeed() { return mScrollSpeed; }
+	float GetScrollSpeed() const { return mScrollSpeed; }
+	Ship* GetShip() const { return mShip; }
 private:
 	struct BGTexture
 	{
@@ -26,4 +28,6 @@ private:
 	std::vector<BGTexture> mBGTextures;
 	Vector2 mScreenSize;
 	float mScrollSpeed;
+
+	Ship* mShip;
 };

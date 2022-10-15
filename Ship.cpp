@@ -5,7 +5,8 @@
 
 Ship::Ship(Game* game)
 	:
-	Actor(game)
+	Actor(game),
+	mInputComponent(nullptr)
 {
 	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
 
@@ -17,9 +18,24 @@ Ship::Ship(Game* game)
 	};
 	asc->SetAnimTextures(anims);
 
-	InputComponent* ic = new InputComponent(this);
-	ic->SetMaxForwardSpeed(150.0f);
-	ic->SetMaxAngularSpeed(Math::TwoPi / 4);
+	mInputComponent = new InputComponent(this);
+	mInputComponent->SetMaxForwardSpeed(150.0f);
+	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
+}
+
+int Ship::GetDirection() const
+{
+	// Northwards
+	if (GetForward().x == 0 && GetForward().y == 1)
+	{
+		return Direction::E;
+	}
+
+	// Eastwards
+	if (GetForward().x == 1 && GetForward().y == 0)
+	{
+		return Direction::E;
+	}
 }
 
 

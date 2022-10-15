@@ -151,7 +151,7 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetPosition(Vector2(480.0f, 369.5f));
 	mShip->SetScale(1.5f);
 
 	Actor* temp = new Actor(this);
@@ -159,27 +159,23 @@ void Game::LoadData()
 
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgtexs = {
+	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
 		GetTexture("Assets/Farback02.png")
 	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-10.0f);
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-100.0f);
+	bg->SetShip(mShip);
 
 	bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
+	bgTexs = {
 		GetTexture("Assets/Stars.png"),
 		GetTexture("Assets/Stars.png")
 	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-20.0f);
-
-	/*const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
-	{
-		new Asteroid(this);
-	}*/
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(-200.0f);
+	bg->SetShip(mShip);
 }
 
 void Game::PlayMusic()
