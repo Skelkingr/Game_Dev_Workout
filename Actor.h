@@ -19,7 +19,10 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
+	void ProcessInput(const uint8_t* keyState);
+
 	virtual void UpdateActor(float deltaTime);
+	virtual void ActorInput(const uint8_t* keyState);
 
 	class Game* GetGame() const { return mGame; }
 	Vector2 GetForward() const;

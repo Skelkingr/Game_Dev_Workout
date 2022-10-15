@@ -1,3 +1,4 @@
+#include "Asteroid.h"
 #include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
@@ -81,13 +82,18 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 
-	mShip->ProcessKeyboard(state);
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -158,7 +164,7 @@ void Game::LoadData()
 		GetTexture("Assets/Farback02.png")
 	};
 	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
+	bg->SetScrollSpeed(-10.0f);
 
 	bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
@@ -167,12 +173,18 @@ void Game::LoadData()
 		GetTexture("Assets/Stars.png")
 	};
 	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-200.0f);
+	bg->SetScrollSpeed(-20.0f);
+
+	/*const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++)
+	{
+		new Asteroid(this);
+	}*/
 }
 
 void Game::PlayMusic()
 {
-	mMusic = Mix_LoadMUS("Musics\\MoonTheme.mp3");
+	mMusic = Mix_LoadMUS("Musics\\UnchartedWorlds.mp3");
 
 	if (mMusic == nullptr)
 	{
