@@ -9,12 +9,12 @@ public:
 
 	void ProcessInput(const uint8_t* keyState) override;
 
-	float GetMaxForwardSpeed() { return mMaxForwardSpeed; }
-	float GetMaxAngularSpeed() { return mMaxAngularSpeed; }
-	int GetForwardKey() { return mForwardKey; }
-	int GetBackKey() { return mBackKey; }
-	int GetClockwiseKey() { return mClockwiseKey; }
-	int GetCounterClockwiseKey() { return mCounterClockwiseKey; }
+	float GetMaxForwardSpeed() const { return mMaxForwardSpeed; }
+	float GetMaxAngularSpeed() const { return mMaxAngularSpeed; }
+	int GetForwardKey() const { return mForwardKey; }
+	int GetBackKey() const { return mBackKey; }
+	int GetClockwiseKey() const { return mClockwiseKey; }
+	int GetCounterClockwiseKey() const { return mCounterClockwiseKey; }
 
 	void SetMaxForwardSpeed(float maxForwardSpeed) { mMaxForwardSpeed = maxForwardSpeed; }
 	void SetMaxAngularSpeed(float maxAngularSpeed) { mMaxAngularSpeed = maxAngularSpeed; }
