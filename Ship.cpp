@@ -19,7 +19,7 @@ Ship::Ship(Game* game)
 
 	InputComponent* ic = new InputComponent(this);
 	ic->SetMaxForwardSpeed(150.0f);
-	ic->SetMaxAngularSpeed(Math::TwoPi / 2);
+	ic->SetMaxAngularSpeed(Math::TwoPi / 4);
 }
 
 
