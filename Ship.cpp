@@ -19,7 +19,7 @@ Ship::Ship(Game* game)
 	asc->SetAnimTextures(anims);
 
 	mInputComponent = new InputComponent(this);
-	mInputComponent->SetMaxForwardSpeed(150.0f);
+	mInputComponent->SetMaxForwardSpeed(0.0f);
 	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
 }
 
