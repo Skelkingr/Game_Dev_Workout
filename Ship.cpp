@@ -23,19 +23,4 @@ Ship::Ship(Game* game)
 	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
 }
 
-int Ship::GetDirection() const
-{
-	// Northwards
-	if (GetForward().x == 0 && GetForward().y == 1)
-	{
-		return Direction::E;
-	}
-
-	// Eastwards
-	if (GetForward().x == 1 && GetForward().y == 0)
-	{
-		return Direction::E;
-	}
-}
-
 
