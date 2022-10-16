@@ -6,6 +6,7 @@ BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 	:
 	SpriteComponent(owner, drawOrder),
 	mScrollSpeed(0.0f),
+	mInputComponent(nullptr),
 	mShip(nullptr)
 {}
 

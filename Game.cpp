@@ -164,10 +164,11 @@ void Game::LoadData()
 		GetTexture("Assets/Farback02.png")
 	};
 	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(-100.0f);
+	bg->SetScrollSpeed(5.0f);
 	bg->SetShip(mShip);
+	bg->SetInputComponent(mShip->GetInputComponent());
 
-	bg = new BGSpriteComponent(temp, 50);
+	/*bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	bgTexs = {
 		GetTexture("Assets/Stars.png"),
@@ -175,7 +176,7 @@ void Game::LoadData()
 	};
 	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(-200.0f);
-	bg->SetShip(mShip);
+	bg->SetShip(mShip);*/
 }
 
 void Game::PlayMusic(const char* fileName)
