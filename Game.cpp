@@ -151,7 +151,7 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(480.0f, 369.5f));
+	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
 	mShip->SetScale(1.5f);
 
 	Actor* temp = new Actor(this);
@@ -161,12 +161,12 @@ void Game::LoadData()
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
+		GetTexture("Assets/Farback02.png")	
 	};
 	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(5.0f);
-	bg->SetShip(mShip);
+	bg->SetScrollSpeed(0.0f);
 	bg->SetInputComponent(mShip->GetInputComponent());
+	bg->SetShip(mShip);
 
 	/*bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));

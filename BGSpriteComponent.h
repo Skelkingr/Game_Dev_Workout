@@ -2,6 +2,7 @@
 
 #include "Game.h"
 #include "InputComponent.h"
+#include "Ship.h"
 #include "SpriteComponent.h"
 
 #include <SDL.h>
@@ -19,20 +20,21 @@ public:
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 	void SetInputComponent(InputComponent* inputComponent) { mInputComponent = inputComponent; }
+	void SetShip(Ship* ship) { mShip = ship; }
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
 	InputComponent* GetInputComponent() const { return mInputComponent; }
-
-	Vector2 GetShipNormal() const { return mOwner->GetGame()->GetShip()->GetForward(); }
+	Ship* GetShipt() const { return mShip; }
 private:
 	struct BGTexture
 	{
-		SDL_Texture* mTexture;
-		Vector2 mOffset;
+		SDL_Texture* mTexture = nullptr;
+		Vector2 mOffset = {};
 	};
 	std::vector<BGTexture> mBGTextures;
 	Vector2 mScreenSize;
 	float mScrollSpeed;
 
 	InputComponent* mInputComponent;
+	Ship* mShip;
 };
