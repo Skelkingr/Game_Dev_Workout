@@ -10,7 +10,5 @@ public:
 	
 	InputComponent* GetInputComponent() const { return mInputComponent; }
 private:
-	int mDirection;
-
 	InputComponent* mInputComponent;
 };
