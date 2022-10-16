@@ -1,6 +1,7 @@
 #pragma once
 
 #include "InputComponent.h"
+#include "Ship.h"
 #include "SpriteComponent.h"
 
 #include <SDL.h>
@@ -20,7 +21,8 @@ public:
 	void SetInputComponent(InputComponent* inputComponent) { mInputComponent = inputComponent; }
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
-	InputComponent* GetShip() const { return mInputComponent; }
+	InputComponent* GetInputComponent() const { return mInputComponent; }
+	Ship* GetShip() const { return mShip; }
 private:
 	struct BGTexture
 	{
@@ -32,4 +34,5 @@ private:
 	float mScrollSpeed;
 
 	InputComponent* mInputComponent;
+	Ship* mShip;
 };
