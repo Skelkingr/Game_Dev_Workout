@@ -1,13 +1,10 @@
 #include "BGSpriteComponent.h"
 
-#include "Ship.h"
-
 BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 	:
 	SpriteComponent(owner, drawOrder),
 	mScrollSpeed(0.0f),
-	mInputComponent(nullptr),
-	mShip(nullptr)
+	mInputComponent(nullptr)
 {}
 
 void BGSpriteComponent::Update(float deltaTime)
@@ -48,15 +45,15 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 
 void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 {
-	float scrollSpeed = 5.0f;
+	float scrollSpeed = 0.0f;
 
 	if (keyState[mInputComponent->GetForwardKey()])
 	{
-		scrollSpeed += mInputComponent->GetMaxForwardSpeed();
+		scrollSpeed -= 150.0f;
 	}
 	if (keyState[mInputComponent->GetBackKey()])
 	{
-		scrollSpeed -= mInputComponent->GetMaxForwardSpeed() / 2;
+		scrollSpeed += 75.0f;
 	}
 	SetScrollSpeed(scrollSpeed);
 }
