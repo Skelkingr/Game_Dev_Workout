@@ -1,8 +1,9 @@
 #pragma once
 
-#include "SDL.h"
-#include "Ship.h"
+#include "InputComponent.h"
 #include "SpriteComponent.h"
+
+#include <SDL.h>
 
 class BGSpriteComponent : public SpriteComponent
 {
@@ -11,14 +12,15 @@ public:
 
 	void Update(float deltaTime) override;
 	void Draw(SDL_Renderer* renderer) override;
+	void ProcessInput(const uint8_t* keyState) override;
 
 	void SetBGTextures(const std::vector<SDL_Texture*>& textures);
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
-	void SetShip(Ship* ship) { mShip = ship; }
+	void SetInputComponent(InputComponent* inputComponent) { mInputComponent = inputComponent; }
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
-	Ship* GetShip() const { return mShip; }
+	InputComponent* GetShip() const { return mInputComponent; }
 private:
 	struct BGTexture
 	{
@@ -29,5 +31,5 @@ private:
 	Vector2 mScreenSize;
 	float mScrollSpeed;
 
-	Ship* mShip;
+	InputComponent* mInputComponent;
 };

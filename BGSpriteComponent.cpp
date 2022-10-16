@@ -1,5 +1,7 @@
 #include "BGSpriteComponent.h"
 
+#include "Ship.h"
+
 BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 	:
 	SpriteComponent(owner, drawOrder),
@@ -41,6 +43,21 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 			&rect
 		);
 	}
+}
+
+void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
+{
+	float scrollSpeed = 5.0f;
+
+	if (keyState[mInputComponent->GetForwardKey()])
+	{
+		scrollSpeed += mInputComponent->GetMaxForwardSpeed();
+	}
+	if (keyState[mInputComponent->GetBackKey()])
+	{
+		scrollSpeed -= mInputComponent->GetMaxForwardSpeed() / 2;
+	}
+	SetScrollSpeed(scrollSpeed);
 }
 
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
