@@ -1,7 +1,7 @@
 #pragma once
 
+#include "Game.h"
 #include "InputComponent.h"
-#include "Ship.h"
 #include "SpriteComponent.h"
 
 #include <SDL.h>
@@ -19,11 +19,11 @@ public:
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 	void SetInputComponent(InputComponent* inputComponent) { mInputComponent = inputComponent; }
-	void SetShip(Ship* ship) { mShip = ship; }
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
 	InputComponent* GetInputComponent() const { return mInputComponent; }
-	Ship* GetShip() const { return mShip; }
+
+	Vector2 GetShipNormal() const { return mOwner->GetGame()->GetShip()->GetForward(); }
 private:
 	struct BGTexture
 	{
@@ -35,5 +35,4 @@ private:
 	float mScrollSpeed;
 
 	InputComponent* mInputComponent;
-	Ship* mShip;
 };
