@@ -19,6 +19,7 @@ public:
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 	void SetInputComponent(InputComponent* inputComponent) { mInputComponent = inputComponent; }
+	void SetShip(Ship* ship) { mShip = ship; }
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
 	InputComponent* GetInputComponent() const { return mInputComponent; }
