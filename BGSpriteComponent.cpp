@@ -19,8 +19,8 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		float shipAngle = Math::Atan2(-forwardY, forwardX);
 
-		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.02f));
-		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.02f));
+		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.01f));
+		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.01f));
 
 		if (sinNearZero)
 		{
