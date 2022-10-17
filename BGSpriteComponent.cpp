@@ -19,9 +19,22 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		float shipAngle = Math::Atan2(-forwardY, forwardX);
 
-		// @TODO : Find the perfect recipe
-		bg.mOffset.x += mScrollSpeed * Math::Sgn(forwardX) * deltaTime;
-		bg.mOffset.y += forwardY * Math::Sgn(forwardY);
+		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.05f));
+		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.05f));
+
+		if (sinNearZero)
+		{
+			bg.mOffset.x += mScrollSpeed * Math::Sgn(forwardX) * forwardX * deltaTime;
+		}
+		else if (cosNearZero)
+		{
+			bg.mOffset.y -= mScrollSpeed * Math::Sgn(shipAngle) * forwardY * deltaTime;
+		}
+		else
+		{
+			bg.mOffset.x += mScrollSpeed * Math::Sgn(forwardX) * deltaTime;
+			bg.mOffset.y -= mScrollSpeed * Math::Sgn(shipAngle) * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
+		}
 		
 
 		// @TODO: Manage Left
