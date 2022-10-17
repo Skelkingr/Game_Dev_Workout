@@ -24,29 +24,36 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		if (sinNearZero)
 		{
-			bg.mOffset.x += mScrollSpeed * Math::Sgn(forwardX) * forwardX * deltaTime;
+			bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
 		}
 		else if (cosNearZero)
 		{
-			bg.mOffset.y -= mScrollSpeed * Math::Sgn(shipAngle) * forwardY * deltaTime;
+			bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
 		}
 		else
 		{
-			bg.mOffset.x += mScrollSpeed * Math::Sgn(forwardX) * deltaTime;
+			bg.mOffset.x += mScrollSpeed * Math::Sgn(Math::Cos(shipAngle)) * deltaTime;
 			bg.mOffset.y -= mScrollSpeed * Math::Sgn(shipAngle) * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
 		
 
-		// @TODO: Manage Left
+		//SDL_Log("A: %i | B: %i", (bg.mOffset.x < -mScreenSize.x), (bg.mOffset.x > mScreenSize.x));
+
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
+		// @TODO: Manage Left
+		/*if (bg.mOffset.x > mScreenSize.x)
+		{
+			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
+		}*/
 
-		if (bg.mOffset.y < -mScreenSize.y)
+		// @TODO: Mange vertical
+		/*if (bg.mOffset.y < -mScreenSize.y)
 		{
 			bg.mOffset.y = (mBGTextures.size() - 1) * mScreenSize.y - 1;
-		}
+		}*/
 	}
 }
 
@@ -60,8 +67,8 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 		rect.w = mScreenSize.x;
 		rect.h = mScreenSize.y;
 
-		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
-		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
+		rect.x = mOwner->GetPosition().x - rect.w / 2 + bg.mOffset.x;
+		rect.y = mOwner->GetPosition().y - rect.h / 2 + bg.mOffset.y;
 
 		SDL_RenderCopy(
 			renderer,
@@ -91,19 +98,6 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
 	int i = -1;
-	/*int j = -1;
-
-	for (; i < 1; ++i)
-	{
-		for (; j < 1; ++j)
-		{
-			BGTexture temp;
-			temp.mTexture = textures[j + 1];
-			temp.mOffset.x = i * mScreenSize.x;
-			temp.mOffset.y = j * mScreenSize.y;
-			mBGTextures.emplace_back(temp);
-		}
-	}*/
 
 	for (auto tex : textures)
 	{
