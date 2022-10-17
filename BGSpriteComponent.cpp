@@ -19,8 +19,8 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		float shipAngle = Math::Atan2(-forwardY, forwardX);
 
-		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.05f));
-		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.05f));
+		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.02f));
+		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.02f));
 
 		if (sinNearZero)
 		{
@@ -85,7 +85,7 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 // @TODO : 9 textures total patchwork
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
-	int i = -1;
+	int i = 0;
 
 	for (auto tex : textures)
 	{
