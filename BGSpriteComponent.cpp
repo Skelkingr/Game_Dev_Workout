@@ -32,28 +32,16 @@ void BGSpriteComponent::Update(float deltaTime)
 		}
 		else
 		{
-			bg.mOffset.x += mScrollSpeed * Math::Sgn(Math::Cos(shipAngle)) * deltaTime;
-			bg.mOffset.y -= mScrollSpeed * Math::Sgn(shipAngle) * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
+			bg.mOffset.x += mScrollSpeed * forwardX * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
+			bg.mOffset.y += mScrollSpeed * forwardY * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
-		
-
-		//SDL_Log("A: %i | B: %i", (bg.mOffset.x < -mScreenSize.x), (bg.mOffset.x > mScreenSize.x));
 
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
 		// @TODO: Manage Left
-		/*if (bg.mOffset.x > mScreenSize.x)
-		{
-			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
-		}*/
-
-		// @TODO: Mange vertical
-		/*if (bg.mOffset.y < -mScreenSize.y)
-		{
-			bg.mOffset.y = (mBGTextures.size() - 1) * mScreenSize.y - 1;
-		}*/
+		// @TODO: Mange vertical (that means Up and Down in case you're dumb)
 	}
 }
 
