@@ -36,33 +36,41 @@ void BGSpriteComponent::Update(float deltaTime)
 			bg.mOffset.y += mScrollSpeed * forwardY * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
 
+		// @TODO: Compute black gap between two textures
+
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
-		// @TODO: Manage Left
-		// @TODO: Mange vertical (that means Up and Down in case you're dumb)
+		if (bg.mOffset.x > mScreenSize.x)
+		{
+			bg.mOffset.x = (mBGTextures.size() - 1) * -mScreenSize.x - 1;
+		}
+
+		// @TODO: Manage vertical (that means Up and Down in case you're dumb)
 	}
 }
 
-// @TODO: Fix loss of data
 void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
 	for (auto& bg : mBGTextures)
 	{
-		SDL_Rect rect = {};
+		SDL_FRect rect = {};
 
 		rect.w = mScreenSize.x;
 		rect.h = mScreenSize.y;
 
-		rect.x = mOwner->GetPosition().x - rect.w / 2 + bg.mOffset.x;
-		rect.y = mOwner->GetPosition().y - rect.h / 2 + bg.mOffset.y;
+		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
+		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
 
-		SDL_RenderCopy(
+		SDL_RenderCopyExF(
 			renderer,
 			bg.mTexture,
 			nullptr,
-			&rect
+			&rect,
+			0.0,
+			nullptr,
+			SDL_FLIP_NONE
 		);
 	}
 }
@@ -85,7 +93,7 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 // @TODO : 9 textures total patchwork
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
-	int i = 0;
+	int i = -1;
 
 	for (auto tex : textures)
 	{
