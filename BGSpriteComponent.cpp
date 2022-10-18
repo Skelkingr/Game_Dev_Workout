@@ -38,14 +38,15 @@ void BGSpriteComponent::Update(float deltaTime)
 		}
 		/* */
 
-		if (bg.mOffset.x < -mScreenSize.x)
+		if (bg.mOffset.x <= -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - Math::Cos(shipAngle) - 1;
 		}
 		/*if (bg.mOffset.x > mScreenSize.x)
 		{
-			bg.mOffset.x = (mBGTextures.size() - 1) * -mScreenSize.x - 1;
+			bg.mOffset.x = -((mBGTextures.size() - 1) * mScreenSize.x + Math::Cos(shipAngle) - 1);
 		}*/
+		
 
 		// @TODO: Manage vertical (that means Up and Down in case you're dumb)
 	}
@@ -93,7 +94,7 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
 	int i = 0;
-	int j = 1;
+	//int j = 1;
 
 	for (auto tex : textures)
 	{
