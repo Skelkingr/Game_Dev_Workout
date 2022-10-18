@@ -24,28 +24,30 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		if (sinNearZero)
 		{
-			bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
+			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * deltaTime;
 		}
 		else if (cosNearZero)
 		{
-			bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
+			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * deltaTime;
 		}
 		else
 		{
-			bg.mOffset.x += mScrollSpeed * forwardX * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
-			bg.mOffset.y += mScrollSpeed * forwardY * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
+			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
+			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
 
-		// @TODO: Compute black gap between two textures
+		// @TODO: Compute black gap between two textures (or find out why there is one)
 
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
-		if (bg.mOffset.x > mScreenSize.x)
+
+		// @TODO: Scroll to the left
+		/*if (bg.mOffset.x > mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * -mScreenSize.x - 1;
-		}
+		}*/
 
 		// @TODO: Manage vertical (that means Up and Down in case you're dumb)
 	}
@@ -81,11 +83,11 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 
 	if (keyState[mInputComponent->GetForwardKey()])
 	{
-		scrollSpeed -= 150.0f;
+		scrollSpeed -= 300.0f;
 	}
 	if (keyState[mInputComponent->GetBackKey()])
 	{
-		scrollSpeed += 75.0f;
+		scrollSpeed += 150.0f;
 	}
 	SetScrollSpeed(scrollSpeed);
 }
@@ -93,7 +95,7 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 // @TODO : 9 textures total patchwork
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
-	int i = -1;
+	int i = 0;
 
 	for (auto tex : textures)
 	{
