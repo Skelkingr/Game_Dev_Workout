@@ -22,6 +22,7 @@ void BGSpriteComponent::Update(float deltaTime)
 		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.01f));
 		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.01f));
 
+		/* DO NOT TOUCH THIS */
 		if (sinNearZero)
 		{
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * deltaTime;
@@ -35,15 +36,12 @@ void BGSpriteComponent::Update(float deltaTime)
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
 			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
-
-		// @TODO: Compute black gap between two textures (or find out why there is one)
+		/* */
 
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
-			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
+			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - Math::Cos(shipAngle) - 1;
 		}
-
-		// @TODO: Scroll to the left
 		/*if (bg.mOffset.x > mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * -mScreenSize.x - 1;
@@ -83,19 +81,19 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 
 	if (keyState[mInputComponent->GetForwardKey()])
 	{
-		scrollSpeed -= 300.0f;
+		scrollSpeed -= 200.0f;
 	}
 	if (keyState[mInputComponent->GetBackKey()])
 	{
-		scrollSpeed += 150.0f;
+		scrollSpeed += 100.0f;
 	}
 	SetScrollSpeed(scrollSpeed);
 }
 
-// @TODO : 9 textures total patchwork
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
 	int i = 0;
+	int j = 1;
 
 	for (auto tex : textures)
 	{
