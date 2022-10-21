@@ -19,12 +19,11 @@ void BGSpriteComponent::Update(float deltaTime)
 
 		float shipAngle = Math::Atan2(-forwardY, forwardX);
 
-		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.01f));
-		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.01f));
+		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.015f));
+		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.015f));
 
 		if (sinNearZero)
 		{
-			
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * deltaTime;
 			ResetOffsetX(&bg);
 		}
@@ -35,7 +34,7 @@ void BGSpriteComponent::Update(float deltaTime)
 		else
 		{
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
-			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
+			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;		
 		}
 	}
 }
@@ -44,18 +43,22 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
 	for (auto& bg : mBGTextures)
 	{
-		SDL_Rect rect;
+		SDL_FRect rect = {};
 
-		rect.w = static_cast<int>(mScreenSize.x);
-		rect.h = static_cast<int>(mScreenSize.y);
+		rect.w = mScreenSize.x;
+		rect.h = mScreenSize.y;
 
-		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2 + bg.mOffset.x);
-		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2 + bg.mOffset.y);
+		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
+		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
 
-		SDL_RenderCopy(renderer,
+		SDL_RenderCopyExF(
+			renderer,
 			bg.mTexture,
 			nullptr,
-			&rect
+			&rect,
+			0.0,
+			nullptr,
+			SDL_FLIP_NONE
 		);
 	}
 }
