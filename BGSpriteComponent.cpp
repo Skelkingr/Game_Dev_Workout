@@ -22,10 +22,15 @@ void BGSpriteComponent::Update(float deltaTime)
 		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.01f));
 		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.01f));
 
-		/* DO NOT TOUCH THIS */
 		if (sinNearZero)
 		{
+			SDL_Log("%f", Math::Sgn(forwardX));
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * deltaTime;
+
+			if (bg.mOffset.x < -mScreenSize.x)
+			{
+				bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
+			}
 		}
 		else if (cosNearZero)
 		{
@@ -36,19 +41,6 @@ void BGSpriteComponent::Update(float deltaTime)
 			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
 			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;
 		}
-		/* */
-
-		if (bg.mOffset.x <= -mScreenSize.x)
-		{
-			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - Math::Cos(shipAngle) - 1;
-		}
-		/*if (bg.mOffset.x > mScreenSize.x)
-		{
-			bg.mOffset.x = -((mBGTextures.size() - 1) * mScreenSize.x + Math::Cos(shipAngle) - 1);
-		}*/
-		
-
-		// @TODO: Manage vertical (that means Up and Down in case you're dumb)
 	}
 }
 
@@ -56,22 +48,18 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
 	for (auto& bg : mBGTextures)
 	{
-		SDL_FRect rect = {};
+		SDL_Rect rect;
 
-		rect.w = mScreenSize.x;
-		rect.h = mScreenSize.y;
+		rect.w = static_cast<int>(mScreenSize.x);
+		rect.h = static_cast<int>(mScreenSize.y);
 
-		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
-		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
+		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2 + bg.mOffset.x);
+		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2 + bg.mOffset.y);
 
-		SDL_RenderCopyExF(
-			renderer,
+		SDL_RenderCopy(renderer,
 			bg.mTexture,
 			nullptr,
-			&rect,
-			0.0,
-			nullptr,
-			SDL_FLIP_NONE
+			&rect
 		);
 	}
 }
@@ -94,7 +82,6 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
 	int i = 0;
-	//int j = 1;
 
 	for (auto tex : textures)
 	{
