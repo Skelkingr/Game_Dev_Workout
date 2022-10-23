@@ -11,24 +11,26 @@ BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 void BGSpriteComponent::Update(float deltaTime)
 {
 	SpriteComponent::Update(deltaTime);
-	
+
 	for (auto& bg : mBGTextures)
 	{
 		float forwardX = mShip->GetForward().x;
 		float forwardY = mShip->GetForward().y;
 
 		bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
-		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
 
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
 			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
+
+		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;	
 	}
 }
 
 void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
+
 	for (auto& bg : mBGTextures)
 	{
 		SDL_FRect rect = {};
@@ -57,7 +59,7 @@ void BGSpriteComponent::ProcessInput(const uint8_t* keyState)
 
 	if (keyState[mInputComponent->GetForwardKey()])
 	{
-		scrollSpeed -= 200.0f;
+		scrollSpeed -= 400.0f;
 	}
 	if (keyState[mInputComponent->GetBackKey()])
 	{

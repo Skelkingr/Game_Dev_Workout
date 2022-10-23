@@ -24,7 +24,7 @@ public:
 
 	float GetScrollSpeed() const { return mScrollSpeed; }
 	InputComponent* GetInputComponent() const { return mInputComponent; }
-	Ship* GetShipt() const { return mShip; }
+	Ship* GetShip() const { return mShip; }
 private:
 	struct BGTexture
 	{
