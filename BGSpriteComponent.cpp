@@ -17,24 +17,12 @@ void BGSpriteComponent::Update(float deltaTime)
 		float forwardX = mShip->GetForward().x;
 		float forwardY = mShip->GetForward().y;
 
-		float shipAngle = Math::Atan2(-forwardY, forwardX);
+		bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
+		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
 
-		bool cosNearZero = (Math::NearZero(Math::Cos(shipAngle), 0.015f));
-		bool sinNearZero = (Math::NearZero(Math::Sin(shipAngle), 0.015f));
-
-		if (sinNearZero)
+		if (bg.mOffset.x < -mScreenSize.x)
 		{
-			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * deltaTime;
-			ResetOffsetX(&bg);
-		}
-		else if (cosNearZero)
-		{
-			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * deltaTime;
-		}
-		else
-		{
-			bg.mOffset.x += Math::Sgn(forwardX) * mScrollSpeed * Math::Abs(Math::Cos(shipAngle)) * deltaTime;
-			bg.mOffset.y += Math::Sgn(forwardY) * mScrollSpeed * Math::Abs(Math::Sin(shipAngle)) * deltaTime;		
+			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 		}
 	}
 }
@@ -90,13 +78,5 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 		temp.mOffset.y = 0;
 		mBGTextures.emplace_back(temp);
 		++i;
-	}
-}
-
-void BGSpriteComponent::ResetOffsetX(BGTexture* texture)
-{
-	if (texture->mOffset.x < -mScreenSize.x)
-	{
-		texture->mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 	}
 }

@@ -37,6 +37,4 @@ private:
 
 	InputComponent* mInputComponent;
 	Ship* mShip;
-public:
-	void ResetOffsetX(BGTexture* texture);
 };
