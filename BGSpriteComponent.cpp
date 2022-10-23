@@ -28,8 +28,11 @@ void BGSpriteComponent::Update(float deltaTime)
 	}
 }
 
+// @TODO : Prevent black gaps
 void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
+	float forwardX = mShip->GetForward().x;
+	float forwardY = mShip->GetForward().y;
 
 	for (auto& bg : mBGTextures)
 	{
@@ -41,14 +44,10 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
 		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
 
-		SDL_RenderCopyExF(
-			renderer,
+		SDL_RenderCopyF(renderer,
 			bg.mTexture,
 			nullptr,
-			&rect,
-			0.0,
-			nullptr,
-			SDL_FLIP_NONE
+			&rect
 		);
 	}
 }
@@ -76,9 +75,9 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 	{
 		BGTexture temp;
 		temp.mTexture = tex;
-		temp.mOffset.x = i * mScreenSize.x;
+		temp.mOffset.x = i * mScreenSize.x + 1;
 		temp.mOffset.y = 0;
 		mBGTextures.emplace_back(temp);
-		++i;
+		i++;
 	}
 }
