@@ -39,5 +39,5 @@ private:
 	Ship* mShip;
 	Vector2 mShipPosition;
 public:
-	void ResetBacKGroundOffSetX(BGTexture* texture);
+	void ResetBacKGroundOffSetX(BGTexture* texture, float gap);
 };

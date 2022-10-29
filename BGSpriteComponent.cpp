@@ -20,10 +20,9 @@ void BGSpriteComponent::Update(float deltaTime)
 
 	for (auto& bg : mBGTextures)
 	{
-
+		SDL_Log("%f", forwardX);
 		bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
-		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
-
+		//bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
 
 		// @TODO : Reset background offset
 		ResetBacKGroundOffSetX(&bg, forwardX);
@@ -43,7 +42,7 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 		rect.w = mScreenSize.x;
 		rect.h = mScreenSize.y;
 
-		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
+		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x - 1 + forwardX;
 		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
 
 		SDL_RenderCopyF(renderer,
@@ -84,10 +83,10 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 	}
 }
 
-void BGSpriteComponent::ResetBacKGroundOffSetX(BGTexture* texture)
+void BGSpriteComponent::ResetBacKGroundOffSetX(BGTexture* texture, float gap)
 {
 	if (texture->mOffset.x < -mScreenSize.x)
 	{
-		texture->mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
+		texture->mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1 - gap;
 	}
 }
