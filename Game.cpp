@@ -52,7 +52,7 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic("Musics/MoonTheme.mp3");
+	PlayMusic("Musics/UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -137,7 +137,6 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -151,8 +150,9 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(480.0f, 369.5f));
+	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
 	mShip->SetScale(1.5f);
+	//mShip->SetRotation(Math::PiOver2 / 12);
 
 	Actor* temp = new Actor(this);
 	temp->SetPosition(Vector2(512.0f, 384.0f));
@@ -161,13 +161,13 @@ void Game::LoadData()
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
+		GetTexture("Assets/Farback02.png")	
 	};
 	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(-100.0f);
-	bg->SetShip(mShip);
+	bg->SetScrollSpeed(0.0f);
+	bg->SetInputComponent(mShip->GetInputComponent());
 
-	bg = new BGSpriteComponent(temp, 50);
+	/*bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	bgTexs = {
 		GetTexture("Assets/Stars.png"),
@@ -175,7 +175,7 @@ void Game::LoadData()
 	};
 	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(-200.0f);
-	bg->SetShip(mShip);
+	bg->SetShip(mShip);*/
 }
 
 void Game::PlayMusic(const char* fileName)

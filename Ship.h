@@ -6,24 +6,15 @@
 class Ship : public Actor
 {
 public:
-	enum Direction
-	{
-		N = 0,
-		NW = 1,
-		W = 2,
-		SW = 3,
-		S = 4,
-		SE = 5,
-		E = 6,
-		NE = 7
-	};
-public:
 	Ship(class Game* game);
 	
-	int GetDirection() const;
+	float GetCenterShipX() const { return mCenterShipX; }
+	float GetCenterShipY() const { return mCenterShipY; }
+
 	InputComponent* GetInputComponent() const { return mInputComponent; }
 private:
-	int mDirection;
+	const float mCenterShipX = 480.0f;
+	const float mCenterShipY = 369.5f;
 
 	InputComponent* mInputComponent;
 };

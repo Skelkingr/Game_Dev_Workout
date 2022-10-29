@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Ship.h"
+
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <string>
@@ -22,6 +24,8 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	SDL_Texture* GetTexture(const std::string& fileName);
+
+	Ship* GetShip() const { return mShip; }
 private:
 	void ProcessInput();
 	void UpdateGame();
@@ -46,5 +50,5 @@ private:
 	bool mIsRunning;
 	bool mUpdatingActors;
 
-	class Ship* mShip;
+	Ship* mShip;
 };

@@ -19,23 +19,8 @@ Ship::Ship(Game* game)
 	asc->SetAnimTextures(anims);
 
 	mInputComponent = new InputComponent(this);
-	mInputComponent->SetMaxForwardSpeed(150.0f);
+	mInputComponent->SetMaxForwardSpeed(0.0f);
 	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
-}
-
-int Ship::GetDirection() const
-{
-	// Northwards
-	if (GetForward().x == 0 && GetForward().y == 1)
-	{
-		return Direction::E;
-	}
-
-	// Eastwards
-	if (GetForward().x == 1 && GetForward().y == 0)
-	{
-		return Direction::E;
-	}
 }
 
 

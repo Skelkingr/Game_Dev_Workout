@@ -59,6 +59,14 @@ namespace Math
 	{
 		return Min(upper, Max(lower, value));
 	}
+	
+	/* Added by Skelkingr */
+	template <typename T>
+	T Sgn(const T& val)
+	{
+		return (T(0) < val) - (val < T(0));
+	}
+	/* */
 
 	inline float Abs(float value)
 	{
