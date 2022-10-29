@@ -5,26 +5,28 @@ BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 	SpriteComponent(owner, drawOrder),
 	mScrollSpeed(0.0f),
 	mInputComponent(nullptr),
-	mShip(nullptr)
-{}
+	mShip(owner->GetGame()->GetShip())
+{
+	mShipPosition = Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY());
+}
 
 void BGSpriteComponent::Update(float deltaTime)
 {
+	
 	SpriteComponent::Update(deltaTime);
+
+	float forwardX = mShip->GetForward().x;
+	float forwardY = mShip->GetForward().y;
 
 	for (auto& bg : mBGTextures)
 	{
-		float forwardX = mShip->GetForward().x;
-		float forwardY = mShip->GetForward().y;
 
 		bg.mOffset.x += mScrollSpeed * forwardX * deltaTime;
+		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;
 
-		if (bg.mOffset.x < -mScreenSize.x)
-		{
-			bg.mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
-		}
 
-		bg.mOffset.y += mScrollSpeed * forwardY * deltaTime;	
+		// @TODO : Reset background offset
+		ResetBacKGroundOffSetX(&bg, forwardX);
 	}
 }
 
@@ -75,9 +77,17 @@ void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 	{
 		BGTexture temp;
 		temp.mTexture = tex;
-		temp.mOffset.x = i * mScreenSize.x + 1;
+		temp.mOffset.x = i * mScreenSize.x;
 		temp.mOffset.y = 0;
 		mBGTextures.emplace_back(temp);
 		i++;
+	}
+}
+
+void BGSpriteComponent::ResetBacKGroundOffSetX(BGTexture* texture)
+{
+	if (texture->mOffset.x < -mScreenSize.x)
+	{
+		texture->mOffset.x = (mBGTextures.size() - 1) * mScreenSize.x - 1;
 	}
 }

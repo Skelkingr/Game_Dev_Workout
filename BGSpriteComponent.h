@@ -37,4 +37,7 @@ private:
 
 	InputComponent* mInputComponent;
 	Ship* mShip;
+	Vector2 mShipPosition;
+public:
+	void ResetBacKGroundOffSetX(BGTexture* texture);
 };
