@@ -152,7 +152,6 @@ void Game::LoadData()
 	mShip = new Ship(this);
 	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
 	mShip->SetScale(1.5f);
-	//mShip->SetRotation(Math::PiOver2 / 12);
 
 	Actor* temp = new Actor(this);
 	temp->SetPosition(Vector2(512.0f, 384.0f));
@@ -165,7 +164,6 @@ void Game::LoadData()
 	};
 	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(0.0f);
-	bg->SetInputComponent(mShip->GetInputComponent());
 
 	/*bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
