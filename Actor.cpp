@@ -60,11 +60,6 @@ void Actor::UpdateActor(float deltaTime)
 void Actor::ActorInput(const uint8_t* keyState)
 {}
 
-Vector2 Actor::GetForward() const
-{
-	return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation));
-}
-
 void Actor::AddComponent(Component* component)
 {
 	int myFuckingOrder = component->GetUpdateOrder();
