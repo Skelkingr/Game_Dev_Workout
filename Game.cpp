@@ -161,7 +161,7 @@ void Game::LoadData()
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")	
+		GetTexture("Assets/Farback02.png")
 	};
 	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(0.0f);
