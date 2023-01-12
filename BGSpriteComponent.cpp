@@ -9,10 +9,11 @@ BGSpriteComponent::BGSpriteComponent(class Actor* owner, int drawOrder)
 void BGSpriteComponent::Update(float deltaTime)
 {
 	SpriteComponent::Update(deltaTime);
-	
+
 	for (auto& bg : mBGTextures)
 	{
 		bg.mOffset.x += mScrollSpeed * deltaTime;
+		//bg.mOffset.y += mScrollSpeed * deltaTime;
 
 		if (bg.mOffset.x < -mScreenSize.x)
 		{
@@ -25,15 +26,15 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 {
 	for (auto& bg : mBGTextures)
 	{
-		SDL_Rect rect;
+		SDL_FRect rect = {};
 
-		rect.w = static_cast<int>(mScreenSize.x);
-		rect.h = static_cast<int>(mScreenSize.y);
+		rect.w = mScreenSize.x;
+		rect.h = mScreenSize.y;
 
-		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2 + bg.mOffset.x);
-		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2 + bg.mOffset.y);
+		rect.x = mOwner->GetPosition().x - rect.w / 2.0f + bg.mOffset.x;
+		rect.y = mOwner->GetPosition().y - rect.h / 2.0f + bg.mOffset.y;
 
-		SDL_RenderCopy(
+		SDL_RenderCopyF(
 			renderer,
 			bg.mTexture,
 			nullptr,
@@ -44,15 +45,15 @@ void BGSpriteComponent::Draw(SDL_Renderer* renderer)
 
 void BGSpriteComponent::SetBGTextures(const std::vector<SDL_Texture*>& textures)
 {
-	int count = 0;
+	int i = 0;
 
 	for (auto tex : textures)
 	{
 		BGTexture temp;
 		temp.mTexture = tex;
-		temp.mOffset.x = count * mScreenSize.x;
+		temp.mOffset.x = i * mScreenSize.x;
 		temp.mOffset.y = 0;
 		mBGTextures.emplace_back(temp);
-		count++;
+		i++;
 	}
 }

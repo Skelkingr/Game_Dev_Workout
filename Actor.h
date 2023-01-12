@@ -19,9 +19,13 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
+	void ProcessInput(const uint8_t* keyState);
+
 	virtual void UpdateActor(float deltaTime);
+	virtual void ActorInput(const uint8_t* keyState);
 
 	class Game* GetGame() const { return mGame; }
+	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
 	Vector2 GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
@@ -29,6 +33,7 @@ public:
 
 	void SetPosition(Vector2 position) { mPosition = position; }
 	void SetScale(float scale) { mScale = scale; }
+	void SetRotation(float rotation) { mRotation = rotation; }
 
 	void AddComponent(class Component* component);
 	void RemoveComponent(class Component* component);

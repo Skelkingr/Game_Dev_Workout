@@ -1,7 +1,9 @@
 #pragma once
 
-#include "SDL.h"
+#include "Ship.h"
 
+#include <SDL.h>
+#include <SDL_mixer.h>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -22,11 +24,14 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	SDL_Texture* GetTexture(const std::string& fileName);
+
+	Ship* GetShip() const { return mShip; }
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
+	void PlayMusic(const char* fileName);
 	void UnloadData();
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
@@ -39,9 +44,11 @@ private:
 
 	SDL_Window* mWindow;
 	SDL_Renderer* mRenderer;
+	Mix_Music* mMusic;
+
 	Uint32 mTicksCount;
 	bool mIsRunning;
 	bool mUpdatingActors;
 
-	class Ship* mShip;
+	Ship* mShip;
 };

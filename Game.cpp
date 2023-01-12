@@ -1,13 +1,16 @@
+#include "Asteroid.h"
 #include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
-#include "SDL_image.h"
 #include "Ship.h"
+
+#include <SDL_image.h>
 
 Game::Game()
 	:
 	mWindow(nullptr),
 	mRenderer(nullptr),
+	mMusic(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
@@ -38,11 +41,18 @@ bool Game::Initialize()
 
 	if (IMG_Init(IMG_INIT_PNG) == 0)
 	{
-		SDL_Log("Unable to initialize SDL_image: %s", SDL_GetError());
+		SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
+		return false;
+	}
+
+	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+	{
+		SDL_Log("Unable to initialize SDL_mixer: %s", Mix_GetError());
 		return false;
 	}
 
 	LoadData();
+	PlayMusic("Musics/UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -72,13 +82,18 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 
-	mShip->ProcessKeyboard(state);
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -122,7 +137,6 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 0, 0, 0, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -136,7 +150,7 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
 	mShip->SetScale(1.5f);
 
 	Actor* temp = new Actor(this);
@@ -144,21 +158,38 @@ void Game::LoadData()
 
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgtexs = {
+	std::vector<SDL_Texture*> bgTexs = {
 		GetTexture("Assets/Farback01.png"),
 		GetTexture("Assets/Farback02.png")
 	};
-	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
+	bg->SetBGTextures(bgTexs);
+	bg->SetScrollSpeed(0.0f);
 
-	bg = new BGSpriteComponent(temp, 50);
+	/*bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgtexs = {
+	bgTexs = {
 		GetTexture("Assets/Stars.png"),
 		GetTexture("Assets/Stars.png")
 	};
-	bg->SetBGTextures(bgtexs);
+	bg->SetBGTextures(bgTexs);
 	bg->SetScrollSpeed(-200.0f);
+	bg->SetShip(mShip);*/
+}
+
+void Game::PlayMusic(const char* fileName)
+{
+	mMusic = Mix_LoadMUS(fileName);
+
+	if (mMusic == nullptr)
+	{
+		SDL_Log("Failed to load music: %s", Mix_GetError());
+		return;
+	}
+
+	if (Mix_PlayingMusic() == 0)
+	{
+		Mix_PlayMusic(mMusic, -1);
+	}
 }
 
 void Game::UnloadData()
@@ -173,6 +204,9 @@ void Game::UnloadData()
 		SDL_DestroyTexture(i.second);
 	}
 	mTextures.clear();
+
+	Mix_FreeMusic(mMusic);
+	mMusic = nullptr;
 }
 
 SDL_Texture* Game::GetTexture(const std::string& fileName)
@@ -210,6 +244,7 @@ void Game::Shutdown()
 {
 	UnloadData();
 	IMG_Quit();
+	Mix_Quit();
 	SDL_DestroyRenderer(mRenderer);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();

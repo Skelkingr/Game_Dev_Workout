@@ -21,20 +21,20 @@ void SpriteComponent::Draw(SDL_Renderer* renderer)
 {
 	if (mTexture)
 	{
-		SDL_Rect rect;
+		SDL_FRect rect = {};
 		
-		rect.w = static_cast<int>(mTexWidth * mOwner->GetScale());
-		rect.h = static_cast<int>(mTexHeight * mOwner->GetScale());
+		rect.w = mTexWidth * mOwner->GetScale();
+		rect.h = mTexHeight * mOwner->GetScale();
 
-		rect.x = static_cast<int>(mOwner->GetPosition().x - rect.w / 2.f);
-		rect.y = static_cast<int>(mOwner->GetPosition().y - rect.h / 2.f);
+		rect.x = mOwner->GetPosition().x - rect.w / 2.0f;
+		rect.y = mOwner->GetPosition().y - rect.h / 2.0f;
 
-		SDL_RenderCopyEx(
+		SDL_RenderCopyExF(
 			renderer,
 			mTexture,
 			nullptr,
 			&rect,
-			- Math::ToDegrees(mOwner->GetRotation()),
+			-Math::ToDegrees(mOwner->GetRotation()),
 			nullptr,
 			SDL_FLIP_NONE
 		);
