@@ -52,7 +52,6 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic("Musics/UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -137,6 +136,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
+	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -151,29 +151,12 @@ void Game::LoadData()
 {
 	mShip = new Ship(this);
 	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
-	mShip->SetScale(1.5f);
 
-	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
-
-	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgTexs = {
-		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
-	};
-	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(0.0f);
-
-	/*bg = new BGSpriteComponent(temp, 50);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgTexs = {
-		GetTexture("Assets/Stars.png"),
-		GetTexture("Assets/Stars.png")
-	};
-	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(-200.0f);
-	bg->SetShip(mShip);*/
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++)
+	{
+		new Asteroid(this);
+	}
 }
 
 void Game::PlayMusic(const char* fileName)
