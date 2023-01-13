@@ -5,22 +5,18 @@
 
 Ship::Ship(Game* game)
 	:
-	Actor(game),
-	mInputComponent(nullptr)
+	Actor(game)
 {
-	AnimSpriteComponent* asc = new AnimSpriteComponent(this);
+	SpriteComponent* sc = new SpriteComponent(this, 150);
+	sc->SetTexture(game->GetTexture("Assets/Ship.png"));
 
-	std::vector<SDL_Texture*> anims = {
-		game->GetTexture("Assets/Ship01.png"),
-		game->GetTexture("Assets/Ship02.png"),
-		game->GetTexture("Assets/Ship03.png"),
-		game->GetTexture("Assets/Ship04.png")
-	};
-	asc->SetAnimTextures(anims);
-
-	mInputComponent = new InputComponent(this);
-	mInputComponent->SetMaxForwardSpeed(300.0f);
-	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
+	InputComponent* ic = new InputComponent(this);
+	ic->SetForwardKey(SDL_SCANCODE_W);
+	ic->SetBackKey(SDL_SCANCODE_S);
+	ic->SetClockwiseKey(SDL_SCANCODE_A);
+	ic->SetCounterClockwiseKey(SDL_SCANCODE_D);
+	ic->SetMaxForwardSpeed(300.0f);
+	ic->SetMaxAngularSpeed(Math::TwoPi);
 }
 
 
