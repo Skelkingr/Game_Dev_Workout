@@ -3,7 +3,7 @@
 #include "Actor.h"
 #include "CircleComponent.h"
 
-class Asteroid : Actor
+class Asteroid : public Actor
 {
 public:
 	Asteroid(class Game* game);

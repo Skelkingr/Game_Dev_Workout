@@ -33,6 +33,7 @@ public:
 
 	void SetPosition(Vector2 position) { mPosition = position; }
 	void SetScale(float scale) { mScale = scale; }
+	void SetState(State state) { mState = state; }
 	void SetRotation(float rotation) { mRotation = rotation; }
 
 	void AddComponent(class Component* component);

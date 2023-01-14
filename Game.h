@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Asteroid.h"
 #include "Ship.h"
 
 #include <SDL.h>
@@ -26,6 +27,7 @@ public:
 	SDL_Texture* GetTexture(const std::string& fileName);
 
 	Ship* GetShip() const { return mShip; }
+	std::vector<Asteroid*> GetAsteroids() const { return mAsteroids; }
 private:
 	void ProcessInput();
 	void UpdateGame();
@@ -51,4 +53,5 @@ private:
 	bool mUpdatingActors;
 
 	Ship* mShip;
+	std::vector<Asteroid*> mAsteroids;
 };
