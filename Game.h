@@ -26,8 +26,9 @@ public:
 
 	SDL_Texture* GetTexture(const std::string& fileName);
 
-	Ship* GetShip() const { return mShip; }
-	std::vector<Asteroid*> GetAsteroids() const { return mAsteroids; }
+	void AddAsteroid(Asteroid* ast);
+	void RemoveAsteroid(Asteroid* ast);
+	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
 private:
 	void ProcessInput();
 	void UpdateGame();
