@@ -31,6 +31,7 @@ void Laser::UpdateActor(float deltaTime)
 		{
 			if (Intersect(*mCircle, *(ast->GetCircle())))
 			{
+				GetGame()->PlaySoundFX("Sounds/Blyat.wav");
  				SetState(EDead);
 				ast->SetState(EDead);
 				break;

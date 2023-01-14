@@ -45,6 +45,8 @@ void Ship::ActorInput(const uint8_t* keyState)
 
 	if (keyState[SDL_SCANCODE_SPACE] && mLaserCooldown <= 0.0f)
 	{
+		GetGame()->PlaySoundFX("Sounds/LaserShot.wav");
+
 		Laser* laser = new Laser(GetGame());
 		laser->SetPosition(GetPosition());
 		laser->SetRotation(GetRotation());

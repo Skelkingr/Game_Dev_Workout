@@ -160,22 +160,6 @@ void Game::LoadData()
 	}
 }
 
-void Game::PlayMusic(const char* fileName)
-{
-	mMusic = Mix_LoadMUS(fileName);
-
-	if (mMusic == nullptr)
-	{
-		SDL_Log("Failed to load music: %s", Mix_GetError());
-		return;
-	}
-
-	if (Mix_PlayingMusic() == 0)
-	{
-		Mix_PlayMusic(mMusic, -1);
-	}
-}
-
 void Game::UnloadData()
 {
 	while (!mActors.empty())
@@ -191,6 +175,35 @@ void Game::UnloadData()
 
 	Mix_FreeMusic(mMusic);
 	mMusic = nullptr;
+}
+
+void Game::PlaySoundFX(const char* fileName)
+{
+	Mix_Chunk* soundFX = Mix_LoadWAV(fileName);
+
+	if (soundFX == nullptr)
+	{
+		SDL_Log("Failed to load sound FX: %s", Mix_GetError());
+		return;
+	}
+
+	Mix_PlayChannel(-1, soundFX, 0);
+}
+
+void Game::PlayMusic(const char* fileName)
+{
+	mMusic = Mix_LoadMUS(fileName);
+
+	if (mMusic == nullptr)
+	{
+		SDL_Log("Failed to load music: %s", Mix_GetError());
+		return;
+	}
+
+	if (Mix_PlayingMusic() == 0)
+	{
+		Mix_PlayMusic(mMusic, -1);
+	}
 }
 
 SDL_Texture* Game::GetTexture(const std::string& fileName)

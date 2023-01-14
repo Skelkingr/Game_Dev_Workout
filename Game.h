@@ -29,13 +29,17 @@ public:
 	void AddAsteroid(Asteroid* ast);
 	void RemoveAsteroid(Asteroid* ast);
 	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
+
+	void PlaySoundFX(const char* fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
-	void PlayMusic(const char* fileName);
 	void UnloadData();
+
+	void PlayMusic(const char* fileName);
+	
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
