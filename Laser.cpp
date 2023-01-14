@@ -20,13 +20,21 @@ Laser::Laser(Game* game)
 
 void Laser::UpdateActor(float deltaTime)
 {
-	for (auto ast : GetGame()->GetAsteroids())
+	mDeathTimer -= deltaTime;
+	if (mDeathTimer <= 0.0f)
 	{
-		if (Intersect(*mCircle, *(ast->GetCircle())))
+		SetState(EDead);
+	}
+	else
+	{
+		for (auto ast : GetGame()->GetAsteroids())
 		{
-			SetState(EDead);
-			ast->SetState(EDead);
-			break;
+			if (Intersect(*mCircle, *(ast->GetCircle())))
+			{
+ 				SetState(EDead);
+				ast->SetState(EDead);
+				break;
+			}
 		}
 	}
 }
