@@ -9,8 +9,8 @@ Ship::Ship(Game* game)
 	Actor(game),
 	mLaserCooldown(0.0f)
 {
-	SpriteComponent* sc = new SpriteComponent(this, 150);
-	sc->SetTexture(game->GetTexture("Assets/Ship.png"));
+	mSpriteComponent = new SpriteComponent(this, 150);
+	mSpriteComponent->SetTexture(game->GetTexture("Assets/Ship.png"));
 
 	InputComponent* ic = new InputComponent(this);
 	ic->SetForwardKey(SDL_SCANCODE_W);
@@ -21,6 +21,11 @@ Ship::Ship(Game* game)
 	ic->SetMaxAngularSpeed(Math::TwoPi);
 }
 
+Ship::~Ship()
+{
+	delete mSpriteComponent;
+}
+
 void Ship::UpdateActor(float deltaTime)
 {
 	mLaserCooldown -= deltaTime;
@@ -28,6 +33,16 @@ void Ship::UpdateActor(float deltaTime)
 
 void Ship::ActorInput(const uint8_t* keyState)
 {
+	if (keyState[SDL_SCANCODE_W])
+	{
+		mSpriteComponent->SetTexture(GetGame()->GetTexture("Assets/ShipWithThrust.png"));
+	}
+
+	if (!keyState[SDL_SCANCODE_W])
+	{
+		mSpriteComponent->SetTexture(GetGame()->GetTexture("Assets/Ship.png"));
+	}
+
 	if (keyState[SDL_SCANCODE_SPACE] && mLaserCooldown <= 0.0f)
 	{
 		Laser* laser = new Laser(GetGame());
