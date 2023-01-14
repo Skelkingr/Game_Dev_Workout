@@ -20,7 +20,7 @@ Asteroid::Asteroid(Game* game)
 	mc->SetForwardSpeed(150.0f);
 
 	mCircle = new CircleComponent(this);
-	mCircle->SetRadius(40.0f);
+	mCircle->SetRadius(30.0f);
 
 	game->AddAsteroid(this);
 }
