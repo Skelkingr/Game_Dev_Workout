@@ -7,11 +7,9 @@ class Ship : public Actor
 {
 public:
 	Ship(class Game* game);
-	
-	float GetCenterShipX() const { return mCenterShipX; }
-	float GetCenterShipY() const { return mCenterShipY; }
 
+	void UpdateActor(float deltaTime) override;
+	void ActorInput(const uint8_t* keyState) override;
 private:
-	const float mCenterShipX = 480.0f;
-	const float mCenterShipY = 369.5f;
+	float mLaserCooldown;
 };
