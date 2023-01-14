@@ -26,7 +26,7 @@ public:
 
 	class Game* GetGame() const { return mGame; }
 	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
-	Vector2 GetPosition() const { return mPosition; }
+	Vector2& GetPosition() { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
 	int GetState() const { return mState; }

@@ -11,7 +11,7 @@ float CircleComponent::GetRadius() const
 	return mOwner->GetScale() * mRadius;
 }
 
-const Vector2 CircleComponent::GetCenter() const
+const Vector2& CircleComponent::GetCenter() const
 {
 	return mOwner->GetPosition();
 }
