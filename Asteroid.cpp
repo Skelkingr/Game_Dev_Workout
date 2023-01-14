@@ -6,7 +6,8 @@
 
 Asteroid::Asteroid(Game* game)
 	:
-	Actor(game)
+	Actor(game),
+	mCircle(nullptr)
 {
 	Vector2 randPos = Random::GetVector(Vector2::Zero, Vector2(1024.0f, 768.0f));
 	SetPosition(randPos);
@@ -20,4 +21,11 @@ Asteroid::Asteroid(Game* game)
 
 	mCircle = new CircleComponent(this);
 	mCircle->SetRadius(40.0f);
+
+	game->AddAsteroid(this);
+}
+
+Asteroid::~Asteroid()
+{
+	GetGame()->RemoveAsteroid(this);
 }

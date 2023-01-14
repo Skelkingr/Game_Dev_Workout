@@ -7,6 +7,7 @@ class Asteroid : public Actor
 {
 public:
 	Asteroid(class Game* game);
+	~Asteroid();
 
 	CircleComponent* GetCircle() { return mCircle; }
 private:
