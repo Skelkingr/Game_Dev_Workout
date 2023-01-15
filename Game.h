@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Asteroid.h"
 #include "Ship.h"
 
 #include <SDL.h>
@@ -25,14 +26,20 @@ public:
 
 	SDL_Texture* GetTexture(const std::string& fileName);
 
-	Ship* GetShip() const { return mShip; }
+	void AddAsteroid(Asteroid* ast);
+	void RemoveAsteroid(Asteroid* ast);
+	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
+
+	void PlaySoundFX(const char* fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
-	void PlayMusic(const char* fileName);
 	void UnloadData();
+
+	void PlayMusic(const char* fileName);
+	
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
@@ -51,4 +58,5 @@ private:
 	bool mUpdatingActors;
 
 	Ship* mShip;
+	std::vector<Asteroid*> mAsteroids;
 };

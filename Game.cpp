@@ -6,6 +6,9 @@
 
 #include <SDL_image.h>
 
+const int CLIENT_WIDTH = 1024;
+const int CLIENT_HEIGHT = 768;
+
 Game::Game()
 	:
 	mWindow(nullptr),
@@ -25,7 +28,7 @@ bool Game::Initialize()
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -52,7 +55,6 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic("Musics/UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -137,6 +139,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
+	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -150,45 +153,13 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(mShip->GetCenterShipX(), mShip->GetCenterShipY()));
-	mShip->SetScale(1.5f);
+	mShip->SetPosition(Vector2(512.0f, 384.0f));
+	mShip->SetRotation(Math::PiOver2);
 
-	Actor* temp = new Actor(this);
-	temp->SetPosition(Vector2(512.0f, 384.0f));
-
-	BGSpriteComponent* bg = new BGSpriteComponent(temp);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	std::vector<SDL_Texture*> bgTexs = {
-		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
-	};
-	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(0.0f);
-
-	/*bg = new BGSpriteComponent(temp, 50);
-	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
-	bgTexs = {
-		GetTexture("Assets/Stars.png"),
-		GetTexture("Assets/Stars.png")
-	};
-	bg->SetBGTextures(bgTexs);
-	bg->SetScrollSpeed(-200.0f);
-	bg->SetShip(mShip);*/
-}
-
-void Game::PlayMusic(const char* fileName)
-{
-	mMusic = Mix_LoadMUS(fileName);
-
-	if (mMusic == nullptr)
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++)
 	{
-		SDL_Log("Failed to load music: %s", Mix_GetError());
-		return;
-	}
-
-	if (Mix_PlayingMusic() == 0)
-	{
-		Mix_PlayMusic(mMusic, -1);
+		new Asteroid(this);
 	}
 }
 
@@ -207,6 +178,35 @@ void Game::UnloadData()
 
 	Mix_FreeMusic(mMusic);
 	mMusic = nullptr;
+}
+
+void Game::PlaySoundFX(const char* fileName)
+{
+	Mix_Chunk* soundFX = Mix_LoadWAV(fileName);
+
+	if (soundFX == nullptr)
+	{
+		SDL_Log("Failed to load sound FX: %s", Mix_GetError());
+		return;
+	}
+
+	Mix_PlayChannel(-1, soundFX, 0);
+}
+
+void Game::PlayMusic(const char* fileName)
+{
+	mMusic = Mix_LoadMUS(fileName);
+
+	if (mMusic == nullptr)
+	{
+		SDL_Log("Failed to load music: %s", Mix_GetError());
+		return;
+	}
+
+	if (Mix_PlayingMusic() == 0)
+	{
+		Mix_PlayMusic(mMusic, -1);
+	}
 }
 
 SDL_Texture* Game::GetTexture(const std::string& fileName)
@@ -238,6 +238,20 @@ SDL_Texture* Game::GetTexture(const std::string& fileName)
 		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
+}
+
+void Game::AddAsteroid(Asteroid* ast)
+{
+	mAsteroids.emplace_back(ast);
+}
+
+void Game::RemoveAsteroid(Asteroid* ast)
+{
+	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
+	if (iter != mAsteroids.end())
+	{
+		mAsteroids.erase(iter);
+	}
 }
 
 void Game::Shutdown()

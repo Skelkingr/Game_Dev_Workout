@@ -1,20 +1,32 @@
 #pragma once
 
+#include <Windows.h>
+
 #include "Actor.h"
+#include "AnimSpriteComponent.h"
+#include "CircleComponent.h"
 #include "InputComponent.h"
+#include "SpriteComponent.h"
 
 class Ship : public Actor
 {
 public:
 	Ship(class Game* game);
-	
-	float GetCenterShipX() const { return mCenterShipX; }
-	float GetCenterShipY() const { return mCenterShipY; }
+	~Ship();
 
-	InputComponent* GetInputComponent() const { return mInputComponent; }
+	void UpdateActor(float deltaTime) override;
+	void ActorInput(const uint8_t* keyState) override;
+
+	void Collision();
+	void Reset();
 private:
-	const float mCenterShipX = 480.0f;
-	const float mCenterShipY = 369.5f;
-
+	AnimSpriteComponent* mAnimSpriteComponent;
+	CircleComponent* mCircle;
 	InputComponent* mInputComponent;
+
+	std::vector<SDL_Texture*> mAnims;
+
+	bool mReset;
+	float mResetCooldown;
+	float mLaserCooldown;
 };

@@ -1,16 +1,14 @@
 #include "InputComponent.h"
 
-#include <SDL.h>
-
 InputComponent::InputComponent(Actor* owner)
 	:
 	MoveComponent(owner),
 	mMaxForwardSpeed(0.0f),
 	mMaxAngularSpeed(0.0f),
-	mForwardKey(SDL_SCANCODE_W),
-	mBackKey(SDL_SCANCODE_S),
-	mClockwiseKey(SDL_SCANCODE_A),
-	mCounterClockwiseKey(SDL_SCANCODE_D)
+	mForwardKey(0),
+	mBackKey(0),
+	mClockwiseKey(0),
+	mCounterClockwiseKey(0)
 {}
 
 void InputComponent::ProcessInput(const uint8_t* keyState)
@@ -24,7 +22,7 @@ void InputComponent::ProcessInput(const uint8_t* keyState)
 	}
 	if (keyState[mBackKey])
 	{
-		forwardSpeed -= mMaxForwardSpeed / 2;
+		forwardSpeed -= mMaxForwardSpeed;
 	}
 	SetForwardSpeed(forwardSpeed);
 
