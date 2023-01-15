@@ -42,7 +42,9 @@ void Ship::UpdateActor(float deltaTime)
 	mResetCooldown -= deltaTime;
 
 	if (mReset && mResetCooldown <= 0.0f)
+	{
 		Reset();
+	}
 
 	for (auto ast : GetGame()->GetAsteroids())
 	{
@@ -52,6 +54,38 @@ void Ship::UpdateActor(float deltaTime)
 			Collision();
 			break;
 		}
+	}
+
+	if (mCircle->GetCenter().y >= 768.0f)
+	{
+		float positionX = GetPosition().x;
+		Vector2 newPosition(positionX, 0.0f);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().x >= 1024.0f)
+	{
+		float positionY = GetPosition().y;
+		Vector2 newPosition(0.0f, positionY);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().y <= 0.0f)
+	{
+		float positionX = GetPosition().x;
+		Vector2 newPosition(positionX, 768.0f);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().x <= 0.0f)
+	{
+		float positionY = GetPosition().y;
+		Vector2 newPosition(1024.0f, positionY);
+		SetPosition(newPosition);
+		return;
 	}
 }
 
@@ -87,12 +121,12 @@ void Ship::Collision()
 	mReset = true;
 	mResetCooldown = 5.0f;
 
-	mInputComponent->SetMaxForwardSpeed(37.5f);
-	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 8);
+	mInputComponent->SetMaxForwardSpeed(75.0f);
+	mInputComponent->SetMaxAngularSpeed(Math::TwoPi / 4);
 
 	mAnims.clear();
-	mAnims.push_back(GetGame()->GetTexture("Assets/Ship.png"));
 	mAnims.push_back(GetGame()->GetTexture("Assets/Void.png"));
+	mAnims.push_back(GetGame()->GetTexture("Assets/Ship.png"));
 	mAnimSpriteComponent->SetAnimTextures(mAnims);
 
 	SetPosition(Vector2(512.0f, 384.0f));

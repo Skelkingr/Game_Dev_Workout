@@ -20,6 +20,17 @@ Laser::Laser(Game* game)
 
 void Laser::UpdateActor(float deltaTime)
 {
+	if (
+		mCircle->GetCenter().y >= 768.0f
+		|| mCircle->GetCenter().x >= 1024.0f
+		|| mCircle->GetCenter().y <= 0.0f
+		|| mCircle->GetCenter().x <= 0.0f
+		)
+	{
+		SetState(EDead);
+	}
+
+
 	mDeathTimer -= deltaTime;
 	if (mDeathTimer <= 0.0f)
 	{

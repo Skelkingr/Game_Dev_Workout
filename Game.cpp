@@ -6,6 +6,9 @@
 
 #include <SDL_image.h>
 
+const int CLIENT_WIDTH = 1024;
+const int CLIENT_HEIGHT = 768;
+
 Game::Game()
 	:
 	mWindow(nullptr),
@@ -25,7 +28,7 @@ bool Game::Initialize()
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, 1024, 768, 0);
+	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, 0);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -244,8 +247,7 @@ void Game::AddAsteroid(Asteroid* ast)
 
 void Game::RemoveAsteroid(Asteroid* ast)
 {
-	auto iter = std::find(mAsteroids.begin(),
-		mAsteroids.end(), ast);
+	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
 	if (iter != mAsteroids.end())
 	{
 		mAsteroids.erase(iter);

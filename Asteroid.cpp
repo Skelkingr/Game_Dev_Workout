@@ -29,3 +29,38 @@ Asteroid::~Asteroid()
 {
 	GetGame()->RemoveAsteroid(this);
 }
+
+void Asteroid::UpdateActor(float deltaTime)
+{
+	if (mCircle->GetCenter().y >= 768.0f)
+	{
+		float positionX = GetPosition().x;
+		Vector2 newPosition(positionX, 0.0f);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().x >= 1024.0f)
+	{
+		float positionY = GetPosition().y;
+		Vector2 newPosition(0.0f, positionY);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().y <= 0.0f)
+	{
+		float positionX = GetPosition().x;
+		Vector2 newPosition(positionX, 768.0f);
+		SetPosition(newPosition);
+		return;
+	}
+
+	if (mCircle->GetCenter().x <= 0.0f)
+	{
+		float positionY = GetPosition().y;
+		Vector2 newPosition(1024.0f, positionY);
+		SetPosition(newPosition);
+		return;
+	}
+}
