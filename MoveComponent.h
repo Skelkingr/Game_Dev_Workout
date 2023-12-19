@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Actor.h"
 #include "Component.h"
 
 class MoveComponent : public Component
@@ -14,10 +13,9 @@ public:
 	float GetAngularSpeed() const { return mAngularSpeed; }
 	float GetForwardSpeed() const { return mForwardSpeed; }
 	void SetAngularSpeed(float angularSpeed) { mAngularSpeed = angularSpeed; }
-	void SetForwardSpeed(float forwardSpeed) { mAngularSpeed = forwardSpeed; }
+	void SetForwardSpeed(float forwardSpeed) { mForwardSpeed = forwardSpeed; }
 
 private:
 	float mAngularSpeed;
 	float mForwardSpeed;
 };
-

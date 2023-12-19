@@ -10,6 +10,7 @@ MoveComponent::MoveComponent()
 
 MoveComponent::MoveComponent(Actor* owner, int updateOrder)
 	:
+	Component(owner),
 	mAngularSpeed(0.0f),
 	mForwardSpeed(0.0f)
 {}
