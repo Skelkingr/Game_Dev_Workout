@@ -21,6 +21,7 @@ public:
 	void UpdateComponents(float deltaTime);
 	virtual void UpdateActor(float deltaTime);
 
+	Vector2 GetForward() const;
 	class Game* GetGame() const { return mGame; }
 	Vector2 GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
