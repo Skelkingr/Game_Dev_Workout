@@ -16,7 +16,8 @@ public:
 	void SetScreenSize(const Vector2& screenSize) { mScreenSize = screenSize; }
 	void SetScrollSpeed(float speed) { mScrollSpeed = speed; }
 
-	float GetScrollSpeed() { return mScrollSpeed; }
+	float GetScrollSpeed() const { return mScrollSpeed; }
+
 private:
 	struct BGTexture
 	{
