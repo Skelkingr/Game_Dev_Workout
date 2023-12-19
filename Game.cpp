@@ -5,6 +5,8 @@
 
 #include <SDL_image.h>
 
+#include <iostream>
+
 Game::Game()
 	:
 	mWindow(nullptr),
@@ -81,13 +83,18 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
-	if (state[SDL_SCANCODE_ESCAPE])
+	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 
-	mShip->ProcessKeyboard(state);
+	mUpdatingActors = true;
+	for (auto actor : mActors)
+	{
+		actor->ProcessInput(keyState);
+	}
+	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -145,7 +152,8 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(100.0f, 384.0f));
+	mShip->SetPosition(Vector2(512.0f, 384.0f));
+	mShip->SetRotation(Math::PiOver2);
 	mShip->SetScale(1.5f);
 
 	Actor* temp = new Actor(this);
@@ -158,7 +166,7 @@ void Game::LoadData()
 		GetTexture("Assets\\Farback02.png")
 	};
 	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-100.0f);
+	//bg->SetScrollSpeed(-100.0f);
 
 	bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
@@ -167,7 +175,7 @@ void Game::LoadData()
 		GetTexture("Assets\\Stars.png")
 	};
 	bg->SetBGTextures(bgtexs);
-	bg->SetScrollSpeed(-200.0f);
+	//bg->SetScrollSpeed(-200.0f);
 }
 
 void Game::PlayMusic(const char* fileName)
