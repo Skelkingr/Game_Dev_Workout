@@ -29,6 +29,7 @@ public:
 	int GetState() const { return mState; }
 
 	void SetPosition(Vector2 position) { mPosition = position; }
+	void SetRotation(float rotation) { mRotation = rotation; }
 	void SetScale(float scale) { mScale = scale; }
 
 	void AddComponent(class Component* component);
