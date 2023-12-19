@@ -25,12 +25,14 @@ Ship::Ship(Game* game)
 	asc->SetAnimTextures(anims);
 
 	mInputComponent = new InputComponent(this);
+
 	mInputComponent->SetForwardKey(SDL_SCANCODE_W);
 	mInputComponent->SetBackKey(SDL_SCANCODE_S);
 	mInputComponent->SetClockwiseKey(SDL_SCANCODE_A);
 	mInputComponent->SetCounterClockwiseKey(SDL_SCANCODE_D);
+
 	mInputComponent->SetMaxForwardSpeed(300.0f);
-	mInputComponent->SetMaxAngularSpeed(Math::TwoPi);
+	mInputComponent->SetMaxAngularSpeed(Math::Pi);
 }
 
 Ship::~Ship()
