@@ -4,6 +4,15 @@
 
 #include <algorithm>
 
+Actor::Actor()
+	:
+	mState(EPaused),
+	mPosition(Vector2::Zero),
+	mScale(0.0f),
+	mRotation(0.0f),
+	mGame(nullptr)
+{}
+
 Actor::Actor(Game* game)
 	:
 	mState(EActive),

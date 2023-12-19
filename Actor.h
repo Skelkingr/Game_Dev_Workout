@@ -14,6 +14,7 @@ public:
 		EDead
 	};
 public:
+	Actor();
 	Actor(class Game* game);
 	virtual ~Actor();
 
