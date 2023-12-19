@@ -5,6 +5,7 @@
 class Component
 {
 public:
+	Component();
 	Component(class Actor* owner, int updateOrder = 100);
 	virtual ~Component();
 
