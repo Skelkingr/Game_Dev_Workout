@@ -51,7 +51,7 @@ bool Game::Initialize()
 	}
 
 	LoadData();
-	PlayMusic("Musics/MoonTheme.mp3");
+	PlayMusic("Musics\\UnchartedWorlds.mp3");
 
 	mTicksCount = SDL_GetTicks();
 
@@ -154,8 +154,8 @@ void Game::LoadData()
 	BGSpriteComponent* bg = new BGSpriteComponent(temp);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	std::vector<SDL_Texture*> bgtexs = {
-		GetTexture("Assets/Farback01.png"),
-		GetTexture("Assets/Farback02.png")
+		GetTexture("Assets\\Farback01.png"),
+		GetTexture("Assets\\Farback02.png")
 	};
 	bg->SetBGTextures(bgtexs);
 	bg->SetScrollSpeed(-100.0f);
@@ -163,8 +163,8 @@ void Game::LoadData()
 	bg = new BGSpriteComponent(temp, 50);
 	bg->SetScreenSize(Vector2(1024.0f, 768.0f));
 	bgtexs = {
-		GetTexture("Assets/Stars.png"),
-		GetTexture("Assets/Stars.png")
+		GetTexture("Assets\\Stars.png"),
+		GetTexture("Assets\\Stars.png")
 	};
 	bg->SetBGTextures(bgtexs);
 	bg->SetScrollSpeed(-200.0f);
