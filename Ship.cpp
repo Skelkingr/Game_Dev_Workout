@@ -28,8 +28,6 @@ void Ship::UpdateActor(float deltaTime)
 	pos.x += mRightSpeed * deltaTime;
 	pos.y += mDownSpeed * deltaTime;
 
-	// @TODO : Restrict position to the left half of the screen
-
 	SetPosition(pos);
 }
 
