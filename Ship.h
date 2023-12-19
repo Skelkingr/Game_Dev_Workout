@@ -1,18 +1,20 @@
 #pragma once
 
+#include <Windows.h>
+
 #include "Actor.h"
+#include "InputComponent.h"
+#include "SpriteComponent.h"
 
 class Ship : public Actor
 {
 public:
+	Ship();
 	Ship(class Game* game);
+	~Ship();
 
-	void UpdateActor(float deltaTime) override;
-	void ProcessKeyboard(const uint8_t* state);
+	InputComponent* GetInputComponent() const { return mInputComponent; }
 
-	float GetDownSpeed() const { return mDownSpeed; }
-	float GetRightSpeed() const { return mRightSpeed; }
 private:
-	float mDownSpeed;
-	float mRightSpeed;
+	InputComponent* mInputComponent;
 };
