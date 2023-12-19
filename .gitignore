@@ -3,4 +3,7 @@
 x64/**
 **.dll
 Debug/**
+Release/**
 Musics/**
+*.vcxproj
+*.vcxproj.*
