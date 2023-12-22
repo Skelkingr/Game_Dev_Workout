@@ -2,8 +2,6 @@
 
 #include <SDL.h>
 #include <SDL_mixer.h>
-
-#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
@@ -24,7 +22,6 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	SDL_Texture* GetTexture(const std::string& fileName);
-
 private:
 	void ProcessInput();
 	void UpdateGame();

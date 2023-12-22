@@ -4,15 +4,6 @@
 
 #include <algorithm>
 
-Actor::Actor()
-	:
-	mState(EPaused),
-	mPosition(Vector2::Zero),
-	mScale(0.0f),
-	mRotation(0.0f),
-	mGame(nullptr)
-{}
-
 Actor::Actor(Game* game)
 	:
 	mState(EActive),
@@ -51,23 +42,9 @@ void Actor::UpdateComponents(float deltaTime)
 	}
 }
 
-void Actor::ProcessInput(const uint8_t* keyState)
-{
-	if (mState == EActive)
-	{
-		for (auto comp : mComponents)
-		{
-			comp->ProcessInput(keyState);
-		}
-		ActorInput(keyState);
-	}
-}
-
 void Actor::UpdateActor(float deltaTime)
-{}
-
-void Actor::ActorInput(const uint8_t* keyState)
-{}
+{
+}
 
 void Actor::AddComponent(Component* component)
 {
