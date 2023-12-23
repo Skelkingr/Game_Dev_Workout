@@ -5,9 +5,13 @@
 
 #include "Math.h"
 
-using AStarMap = std::unordered_map<const WeightedGraphNode*, AStarScratch>;
-using GBFSMap = std::unordered_map<const WeightedGraphNode*, GBFSScratch>;
-using NodeToParentMap = std::unordered_map<const GraphNode*, const GraphNode*>;
+struct WeightedEdge
+{
+	struct WeightedGraphNode* mFrom;
+	struct WeightedGraphNode* mTo;
+
+	float mWeight;
+};
 
 struct AStarScratch
 {
@@ -19,6 +23,8 @@ struct AStarScratch
 	bool mInOpenSet = false;
 	bool mInClosedSet = false;
 };
+
+using AStarMap = std::unordered_map<const WeightedGraphNode*, AStarScratch>;
 
 struct GBFSScratch
 {
@@ -40,14 +46,6 @@ struct Graph
 	std::vector<GraphNode*> mNodes;
 };
 
-struct WeightedEdge
-{
-	struct WeightedGraphNode* mFrom;
-	struct WeightedGraphNode* mTo;
-
-	float mWeight;
-};
-
 struct WeightedGraphNode
 {
 	std::vector<WeightedEdge*> mEdges;
@@ -57,6 +55,11 @@ struct WeightedGraph
 {
 	std::vector<WeightedGraphNode*> mNodes;
 };
+
+float ComputeHeuristic(const WeightedGraphNode* start, const WeightedGraphNode* end)
+{
+	return 0.0f; // @TODO : Figure out why returning 0.0f does the trick... Shouldn't it return something else ?
+}
 
 bool AStar(const WeightedGraph& g, const WeightedGraphNode* start, const WeightedGraphNode* goal, AStarMap& outMap)
 {
@@ -80,7 +83,7 @@ bool AStar(const WeightedGraph& g, const WeightedGraphNode* start, const Weighte
 				data.mActualFromStart = outMap[current].mActualFromStart + edge->mWeight;
 				data.mInOpenSet = true;
 
-				openSet.emplace_back(neighbor)
+				openSet.emplace_back(neighbor);
 			}
 			else
 			{
@@ -98,7 +101,7 @@ bool AStar(const WeightedGraph& g, const WeightedGraphNode* start, const Weighte
 			break;
 		}
 
-		auto iter = std::min_element(openSet.begin(), openSet.end(), [&outMap](const WeightedGraphNode* a, const WeightedGraphNode b)
+		auto iter = std::min_element(openSet.begin(), openSet.end(), [&outMap](const WeightedGraphNode* a, const WeightedGraphNode* b)
 			{
 				float fOfA = outMap[a].mHeuristic + outMap[a].mActualFromStart;
 				float fOfB = outMap[b].mHeuristic + outMap[b].mActualFromStart;
@@ -116,6 +119,8 @@ bool AStar(const WeightedGraph& g, const WeightedGraphNode* start, const Weighte
 
 	return (current == goal) ? true : false;
 }
+
+using NodeToParentMap = std::unordered_map<const GraphNode*, const GraphNode*>;
 
 bool BFS(const Graph& graph, const GraphNode* start, const GraphNode* goal, NodeToParentMap& outMap)
 {
@@ -149,10 +154,7 @@ bool BFS(const Graph& graph, const GraphNode* start, const GraphNode* goal, Node
 	return pathFound;
 }
 
-float ComputeHeuristic(const WeightedGraphNode* start, const WeightedGraphNode* end)
-{
-	return 0.0f; // @TODO : Figure out why returning 0.0f does the trick... Shouldn't it return something else ?
-}
+using GBFSMap = std::unordered_map<const WeightedGraphNode*, GBFSScratch>;
 
 bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start, const WeightedGraphNode* goal, GBFSMap& outMap)
 {
@@ -185,7 +187,7 @@ bool GBFS(const WeightedGraph& g, const WeightedGraphNode* start, const Weighted
 			break;
 		}
 
-		auto iter = std::min_element(openSet.begin(), openSet.end(), [&outMap](const WeightedGraphNode* a, const WeightedGraphNode b)
+		auto iter = std::min_element(openSet.begin(), openSet.end(), [&outMap](const WeightedGraphNode* a, const WeightedGraphNode* b)
 			{
 				return outMap[a].mHeuristic < outMap[b].mHeuristic;
 			});
