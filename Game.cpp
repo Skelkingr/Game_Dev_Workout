@@ -1,8 +1,6 @@
-#include "Asteroid.h"
-#include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
-#include "Ship.h"
+#include "SpriteComponent.h"
 
 #include <SDL_image.h>
 
@@ -16,8 +14,7 @@ Game::Game()
 	mMusic(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false),
-	mShip(nullptr)
+	mUpdatingActors(false)
 {}
 
 bool Game::Initialize()
@@ -151,17 +148,7 @@ void Game::GenerateOutput()
 }
 
 void Game::LoadData()
-{
-	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(512.0f, 384.0f));
-	mShip->SetRotation(Math::PiOver2);
-
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
-	{
-		new Asteroid(this);
-	}
-}
+{}
 
 void Game::UnloadData()
 {
@@ -238,20 +225,6 @@ SDL_Texture* Game::GetTexture(const std::string& fileName)
 		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
-}
-
-void Game::AddAsteroid(Asteroid* ast)
-{
-	mAsteroids.emplace_back(ast);
-}
-
-void Game::RemoveAsteroid(Asteroid* ast)
-{
-	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
-	if (iter != mAsteroids.end())
-	{
-		mAsteroids.erase(iter);
-	}
 }
 
 void Game::Shutdown()
