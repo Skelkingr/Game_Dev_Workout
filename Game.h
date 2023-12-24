@@ -32,15 +32,15 @@ public:
 	class Grid* GetGrid() { return mGrid; }
 	std::vector<class Enemy*>& GetEnemies() { return mEnemies; }
 	class Enemy* GetNearestEnemy(const Vector2& pos);
+
+	void PlayMusic(const char* fileName);
+	void PlaySoundFX(const char* fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
 	void UnloadData();
-
-	void PlayMusic(const char* fileName);
-	void PlaySoundFX(const char* fileName);
 private:
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 

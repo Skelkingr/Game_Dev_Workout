@@ -55,6 +55,8 @@ bool Game::Initialize()
 
 	LoadData();
 
+	PlayMusic("Musics\\Battle.mp3");
+	
 	mTicksCount = SDL_GetTicks();
 
 	return true;
@@ -220,11 +222,6 @@ void Game::PlaySoundFX(const char* fileName)
 	}
 
 	Mix_PlayChannel(-1, soundFX, 0);
-	
-	if (soundFX != nullptr)
-	{
-		Mix_FreeChunk(soundFX);
-	}
 }
 
 void Game::PlayMusic(const char* fileName)

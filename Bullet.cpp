@@ -38,6 +38,7 @@ void Bullet::UpdateActor(float deltaTime)
 		{
 			e->SetState(EDead);
 			SetState(EDead);
+			GetGame()->PlaySoundFX("Sounds\\Exploding.wav");
 			break;
 		}
 	}

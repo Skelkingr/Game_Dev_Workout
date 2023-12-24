@@ -43,6 +43,8 @@ void Tower::UpdateActor(float deltaTime)
 				Bullet* b = new Bullet(GetGame());
 				b->SetPosition(GetPosition());
 				b->SetRotation(GetRotation());
+
+				GetGame()->PlaySoundFX("Sounds\\CanonFiring.wav");
 			}
 		}
 
