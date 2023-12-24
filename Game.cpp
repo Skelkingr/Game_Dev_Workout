@@ -1,8 +1,8 @@
-#include "Asteroid.h"
-#include "BGSpriteComponent.h"
+#include "Enemy.h"
 #include "Game.h"
+#include "Grid.h"
 #include "Math.h"
-#include "Ship.h"
+#include "SpriteComponent.h"
 
 #include <SDL_image.h>
 
@@ -16,8 +16,7 @@ Game::Game()
 	mMusic(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false),
-	mShip(nullptr)
+	mUpdatingActors(false)
 {}
 
 bool Game::Initialize()
@@ -71,6 +70,29 @@ void Game::RunLoop()
 	}
 }
 
+Enemy* Game::GetNearestEnemy(const Vector2& pos)
+{
+	Enemy* best = nullptr;
+
+	if (mEnemies.size() > 0)
+	{
+		best = mEnemies[0];
+
+		float bestDistSqr = (pos - mEnemies[0]->GetPosition()).LengthSq();
+		for (size_t i = 1; i < mEnemies.size(); i++)
+		{
+			float newDistSqr = (pos - mEnemies[i]->GetPosition()).LengthSq();
+			if (newDistSqr < bestDistSqr)
+			{
+				bestDistSqr = newDistSqr;
+				best = mEnemies[i];
+			}
+		}
+	}
+
+	return best;
+}
+
 void Game::ProcessInput()
 {
 	SDL_Event event;
@@ -88,6 +110,18 @@ void Game::ProcessInput()
 	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
+	}
+
+	if (keyState[SDL_SCANCODE_B])
+	{
+		mGrid->BuildTower();
+	}
+
+	int x, y;
+	uint32_t buttons = SDL_GetMouseState(&x, &y);
+	if (SDL_BUTTON(buttons) & SDL_BUTTON_LEFT)
+	{
+		mGrid->ProcessClick(x, y);
 	}
 
 	mUpdatingActors = true;
@@ -139,7 +173,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
+	SDL_SetRenderDrawColor(mRenderer, 34, 139, 34, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -152,15 +186,7 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(512.0f, 384.0f));
-	mShip->SetRotation(Math::PiOver2);
-
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
-	{
-		new Asteroid(this);
-	}
+	mGrid = new Grid(this);
 }
 
 void Game::UnloadData()
@@ -176,8 +202,11 @@ void Game::UnloadData()
 	}
 	mTextures.clear();
 
-	Mix_FreeMusic(mMusic);
-	mMusic = nullptr;
+	if (mMusic != nullptr)
+	{
+		Mix_FreeMusic(mMusic);
+		mMusic = nullptr;
+	}
 }
 
 void Game::PlaySoundFX(const char* fileName)
@@ -191,6 +220,11 @@ void Game::PlaySoundFX(const char* fileName)
 	}
 
 	Mix_PlayChannel(-1, soundFX, 0);
+	
+	if (soundFX != nullptr)
+	{
+		Mix_FreeChunk(soundFX);
+	}
 }
 
 void Game::PlayMusic(const char* fileName)
@@ -238,20 +272,6 @@ SDL_Texture* Game::GetTexture(const std::string& fileName)
 		mTextures.emplace(fileName.c_str(), tex);
 	}
 	return tex;
-}
-
-void Game::AddAsteroid(Asteroid* ast)
-{
-	mAsteroids.emplace_back(ast);
-}
-
-void Game::RemoveAsteroid(Asteroid* ast)
-{
-	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
-	if (iter != mAsteroids.end())
-	{
-		mAsteroids.erase(iter);
-	}
 }
 
 void Game::Shutdown()

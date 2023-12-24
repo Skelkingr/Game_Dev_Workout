@@ -46,7 +46,7 @@ const Quaternion Quaternion::Identity(0.0f, 0.0f, 0.0f, 1.0f);
 
 Vector2 Vector2::Transform(const Vector2& vec, const Matrix3& mat, float w /*= 1.0f*/)
 {
-	Vector2 retVal;
+	Vector2 retVal = {};
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] + w * mat.mat[2][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] + w * mat.mat[2][1];
 	//ignore w since we aren't returning a new value for it...
@@ -55,7 +55,7 @@ Vector2 Vector2::Transform(const Vector2& vec, const Matrix3& mat, float w /*= 1
 
 Vector3 Vector3::Transform(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
-	Vector3 retVal;
+	Vector3 retVal = {};
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
 		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
@@ -69,7 +69,7 @@ Vector3 Vector3::Transform(const Vector3& vec, const Matrix4& mat, float w /*= 1
 // This will transform the vector and renormalize the w component
 Vector3 Vector3::TransformWithPerspDiv(const Vector3& vec, const Matrix4& mat, float w /*= 1.0f*/)
 {
-	Vector3 retVal;
+	Vector3 retVal = {};
 	retVal.x = vec.x * mat.mat[0][0] + vec.y * mat.mat[1][0] +
 		vec.z * mat.mat[2][0] + w * mat.mat[3][0];
 	retVal.y = vec.x * mat.mat[0][1] + vec.y * mat.mat[1][1] +
@@ -100,10 +100,10 @@ void Matrix4::Invert()
 {
 	// Thanks slow math
 	// This is a really janky way to unroll everything...
-	float tmp[12];
-	float src[16];
-	float dst[16];
-	float det;
+	float tmp[12] = {};
+	float src[16] = {};
+	float dst[16] = {};
+	float det = 0.0f;
 
 	// Transpose matrix
 	// row 1 to col 1
@@ -213,7 +213,7 @@ void Matrix4::Invert()
 
 Matrix4 Matrix4::CreateFromQuaternion(const class Quaternion& q)
 {
-	float mat[4][4];
+	float mat[4][4] = { {} };
 	
 	mat[0][0] = 1.0f - 2.0f * q.y * q.y - 2.0f * q.z * q.z;
 	mat[0][1] = 2.0f * q.x * q.y + 2.0f * q.w * q.z;

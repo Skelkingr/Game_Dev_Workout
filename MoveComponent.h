@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Actor.h"
 #include "Component.h"
 
 class MoveComponent : public Component
