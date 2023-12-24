@@ -36,7 +36,7 @@ void Bullet::UpdateActor(float deltaTime)
 	{
 		if (Intersect(*mCircle, *(e->GetCircle())))
 		{
-			e->SetState(EDead);
+			e->Explode();
 			SetState(EDead);
 			GetGame()->PlaySoundFX("Sounds\\Exploding.wav");
 			break;
