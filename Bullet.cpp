@@ -15,8 +15,6 @@ Bullet::Bullet(Game* game)
 
 	mCircle = new CircleComponent(this);
 	mCircle->SetRadius(5.0f);
-
-	mLiveTime = 1.0f;
 }
 
 Bullet::~Bullet()
@@ -34,18 +32,13 @@ void Bullet::UpdateActor(float deltaTime)
 
 	for (Enemy* e : GetGame()->GetEnemies())
 	{
-		if (Intersect(*mCircle, *(e->GetCircle())))
+		if (Intersect(*mCircle, *(e->GetCircle())) && !(e->GetIsExploding()))
 		{
 			e->Explode();
 			SetState(EDead);
 			GetGame()->PlaySoundFX("Sounds\\Exploding.wav");
+			GetGame()->PlaySoundFX("Sounds\\ChildYeah.wav");
 			break;
 		}
-	}
-
-	mLiveTime -= deltaTime;
-	if (mLiveTime <= 0.0f)
-	{
-		SetState(EDead);
 	}
 }

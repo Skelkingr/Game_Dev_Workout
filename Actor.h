@@ -38,6 +38,8 @@ public:
 
 	void AddComponent(class Component* component);
 	void RemoveComponent(class Component* component);
+
+	bool IsOffBounds();
 private:
 	State mState;
 	Vector2 mPosition;

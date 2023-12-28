@@ -12,6 +12,9 @@
 #include <unordered_map>
 #include <vector>
 
+#define CLIENT_WIDTH 1024
+#define CLIENT_HEIGHT 768
+
 class Game
 {
 public:

@@ -16,6 +16,7 @@ public:
 	void UpdateActor(float deltaTime) override;
 
 	CircleComponent* GetCircle() { return mCircle; }
+	bool GetIsExploding() const { return mIsExploding; }
 
 	void Explode();
 private:
@@ -24,5 +25,7 @@ private:
 	NavComponent* mNav;
 
 	std::vector<SDL_Texture*> mAnims;
+
+	bool mIsExploding;
 };
 

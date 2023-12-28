@@ -55,7 +55,12 @@ void Actor::ProcessInput(const uint8_t* keyState)
 }
 
 void Actor::UpdateActor(float deltaTime)
-{}
+{
+	if (IsOffBounds())
+	{
+		SetState(EDead);
+	}
+}
 
 void Actor::ActorInput(const uint8_t* keyState)
 {}
@@ -85,4 +90,10 @@ void Actor::RemoveComponent(Component* component)
 	{
 		mComponents.erase(iter);
 	}
+}
+
+bool Actor::IsOffBounds()
+{
+	Vector2 pos = this->GetPosition();
+	return (pos.x < 0.0f || pos.x > CLIENT_WIDTH || pos.y < 0.0f || pos.y > CLIENT_HEIGHT);
 }

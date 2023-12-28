@@ -6,9 +6,6 @@
 
 #include <SDL_image.h>
 
-const int CLIENT_WIDTH = 1024;
-const int CLIENT_HEIGHT = 768;
-
 Game::Game()
 	:
 	mWindow(nullptr),
@@ -16,7 +13,10 @@ Game::Game()
 	mMusic(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false)
+	mUpdatingActors(false),
+	mEnemies({}),
+	mGrid(nullptr),
+	mNextEnemy(0.0f)
 {}
 
 bool Game::Initialize()
@@ -55,7 +55,7 @@ bool Game::Initialize()
 
 	LoadData();
 
-	PlayMusic("Musics\\Battle.mp3");
+	PlayMusic("Musics\\HappyUkulele.mp3");
 	
 	mTicksCount = SDL_GetTicks();
 

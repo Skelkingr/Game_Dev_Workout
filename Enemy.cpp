@@ -7,7 +7,8 @@
 
 Enemy::Enemy(Game* game)
 	:
-	Actor(game)
+	Actor(game),
+	mIsExploding(false)
 {
 	game->GetEnemies().emplace_back(this);
 
@@ -84,6 +85,7 @@ void Enemy::UpdateActor(float deltaTime)
 
 void Enemy::Explode()
 {
+	mIsExploding = true;
 	mNav->SetForwardSpeed(mNav->GetForwardSpeed() / 5.0f);
 	mAnimSprite->SetAnimTextures(mAnims);
 }
