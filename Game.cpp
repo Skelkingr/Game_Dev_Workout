@@ -163,15 +163,10 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	/*SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
-	SDL_RenderClear(mRenderer);
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-	for (auto sprite : mSprites)
-	{
-		sprite->Draw(mRenderer);
-	}
-
-	SDL_RenderPresent(mRenderer);*/
+	SDL_GL_SwapWindow(mWindow);
 }
 
 void Game::LoadData()
