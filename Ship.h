@@ -5,7 +5,6 @@
 #include "Actor.h"
 #include "CircleComponent.h"
 #include "InputComponent.h"
-#include "SpriteComponent.h"
 
 class Ship : public Actor
 {
@@ -18,8 +17,6 @@ public:
 private:
 	CircleComponent* mCircle;
 	InputComponent* mInputComponent;
-
-	std::vector<SDL_Texture*> mAnims;
 
 	float mResetCooldown;
 	float mLaserCooldown;

@@ -1,20 +1,19 @@
 #include "Asteroid.h"
-#include "BGSpriteComponent.h"
 #include "Game.h"
 #include "Math.h"
 #include "Ship.h"
+#include "SpriteComponent.h"
 
 #include <GL/glew.h>
-#include <SDL_image.h>
 
 #include <algorithm>
 
 Game::Game()
 	:
 	mWindow(nullptr),
-	mRenderer(nullptr),
-	mMusic(nullptr),
 	mContext(nullptr),
+	mSpriteShader(nullptr),
+	mSpriteVerts(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
@@ -65,18 +64,13 @@ bool Game::Initialize()
 	}
 	glGetError();
 
-	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!mRenderer)
+	if (!LoadShaders())
 	{
-		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		SDL_Log("Failed to load shaders: %s", SDL_GetError());
 		return false;
 	}
 
-	if (IMG_Init(IMG_INIT_PNG) == 0)
-	{
-		SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
-		return false;
-	}
+	CreateSpriteVerts();
 
 	LoadData();
 
@@ -166,6 +160,14 @@ void Game::GenerateOutput()
 	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
+	mSpriteShader->SetActive();
+	mSpriteVerts->SetActive();
+
+	for (auto sprite : mSprites)
+	{
+		sprite->Draw(mSpriteShader);
+	}
+
 	SDL_GL_SwapWindow(mWindow);
 }
 
@@ -182,55 +184,49 @@ void Game::LoadData()
 	}
 }
 
-void Game::UnloadData()
+bool Game::LoadShaders()
 {
-	while (!mActors.empty())
+	mSpriteShader = new Shader();
+	if (!mSpriteShader->Load("Shaders\\Basic.vert", "Shaders\\Basic.frag"))
 	{
-		delete mActors.back();
+		return false;
 	}
 
-	for (auto i : mTextures)
+	mSpriteShader->SetActive();
+
+	return true;
+}
+
+void Game::CreateSpriteVerts()
+{
+	float vertexBuffer[] = {
+		-0.5f,  0.5f,  0.0f,
+		 0.5f,  0.5f,  0.0f,
+		 0.5f, -0.5f,  0.0f,
+		-0.5f, -0.5f,  0.0f
+	};
+
+	unsigned int indexBuffer[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+}
+
+void Game::UnloadData()
+{
+	if (mSpriteShader != nullptr)
 	{
-		SDL_DestroyTexture(i.second);
+		delete mSpriteShader;
+		mSpriteShader = nullptr;
 	}
-	mTextures.clear();
 
 	if (mSpriteVerts != nullptr)
 	{
 		delete mSpriteVerts;
 		mSpriteVerts = nullptr;
 	}
-}
-
-SDL_Texture* Game::GetTexture(const std::string& fileName)
-{
-	SDL_Texture* tex = nullptr;
-
-	auto iter = mTextures.find(fileName);
-	if (iter != mTextures.end())
-	{
-		tex = iter->second;
-	}
-	else
-	{
-		SDL_Surface* surf = IMG_Load(fileName.c_str());
-		if (!surf)
-		{
-			SDL_Log("Failed to load texture file %s", fileName.c_str());
-			return nullptr;
-		}
-
-		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
-		SDL_FreeSurface(surf);
-		if (!tex)
-		{
-			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
-			return nullptr;
-		}
-
-		mTextures.emplace(fileName.c_str(), tex);
-	}
-	return tex;
 }
 
 void Game::AddAsteroid(Asteroid* ast)
@@ -250,8 +246,6 @@ void Game::RemoveAsteroid(Asteroid* ast)
 void Game::Shutdown()
 {
 	UnloadData();
-	IMG_Quit();
-	SDL_DestroyRenderer(mRenderer);
 	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
@@ -284,11 +278,6 @@ void Game::RemoveActor(Actor* actor)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
-}
-
-void Game::InitSpriteVerts(const float* vertexBuffer, const unsigned int* indexBuffer)
-{
-	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
 }
 
 void Game::AddSprite(SpriteComponent* sprite)

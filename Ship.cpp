@@ -2,6 +2,7 @@
 #include "InputComponent.h"
 #include "Laser.h"
 #include "Ship.h"
+#include "SpriteComponent.h"
 
 Ship::Ship(Game* game)
 	:
@@ -9,6 +10,10 @@ Ship::Ship(Game* game)
 	mLaserCooldown(0.0f),
 	mResetCooldown(0.0f)
 {
+
+	SpriteComponent* sc = new SpriteComponent(this, 150);
+	// sc->SetTexture(game->GetTexture("Assets/Ship.png"));
+
 	mInputComponent = new InputComponent(this);
 	mInputComponent->SetForwardKey(SDL_SCANCODE_W);
 	mInputComponent->SetBackKey(SDL_SCANCODE_S);
@@ -67,4 +72,3 @@ void Ship::UpdateActor(float deltaTime)
 
 void Ship::ActorInput(const uint8_t* keyState)
 {}
-
