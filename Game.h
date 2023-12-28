@@ -9,6 +9,9 @@
 #include <unordered_map>
 #include <vector>
 
+constexpr int CLIENT_WIDTH = 1024;
+constexpr int CLIENT_HEIGHT = 768;
+
 class Game
 {
 public:

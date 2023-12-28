@@ -8,9 +8,6 @@
 
 #include <algorithm>
 
-const int CLIENT_WIDTH = 1024;
-const int CLIENT_HEIGHT = 768;
-
 Game::Game()
 	:
 	mWindow(nullptr),
@@ -30,7 +27,21 @@ bool Game::Initialize()
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
@@ -141,7 +152,7 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
+	/*SDL_SetRenderDrawColor(mRenderer, 220, 220, 220, 255);
 	SDL_RenderClear(mRenderer);
 
 	for (auto sprite : mSprites)
@@ -149,7 +160,7 @@ void Game::GenerateOutput()
 		sprite->Draw(mRenderer);
 	}
 
-	SDL_RenderPresent(mRenderer);
+	SDL_RenderPresent(mRenderer);*/
 }
 
 void Game::LoadData()
