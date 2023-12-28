@@ -2,6 +2,7 @@
 
 #include "Asteroid.h"
 #include "Ship.h"
+#include "VertexArray.h"
 
 #include <SDL.h>
 #include <SDL_mixer.h>
@@ -24,6 +25,8 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
+	void InitSpriteVerts(const float* vertexBuffer, const unsigned int* indexBuffer);
+
 	void AddSprite(class SpriteComponent* sprite);
 	void RemoveSprite(class SpriteComponent* sprite);
 
@@ -45,6 +48,7 @@ private:
 
 	std::vector<class Actor*> mPendingActors;
 
+	VertexArray* mSpriteVerts;
 	std::vector<class SpriteComponent*> mSprites;
 
 	SDL_Window* mWindow;

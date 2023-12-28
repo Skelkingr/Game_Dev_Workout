@@ -194,6 +194,12 @@ void Game::UnloadData()
 		SDL_DestroyTexture(i.second);
 	}
 	mTextures.clear();
+
+	if (mSpriteVerts != nullptr)
+	{
+		delete mSpriteVerts;
+		mSpriteVerts = nullptr;
+	}
 }
 
 SDL_Texture* Game::GetTexture(const std::string& fileName)
@@ -278,6 +284,11 @@ void Game::RemoveActor(Actor* actor)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
+}
+
+void Game::InitSpriteVerts(const float* vertexBuffer, const unsigned int* indexBuffer)
+{
+	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
 }
 
 void Game::AddSprite(SpriteComponent* sprite)
