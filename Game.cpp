@@ -4,6 +4,7 @@
 #include "Math.h"
 #include "Ship.h"
 
+#include <GL/glew.h>
 #include <SDL_image.h>
 
 #include <algorithm>
@@ -13,6 +14,7 @@ Game::Game()
 	mWindow(nullptr),
 	mRenderer(nullptr),
 	mMusic(nullptr),
+	mContext(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
@@ -48,6 +50,21 @@ bool Game::Initialize()
 		return false;
 	}
 
+	mContext = SDL_GL_CreateContext(mWindow);
+	if (!mContext)
+	{
+		SDL_Log("Failed to create OpenGL context: %s", SDL_GetError());
+		return false;
+	}
+
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
+	{
+		SDL_Log("Failed to initialize GLEW: %s", SDL_GetError());
+		return false;
+	}
+	glGetError();
+
 	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
 	if (!mRenderer)
 	{
@@ -58,12 +75,6 @@ bool Game::Initialize()
 	if (IMG_Init(IMG_INIT_PNG) == 0)
 	{
 		SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
-		return false;
-	}
-
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-	{
-		SDL_Log("Unable to initialize SDL_mixer: %s", Mix_GetError());
 		return false;
 	}
 
@@ -190,35 +201,6 @@ void Game::UnloadData()
 	mTextures.clear();
 }
 
-void Game::PlaySoundFX(const char* fileName)
-{
-	Mix_Chunk* soundFX = Mix_LoadWAV(fileName);
-
-	if (soundFX == nullptr)
-	{
-		SDL_Log("Failed to load sound FX: %s", Mix_GetError());
-		return;
-	}
-
-	Mix_PlayChannel(-1, soundFX, 0);
-}
-
-void Game::PlayMusic(const char* fileName)
-{
-	mMusic = Mix_LoadMUS(fileName);
-
-	if (mMusic == nullptr)
-	{
-		SDL_Log("Failed to load music: %s", Mix_GetError());
-		return;
-	}
-
-	if (Mix_PlayingMusic() == 0)
-	{
-		Mix_PlayMusic(mMusic, -1);
-	}
-}
-
 SDL_Texture* Game::GetTexture(const std::string& fileName)
 {
 	SDL_Texture* tex = nullptr;
@@ -268,8 +250,8 @@ void Game::Shutdown()
 {
 	UnloadData();
 	IMG_Quit();
-	Mix_Quit();
 	SDL_DestroyRenderer(mRenderer);
+	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }

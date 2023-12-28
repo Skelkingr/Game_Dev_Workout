@@ -32,17 +32,12 @@ public:
 	void AddAsteroid(Asteroid* ast);
 	void RemoveAsteroid(Asteroid* ast);
 	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
-
-	void PlaySoundFX(const char* fileName);
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 	void LoadData();
-	void UnloadData();
-
-	void PlayMusic(const char* fileName);
-	
+	void UnloadData();	
 
 	std::unordered_map<std::string, SDL_Texture*> mTextures;
 
@@ -53,6 +48,7 @@ private:
 	std::vector<class SpriteComponent*> mSprites;
 
 	SDL_Window* mWindow;
+	SDL_GLContext mContext;
 	SDL_Renderer* mRenderer;
 	Mix_Music* mMusic;
 
