@@ -8,8 +8,8 @@ Laser::Laser(Game* game)
 	Actor(game),
 	mDeathTimer(1.0f)
 {
-	SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("Assets/Laser.png"));
+	/*SpriteComponent* sc = new SpriteComponent(this);
+	sc->SetTexture(game->GetTexture("Assets/Laser.png"));*/
 
 	MoveComponent* mc = new MoveComponent(this);
 	mc->SetForwardSpeed(800.0f);
