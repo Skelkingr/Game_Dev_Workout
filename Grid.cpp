@@ -156,6 +156,7 @@ void Grid::BuildTower()
 		}
 
 		UpdatePathTiles(GetStartTile());
+		GetGame()->PlaySoundFX("Sounds\\PlaceTower.wav");
 	}
 }
 

@@ -29,23 +29,34 @@ void Tower::UpdateActor(float deltaTime)
 	Actor::UpdateActor(deltaTime);
 
 	mNextAttack -= deltaTime;
-	if (mNextAttack <= 0.0f)
-	{
-		Enemy* e = GetGame()->GetNearestEnemy(GetPosition());
-		if (e != nullptr)
-		{
-			Vector2 dir = e->GetPosition() - GetPosition();
-			float dist = dir.Length();
-			if (dist < mAttackRange)
-			{
-				SetRotation(Math::Atan2(-dir.y, dir.x));
 
-				Bullet* b = new Bullet(GetGame());
-				b->SetPosition(GetPosition());
-				b->SetRotation(GetRotation());
+	Enemy* e = GetGame()->GetNearestEnemy(GetPosition());
+	if (e != nullptr)
+	{
+		Vector2 dir = e->GetPosition() - GetPosition();
+		float dist = dir.Length();
+		
+		if (dist < mAttackRange)
+		{
+			SetRotation(Math::Atan2(-dir.y, dir.x));
+			if (mNextAttack <= 0.0f)
+			{
+				Shoot();
 			}
 		}
-
-		mNextAttack += mAttacktime;
 	}
+
+	if (mNextAttack <= 0.0f)
+	{
+		mNextAttack += mAttacktime;
+	}	
+}
+
+void Tower::Shoot() const
+{
+	Bullet* b = new Bullet(GetGame());
+	b->SetPosition(GetPosition());
+	b->SetRotation(GetRotation());
+
+	GetGame()->PlaySoundFX("Sounds\\CanonFiring.wav");
 }

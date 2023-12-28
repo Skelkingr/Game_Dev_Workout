@@ -14,7 +14,5 @@ public:
 	void UpdateActor(float deltaTime) override;
 private:
 	CircleComponent* mCircle;
-
-	float mLiveTime;
 };
 
