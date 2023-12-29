@@ -25,24 +25,33 @@ public:
 	virtual void ActorInput(const uint8_t* keyState);
 
 	class Game* GetGame() const { return mGame; }
-	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), -Math::Sin(mRotation)); }
+	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
 	Vector2& GetPosition() { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
 	int GetState() const { return mState; }
 
-	void SetPosition(Vector2 position) { mPosition = position; }
-	void SetScale(float scale) { mScale = scale; }
 	void SetState(State state) { mState = state; }
-	void SetRotation(float rotation) { mRotation = rotation; }
+
+	void SetPosition(Vector2 position);
+	void SetScale(float scale);
+	void SetRotation(float rotation);
+
+	void ComputeWorldTransform();
 
 	void AddComponent(class Component* component);
 	void RemoveComponent(class Component* component);
 private:
 	State mState;
+	
 	Vector2 mPosition;
 	float mScale;
 	float mRotation;
+	
+	Matrix4 mWorldTransform;
+	bool mRecomputWorldTransform;
+	
 	std::vector<class Component*> mComponents;
+
 	class Game* mGame;
 };
