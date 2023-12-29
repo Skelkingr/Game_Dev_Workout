@@ -12,7 +12,7 @@ Ship::Ship(Game* game)
 {
 
 	SpriteComponent* sc = new SpriteComponent(this, 150);
-	// sc->SetTexture(game->GetTexture("Assets/Ship.png"));
+	/*sc->SetTexture(game->GetTexture("Assets\\Ship.png"));*/
 
 	mInputComponent = new InputComponent(this);
 	mInputComponent->SetForwardKey(SDL_SCANCODE_W);

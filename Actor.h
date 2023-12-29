@@ -26,9 +26,11 @@ public:
 
 	class Game* GetGame() const { return mGame; }
 	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
-	Vector2& GetPosition() { return mPosition; }
+	const Vector2& GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
+	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
+
 	int GetState() const { return mState; }
 
 	void SetState(State state) { mState = state; }

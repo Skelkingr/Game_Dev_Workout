@@ -21,7 +21,9 @@ public:
 	void SetDrawOrder(int drawOrder) { mDrawOrder = drawOrder; }
 private:
 	SDL_Texture* mTexture;
+
 	int mDrawOrder;
+
 	int mTexWidth;
 	int mTexHeight;
 };

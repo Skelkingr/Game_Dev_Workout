@@ -188,7 +188,11 @@ void Game::LoadData()
 bool Game::LoadShaders()
 {
 	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders\\Basic.vert", "Shaders\\Basic.frag"))
+
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+
+	if (!mSpriteShader->Load("Shaders\\Transform.vert", "Shaders\\Basic.frag"))
 	{
 		return false;
 	}
