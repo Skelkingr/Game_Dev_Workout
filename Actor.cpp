@@ -73,20 +73,20 @@ void Actor::ActorInput(const uint8_t* keyState)
 
 void Actor::SetPosition(Vector2 position)
 {
-	mRecomputWorldTransform = true;
 	mPosition = position;
+	mRecomputWorldTransform = true;
 }
 
 void Actor::SetScale(float scale)
 {
-	mRecomputWorldTransform = true;
 	mScale = scale;
+	mRecomputWorldTransform = true;
 }
 
 void Actor::SetRotation(float rotation)
 {
-	mRecomputWorldTransform = true;
 	mRotation = rotation;
+	mRecomputWorldTransform = true;
 }
 
 void Actor::ComputeWorldTransform()
@@ -98,6 +98,11 @@ void Actor::ComputeWorldTransform()
 		mWorldTransform = Matrix4::CreateScale(mScale);
 		mWorldTransform *= Matrix4::CreateRotationZ(mRotation);
 		mWorldTransform *= Matrix4::CreateTranslation(Vector3(mPosition.x, mPosition.y, 0.0f));
+	}
+
+	for (auto comp : mComponents)
+	{
+		comp->OnUpdateWorldTransform();
 	}
 }
 

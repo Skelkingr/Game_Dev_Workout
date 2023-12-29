@@ -9,6 +9,7 @@
 class Ship : public Actor
 {
 public:
+	Ship() = delete;
 	Ship(class Game* game);
 	~Ship();
 
@@ -18,6 +19,5 @@ private:
 	CircleComponent* mCircle;
 	InputComponent* mInputComponent;
 
-	float mResetCooldown;
 	float mLaserCooldown;
 };

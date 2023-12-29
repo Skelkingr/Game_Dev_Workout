@@ -9,8 +9,6 @@ public:
 	Asteroid(class Game* game);
 	~Asteroid();
 
-	void UpdateActor(float deltaTime) override;
-
 	CircleComponent* GetCircle() { return mCircle; }
 private:
 	CircleComponent* mCircle;

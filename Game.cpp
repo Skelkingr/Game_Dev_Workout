@@ -175,7 +175,6 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	mShip = new Ship(this);
-	mShip->SetPosition(Vector2(512.0f, 384.0f));
 	mShip->SetRotation(Math::PiOver2);
 
 	const int numAsteroids = 20;
@@ -188,16 +187,15 @@ void Game::LoadData()
 bool Game::LoadShaders()
 {
 	mSpriteShader = new Shader();
-
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
-	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
-
-	if (!mSpriteShader->Load("Shaders\\Transform.vert", "Shaders\\Basic.frag"))
+	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
 	{
 		return false;
 	}
 
 	mSpriteShader->SetActive();
+
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
 
 	return true;
 }
@@ -232,6 +230,18 @@ void Game::UnloadData()
 		delete mSpriteVerts;
 		mSpriteVerts = nullptr;
 	}
+
+	while (!mActors.empty())
+	{
+		delete mActors.back();
+	}
+
+	for (auto& texture : mTextures)
+	{
+		texture.second->Unload();
+		delete texture.second;
+	}
+	mTextures.clear();
 }
 
 Texture* Game::GetTexture(const std::string& fileName)

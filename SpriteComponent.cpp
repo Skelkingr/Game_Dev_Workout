@@ -19,18 +19,21 @@ SpriteComponent::~SpriteComponent()
 
 void SpriteComponent::Draw(Shader* shader)
 {
-	Matrix4 scaleMat = Matrix4::CreateScale(
-		static_cast<float>(mTexWidth),
-		static_cast<float>(mTexHeight),
-		1.0f
-	);
-	Matrix4 world = scaleMat * mOwner->GetWorldTransform();
+	if (mTexture)
+	{
+		Matrix4 scaleMat = Matrix4::CreateScale(
+			static_cast<float>(mTexWidth),
+			static_cast<float>(mTexHeight),
+			1.0f
+		);
+		Matrix4 world = scaleMat * mOwner->GetWorldTransform();
 
-	shader->SetMatrixUniform("uWorld", world);
+		shader->SetMatrixUniform("uWorld", world);
 
-	mTexture->SetActive();
+		mTexture->SetActive();
 
-	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
+	}
 }
 
 void SpriteComponent::SetTexture(Texture* texture)

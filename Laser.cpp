@@ -8,8 +8,8 @@ Laser::Laser(Game* game)
 	Actor(game),
 	mDeathTimer(1.0f)
 {
-	/*SpriteComponent* sc = new SpriteComponent(this);
-	sc->SetTexture(game->GetTexture("Assets/Laser.png"));*/
+	SpriteComponent* sc = new SpriteComponent(this);
+	sc->SetTexture(game->GetTexture("Assets/Laser.png"));
 
 	MoveComponent* mc = new MoveComponent(this);
 	mc->SetForwardSpeed(800.0f);
@@ -20,17 +20,6 @@ Laser::Laser(Game* game)
 
 void Laser::UpdateActor(float deltaTime)
 {
-	if (
-		mCircle->GetCenter().y >= 768.0f
-		|| mCircle->GetCenter().x >= 1024.0f
-		|| mCircle->GetCenter().y <= 0.0f
-		|| mCircle->GetCenter().x <= 0.0f
-		)
-	{
-		SetState(EDead);
-	}
-
-
 	mDeathTimer -= deltaTime;
 	if (mDeathTimer <= 0.0f)
 	{

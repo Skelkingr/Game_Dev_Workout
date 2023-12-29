@@ -8,6 +8,7 @@
 class SpriteComponent : public Component
 {
 public:
+	SpriteComponent() = delete;
 	SpriteComponent(class Actor* actor, int drawOrder = 100);
 	~SpriteComponent();
 
