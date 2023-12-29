@@ -1,5 +1,7 @@
 #include "Game.h"
 
+#include <iostream>
+
 int main(int argc, char** argv)
 {
 	Game game;
@@ -12,5 +14,6 @@ int main(int argc, char** argv)
 	}
 
 	game.Shutdown();
+
 	return 0;
 }

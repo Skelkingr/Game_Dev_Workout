@@ -1,22 +1,23 @@
-#include "Enemy.h"
+#include "Asteroid.h"
 #include "Game.h"
-#include "Grid.h"
 #include "Math.h"
+#include "Ship.h"
 #include "SpriteComponent.h"
 
-#include <SDL_image.h>
+#include <GL/glew.h>
+
+#include <algorithm>
 
 Game::Game()
 	:
 	mWindow(nullptr),
-	mRenderer(nullptr),
-	mMusic(nullptr),
+	mContext(nullptr),
+	mSpriteShader(nullptr),
+	mSpriteVerts(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
-	mEnemies({}),
-	mGrid(nullptr),
-	mNextEnemy(0.0f)
+	mShip(nullptr)
 {}
 
 bool Game::Initialize()
@@ -27,36 +28,52 @@ bool Game::Initialize()
 		return false;
 	}
 
-	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, 0);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
+	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+
+	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
+
+	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+
+	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
+
+	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, SDL_WINDOW_OPENGL);
 	if (!mWindow)
 	{
 		SDL_Log("Failed to create window: %s", SDL_GetError());
 		return false;
 	}
 
-	mRenderer = SDL_CreateRenderer(mWindow, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
-	if (!mRenderer)
+	mContext = SDL_GL_CreateContext(mWindow);
+	if (!mContext)
 	{
-		SDL_Log("Failed to create renderer: %s", SDL_GetError());
+		SDL_Log("Failed to create OpenGL context: %s", SDL_GetError());
 		return false;
 	}
 
-	if (IMG_Init(IMG_INIT_PNG) == 0)
+	glewExperimental = GL_TRUE;
+	if (glewInit() != GLEW_OK)
 	{
-		SDL_Log("Unable to initialize SDL_image: %s", IMG_GetError());
+		SDL_Log("Failed to initialize GLEW: %s", SDL_GetError());
+		return false;
+	}
+	glGetError();
+
+	if (!LoadShaders())
+	{
+		SDL_Log("Failed to load shaders: %s", SDL_GetError());
 		return false;
 	}
 
-	if (Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-	{
-		SDL_Log("Unable to initialize SDL_mixer: %s", Mix_GetError());
-		return false;
-	}
+	CreateSpriteVerts();
 
 	LoadData();
 
-	PlayMusic("Musics\\HappyUkulele.mp3");
-	
 	mTicksCount = SDL_GetTicks();
 
 	return true;
@@ -70,29 +87,6 @@ void Game::RunLoop()
 		UpdateGame();
 		GenerateOutput();
 	}
-}
-
-Enemy* Game::GetNearestEnemy(const Vector2& pos)
-{
-	Enemy* best = nullptr;
-
-	if (mEnemies.size() > 0)
-	{
-		best = mEnemies[0];
-
-		float bestDistSqr = (pos - mEnemies[0]->GetPosition()).LengthSq();
-		for (size_t i = 1; i < mEnemies.size(); i++)
-		{
-			float newDistSqr = (pos - mEnemies[i]->GetPosition()).LengthSq();
-			if (newDistSqr < bestDistSqr)
-			{
-				bestDistSqr = newDistSqr;
-				best = mEnemies[i];
-			}
-		}
-	}
-
-	return best;
 }
 
 void Game::ProcessInput()
@@ -112,18 +106,6 @@ void Game::ProcessInput()
 	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
-	}
-
-	if (keyState[SDL_SCANCODE_B])
-	{
-		mGrid->BuildTower();
-	}
-
-	int x, y;
-	uint32_t buttons = SDL_GetMouseState(&x, &y);
-	if (SDL_BUTTON(buttons) & SDL_BUTTON_LEFT)
-	{
-		mGrid->ProcessClick(x, y);
 	}
 
 	mUpdatingActors = true;
@@ -154,6 +136,7 @@ void Game::UpdateGame()
 
 	for (auto pending : mPendingActors)
 	{
+		pending->ComputeWorldTransform();
 		mActors.emplace_back(pending);
 	}
 	mPendingActors.clear();
@@ -175,108 +158,142 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	SDL_SetRenderDrawColor(mRenderer, 34, 139, 34, 255);
-	SDL_RenderClear(mRenderer);
+	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	mSpriteShader->SetActive();
+	mSpriteVerts->SetActive();
+
+	glEnable(GL_BLEND);
+	glBlendFunc(
+		GL_SRC_ALPHA,
+		GL_ONE_MINUS_SRC_ALPHA
+	);
 
 	for (auto sprite : mSprites)
 	{
-		sprite->Draw(mRenderer);
+		sprite->Draw(mSpriteShader);
 	}
 
-	SDL_RenderPresent(mRenderer);
+	SDL_GL_SwapWindow(mWindow);
 }
 
 void Game::LoadData()
 {
-	mGrid = new Grid(this);
+	mShip = new Ship(this);
+	mShip->SetRotation(Math::PiOver2);
+
+	const int numAsteroids = 20;
+	for (int i = 0; i < numAsteroids; i++)
+	{
+		new Asteroid(this);
+	}
+}
+
+bool Game::LoadShaders()
+{
+	mSpriteShader = new Shader();
+	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+	{
+		return false;
+	}
+
+	mSpriteShader->SetActive();
+
+	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
+	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+
+	return true;
+}
+
+void Game::CreateSpriteVerts()
+{
+	float vertexBuffer[] = {
+		-0.5f,  0.5f,  0.0f,  0.0f,  0.0f,
+		 0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+		 0.5f, -0.5f,  0.0f,  1.0f,  1.0f,
+		-0.5f, -0.5f,  0.0f,  0.0f,  1.0f
+	};
+
+	unsigned int indexBuffer[] = {
+		0, 1, 2,
+		2, 3, 0
+	};
+
+	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
 }
 
 void Game::UnloadData()
 {
+	if (mSpriteShader != nullptr)
+	{
+		delete mSpriteShader;
+		mSpriteShader = nullptr;
+	}
+
+	if (mSpriteVerts != nullptr)
+	{
+		delete mSpriteVerts;
+		mSpriteVerts = nullptr;
+	}
+
 	while (!mActors.empty())
 	{
 		delete mActors.back();
 	}
 
-	for (auto i : mTextures)
+	for (auto& texture : mTextures)
 	{
-		SDL_DestroyTexture(i.second);
+		texture.second->Unload();
+		delete texture.second;
 	}
 	mTextures.clear();
-
-	if (mMusic != nullptr)
-	{
-		Mix_FreeMusic(mMusic);
-		mMusic = nullptr;
-	}
 }
 
-void Game::PlaySoundFX(const char* fileName)
+Texture* Game::GetTexture(const std::string& fileName)
 {
-	Mix_Chunk* soundFX = Mix_LoadWAV(fileName);
-
-	if (soundFX == nullptr)
-	{
-		SDL_Log("Failed to load sound FX: %s", Mix_GetError());
-		return;
-	}
-
-	Mix_PlayChannel(-1, soundFX, 0);
-}
-
-void Game::PlayMusic(const char* fileName)
-{
-	mMusic = Mix_LoadMUS(fileName);
-
-	if (mMusic == nullptr)
-	{
-		SDL_Log("Failed to load music: %s", Mix_GetError());
-		return;
-	}
-
-	if (Mix_PlayingMusic() == 0)
-	{
-		Mix_PlayMusic(mMusic, -1);
-	}
-}
-
-SDL_Texture* Game::GetTexture(const std::string& fileName)
-{
-	SDL_Texture* tex = nullptr;
+	Texture* texture = nullptr;
 
 	auto iter = mTextures.find(fileName);
 	if (iter != mTextures.end())
 	{
-		tex = iter->second;
+		texture = iter->second;
 	}
 	else
 	{
-		SDL_Surface* surf = IMG_Load(fileName.c_str());
-		if (!surf)
+		texture = new Texture();
+		if (texture->Load(fileName))
 		{
-			SDL_Log("Failed to load texture file %s", fileName.c_str());
-			return nullptr;
+			mTextures.emplace(fileName, texture);
 		}
-
-		tex = SDL_CreateTextureFromSurface(mRenderer, surf);
-		SDL_FreeSurface(surf);
-		if (!tex)
+		else
 		{
-			SDL_Log("Failed to convert surface to texture for %s", fileName.c_str());
-			return nullptr;
+			delete texture;
+			texture = nullptr;
 		}
-
-		mTextures.emplace(fileName.c_str(), tex);
 	}
-	return tex;
+
+	return texture;
+}
+
+void Game::AddAsteroid(Asteroid* ast)
+{
+	mAsteroids.emplace_back(ast);
+}
+
+void Game::RemoveAsteroid(Asteroid* ast)
+{
+	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
+	if (iter != mAsteroids.end())
+	{
+		mAsteroids.erase(iter);
+	}
 }
 
 void Game::Shutdown()
 {
 	UnloadData();
-	IMG_Quit();
-	Mix_Quit();
-	SDL_DestroyRenderer(mRenderer);
+	SDL_GL_DeleteContext(mContext);
 	SDL_DestroyWindow(mWindow);
 	SDL_Quit();
 }

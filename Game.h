@@ -1,19 +1,19 @@
 #pragma once
 
-#include "Actor.h"
-#include "Math.h"
-#include "SpriteComponent.h"
+#include "Asteroid.h"
+#include "Shader.h"
+#include "Ship.h"
+#include "Texture.h"
+#include "VertexArray.h"
 
 #include <SDL.h>
-#include <SDL_mixer.h>
 
-#include <algorithm>
 #include <string>
 #include <unordered_map>
 #include <vector>
 
-#define CLIENT_WIDTH 1024
-#define CLIENT_HEIGHT 768
+constexpr int CLIENT_WIDTH = 1024;
+constexpr int CLIENT_HEIGHT = 768;
 
 class Game
 {
@@ -24,46 +24,43 @@ public:
 	void RunLoop();
 	void Shutdown();
 
-	void AddActor(Actor* actor);
-	void RemoveActor(Actor* actor);
+	void AddActor(class Actor* actor);
+	void RemoveActor(class Actor* actor);
 
-	void AddSprite(SpriteComponent* sprite);
-	void RemoveSprite(SpriteComponent* sprite);
+	void AddSprite(class SpriteComponent* sprite);
+	void RemoveSprite(class SpriteComponent* sprite);
 
-	SDL_Texture* GetTexture(const std::string& fileName);
+	Texture* GetTexture(const std::string& fileName);
 
-	class Grid* GetGrid() { return mGrid; }
-	std::vector<class Enemy*>& GetEnemies() { return mEnemies; }
-	class Enemy* GetNearestEnemy(const Vector2& pos);
-
-	void PlayMusic(const char* fileName);
-	void PlaySoundFX(const char* fileName);
+	void AddAsteroid(Asteroid* ast);
+	void RemoveAsteroid(Asteroid* ast);
+	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
+
+	bool LoadShaders();
+	void CreateSpriteVerts();
+
 	void LoadData();
 	void UnloadData();
 private:
-	std::unordered_map<std::string, SDL_Texture*> mTextures;
+	std::unordered_map<std::string, Texture*> mTextures;
+	std::vector<class Actor*> mActors;
+	std::vector<class Actor*> mPendingActors;
+	std::vector<class SpriteComponent*> mSprites;
 
-	std::vector<Actor*> mActors;
-
-	std::vector<Actor*> mPendingActors;
-
-	std::vector<SpriteComponent*> mSprites;
-
+	Shader* mSpriteShader;
+	VertexArray* mSpriteVerts;
+	
 	SDL_Window* mWindow;
-	SDL_Renderer* mRenderer;
-	Mix_Music* mMusic;
+	SDL_GLContext mContext;
 
 	Uint32 mTicksCount;
 	bool mIsRunning;
 	bool mUpdatingActors;
 
-	/* GAME SPECIFIC */
-	std::vector<class Enemy*> mEnemies;
-	class Grid* mGrid;
-	float mNextEnemy;
-	/* */
+	Ship* mShip;
+	std::vector<Asteroid*> mAsteroids;
 };

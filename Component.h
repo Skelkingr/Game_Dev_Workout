@@ -14,6 +14,8 @@ public:
 
 	Actor* GetOwner() const { return this->mOwner; }
 	int GetUpdateOrder() const { return this->mUpdateOrder; }
+
+	void OnUpdateWorldTransform();
 protected:
 	Actor* mOwner;
 	int mUpdateOrder;

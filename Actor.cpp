@@ -10,6 +10,8 @@ Actor::Actor(Game* game)
 	mPosition(Vector2::Zero),
 	mScale(1.0f),
 	mRotation(0.0f),
+	mWorldTransform(Matrix4::Identity),
+	mRecomputWorldTransform(true),
 	mGame(game)
 {
 	mGame->AddActor(this);
@@ -29,8 +31,17 @@ void Actor::Update(float deltaTime)
 {
 	if (mState == EActive)
 	{
+		ComputeWorldTransform();
+
 		UpdateComponents(deltaTime);
 		UpdateActor(deltaTime);
+
+		ComputeWorldTransform();
+	}
+
+	for (auto comp : mComponents)
+	{
+		comp->OnUpdateWorldTransform();
 	}
 }
 
@@ -55,15 +66,45 @@ void Actor::ProcessInput(const uint8_t* keyState)
 }
 
 void Actor::UpdateActor(float deltaTime)
-{
-	if (IsOffBounds())
-	{
-		SetState(EDead);
-	}
-}
+{}
 
 void Actor::ActorInput(const uint8_t* keyState)
 {}
+
+void Actor::SetPosition(Vector2 position)
+{
+	mPosition = position;
+	mRecomputWorldTransform = true;
+}
+
+void Actor::SetScale(float scale)
+{
+	mScale = scale;
+	mRecomputWorldTransform = true;
+}
+
+void Actor::SetRotation(float rotation)
+{
+	mRotation = rotation;
+	mRecomputWorldTransform = true;
+}
+
+void Actor::ComputeWorldTransform()
+{
+	if (mRecomputWorldTransform)
+	{
+		mRecomputWorldTransform = false;
+
+		mWorldTransform = Matrix4::CreateScale(mScale);
+		mWorldTransform *= Matrix4::CreateRotationZ(mRotation);
+		mWorldTransform *= Matrix4::CreateTranslation(Vector3(mPosition.x, mPosition.y, 0.0f));
+	}
+
+	for (auto comp : mComponents)
+	{
+		comp->OnUpdateWorldTransform();
+	}
+}
 
 void Actor::AddComponent(Component* component)
 {
@@ -90,10 +131,4 @@ void Actor::RemoveComponent(Component* component)
 	{
 		mComponents.erase(iter);
 	}
-}
-
-bool Actor::IsOffBounds()
-{
-	Vector2 pos = this->GetPosition();
-	return (pos.x < 0.0f || pos.x > CLIENT_WIDTH || pos.y < 0.0f || pos.y > CLIENT_HEIGHT);
 }
