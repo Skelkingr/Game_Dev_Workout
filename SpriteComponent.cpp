@@ -28,11 +28,15 @@ void SpriteComponent::Draw(Shader* shader)
 
 	shader->SetMatrixUniform("uWorld", world);
 
+	mTexture->SetActive();
+
 	glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, nullptr);
 }
 
-void SpriteComponent::SetTexture(SDL_Texture* texture)
+void SpriteComponent::SetTexture(Texture* texture)
 {
 	mTexture = texture;
-	SDL_QueryTexture(texture, nullptr, nullptr, &mTexWidth, &mTexHeight);
+	
+	mTexWidth = texture->GetWidth();
+	mTexHeight = texture->GetHeight();
 }

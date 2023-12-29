@@ -234,6 +234,32 @@ void Game::UnloadData()
 	}
 }
 
+Texture* Game::GetTexture(const std::string& fileName)
+{
+	Texture* texture = nullptr;
+
+	auto iter = mTextures.find(fileName);
+	if (iter != mTextures.end())
+	{
+		texture = iter->second;
+	}
+	else
+	{
+		texture = new Texture();
+		if (texture->Load(fileName))
+		{
+			mTextures.emplace(fileName, texture);
+		}
+		else
+		{
+			delete texture;
+			texture = nullptr;
+		}
+	}
+
+	return texture;
+}
+
 void Game::AddAsteroid(Asteroid* ast)
 {
 	mAsteroids.emplace_back(ast);

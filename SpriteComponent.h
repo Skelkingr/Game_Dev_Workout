@@ -12,7 +12,7 @@ public:
 	~SpriteComponent();
 
 	virtual void Draw(Shader* shader);
-	virtual void SetTexture(SDL_Texture* texture);
+	virtual void SetTexture(Texture* texture);
 
 	int GetDrawOrder() const { return mDrawOrder; }
 	int GetTexWidth() const { return mTexWidth; }
@@ -20,7 +20,7 @@ public:
 
 	void SetDrawOrder(int drawOrder) { mDrawOrder = drawOrder; }
 private:
-	SDL_Texture* mTexture;
+	Texture* mTexture;
 
 	int mDrawOrder;
 

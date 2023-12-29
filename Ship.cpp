@@ -12,7 +12,7 @@ Ship::Ship(Game* game)
 {
 
 	SpriteComponent* sc = new SpriteComponent(this, 150);
-	/*sc->SetTexture(game->GetTexture("Assets\\Ship.png"));*/
+	sc->SetTexture(game->GetTexture("Assets\\Ship.png"));
 
 	mInputComponent = new InputComponent(this);
 	mInputComponent->SetForwardKey(SDL_SCANCODE_W);
@@ -37,7 +37,7 @@ void Ship::UpdateActor(float deltaTime)
 	mLaserCooldown -= deltaTime;
 	mResetCooldown -= deltaTime;
 
-	if (mCircle->GetCenter().y >= 768.0f)
+	if (mCircle->GetCenter().y >= static_cast<float>(CLIENT_HEIGHT))
 	{
 		float positionX = GetPosition().x;
 		Vector2 newPosition(positionX, 0.0f);
@@ -45,7 +45,7 @@ void Ship::UpdateActor(float deltaTime)
 		return;
 	}
 
-	if (mCircle->GetCenter().x >= 1024.0f)
+	if (mCircle->GetCenter().x >= static_cast<float>(CLIENT_WIDTH))
 	{
 		float positionY = GetPosition().y;
 		Vector2 newPosition(0.0f, positionY);
@@ -56,7 +56,7 @@ void Ship::UpdateActor(float deltaTime)
 	if (mCircle->GetCenter().y <= 0.0f)
 	{
 		float positionX = GetPosition().x;
-		Vector2 newPosition(positionX, 768.0f);
+		Vector2 newPosition(positionX, static_cast<float>(CLIENT_HEIGHT));
 		SetPosition(newPosition);
 		return;
 	}
@@ -64,7 +64,7 @@ void Ship::UpdateActor(float deltaTime)
 	if (mCircle->GetCenter().x <= 0.0f)
 	{
 		float positionY = GetPosition().y;
-		Vector2 newPosition(1024.0f, positionY);
+		Vector2 newPosition(static_cast<float>(CLIENT_WIDTH), positionY);
 		SetPosition(newPosition);
 		return;
 	}
