@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Asteroid.h"
 #include "Shader.h"
-#include "Ship.h"
 #include "Texture.h"
 #include "VertexArray.h"
 
@@ -31,10 +29,6 @@ public:
 	void RemoveSprite(class SpriteComponent* sprite);
 
 	Texture* GetTexture(const std::string& fileName);
-
-	void AddAsteroid(Asteroid* ast);
-	void RemoveAsteroid(Asteroid* ast);
-	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
 private:
 	void ProcessInput();
 	void UpdateGame();
@@ -60,7 +54,4 @@ private:
 	Uint32 mTicksCount;
 	bool mIsRunning;
 	bool mUpdatingActors;
-
-	Ship* mShip;
-	std::vector<Asteroid*> mAsteroids;
 };
