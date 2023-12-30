@@ -63,7 +63,7 @@ bool Game::Initialize()
 
 	if (!LoadShaders())
 	{
-		SDL_Log("Failed to load shaders: %s", SDL_GetError());
+		SDL_Log("Failed to load shaders.");
 		return false;
 	}
 
