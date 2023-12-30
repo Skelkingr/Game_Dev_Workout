@@ -25,9 +25,9 @@ public:
 	virtual void ActorInput(const uint8_t* keyState);
 
 	class Game* GetGame() const { return mGame; }
-	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
+	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX, mRotation); }
 	const Vector3& GetPosition() const { return mPosition; }
-	float GetRotation() const { return mRotation; }
+	const Quaternion& GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
 	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
 
@@ -36,8 +36,8 @@ public:
 	void SetState(State state) { mState = state; }
 
 	void SetPosition(Vector3 position);
+	void SetRotation(Quaternion rotation);
 	void SetScale(float scale);
-	void SetRotation(float rotation);
 
 	void ComputeWorldTransform();
 
@@ -47,8 +47,8 @@ private:
 	State mState;
 	
 	Vector3 mPosition;
+	Quaternion mRotation;
 	float mScale;
-	float mRotation;
 	
 	Matrix4 mWorldTransform;
 	bool mRecomputWorldTransform;

@@ -8,8 +8,8 @@ Actor::Actor(Game* game)
 	:
 	mState(EActive),
 	mPosition(Vector3::Zero),
+	mRotation(Quaternion::Identity),
 	mScale(1.0f),
-	mRotation(0.0f),
 	mWorldTransform(Matrix4::Identity),
 	mRecomputWorldTransform(true),
 	mGame(game)
@@ -77,15 +77,15 @@ void Actor::SetPosition(Vector3 position)
 	mRecomputWorldTransform = true;
 }
 
-void Actor::SetScale(float scale)
+void Actor::SetRotation(Quaternion rotation)
 {
-	mScale = scale;
+	mRotation = rotation;
 	mRecomputWorldTransform = true;
 }
 
-void Actor::SetRotation(float rotation)
+void Actor::SetScale(float scale)
 {
-	mRotation = rotation;
+	mScale = scale;
 	mRecomputWorldTransform = true;
 }
 
@@ -96,7 +96,7 @@ void Actor::ComputeWorldTransform()
 		mRecomputWorldTransform = false;
 
 		mWorldTransform = Matrix4::CreateScale(mScale);
-		mWorldTransform *= Matrix4::CreateRotationZ(mRotation);
+		mWorldTransform *= Matrix4::CreateFromQuaternion(mRotation);
 		mWorldTransform *= Matrix4::CreateTranslation(Vector3(mPosition.x, mPosition.y, 0.0f));
 	}
 
