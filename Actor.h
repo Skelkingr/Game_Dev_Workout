@@ -26,7 +26,7 @@ public:
 
 	class Game* GetGame() const { return mGame; }
 	Vector2 GetForward() const { return Vector2(Math::Cos(mRotation), Math::Sin(mRotation)); }
-	const Vector2& GetPosition() const { return mPosition; }
+	const Vector3& GetPosition() const { return mPosition; }
 	float GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
 	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
@@ -35,7 +35,7 @@ public:
 
 	void SetState(State state) { mState = state; }
 
-	void SetPosition(Vector2 position);
+	void SetPosition(Vector3 position);
 	void SetScale(float scale);
 	void SetRotation(float rotation);
 
@@ -46,7 +46,7 @@ public:
 private:
 	State mState;
 	
-	Vector2 mPosition;
+	Vector3 mPosition;
 	float mScale;
 	float mRotation;
 	

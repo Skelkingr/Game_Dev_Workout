@@ -7,7 +7,7 @@
 Actor::Actor(Game* game)
 	:
 	mState(EActive),
-	mPosition(Vector2::Zero),
+	mPosition(Vector3::Zero),
 	mScale(1.0f),
 	mRotation(0.0f),
 	mWorldTransform(Matrix4::Identity),
@@ -71,7 +71,7 @@ void Actor::UpdateActor(float deltaTime)
 void Actor::ActorInput(const uint8_t* keyState)
 {}
 
-void Actor::SetPosition(Vector2 position)
+void Actor::SetPosition(Vector3 position)
 {
 	mPosition = position;
 	mRecomputWorldTransform = true;

@@ -25,9 +25,6 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
-	void AddSprite(class SpriteComponent* sprite);
-	void RemoveSprite(class SpriteComponent* sprite);
-
 	Texture* GetTexture(const std::string& fileName);
 private:
 	void ProcessInput();
@@ -43,10 +40,9 @@ private:
 	std::unordered_map<std::string, Texture*> mTextures;
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
-	std::vector<class SpriteComponent*> mSprites;
 
-	Shader* mSpriteShader;
-	VertexArray* mSpriteVerts;
+	Shader* mShader;
+	VertexArray* mVertexArray;
 	
 	SDL_Window* mWindow;
 	SDL_GLContext mContext;

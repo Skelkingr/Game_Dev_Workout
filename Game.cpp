@@ -1,6 +1,6 @@
+#include "Actor.h"
 #include "Game.h"
 #include "Math.h"
-#include "SpriteComponent.h"
 
 #include <GL/glew.h>
 
@@ -10,8 +10,8 @@ Game::Game()
 	:
 	mWindow(nullptr),
 	mContext(nullptr),
-	mSpriteShader(nullptr),
-	mSpriteVerts(nullptr),
+	mShader(nullptr),
+	mVertexArray(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false)
@@ -158,19 +158,14 @@ void Game::GenerateOutput()
 	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
 	glClear(GL_COLOR_BUFFER_BIT);
 
-	mSpriteShader->SetActive();
-	mSpriteVerts->SetActive();
+	mShader->SetActive();
+	mVertexArray->SetActive();
 
 	glEnable(GL_BLEND);
 	glBlendFunc(
 		GL_SRC_ALPHA,
 		GL_ONE_MINUS_SRC_ALPHA
 	);
-
-	for (auto sprite : mSprites)
-	{
-		sprite->Draw(mSpriteShader);
-	}
 
 	SDL_GL_SwapWindow(mWindow);
 }
@@ -182,16 +177,16 @@ void Game::LoadData()
 
 bool Game::LoadShaders()
 {
-	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+	mShader = new Shader();
+	if (!mShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
 	{
 		return false;
 	}
 
-	mSpriteShader->SetActive();
+	mShader->SetActive();
 
 	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
-	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+	mShader->SetMatrixUniform("uViewProj", viewProj);
 
 	return true;
 }
@@ -210,23 +205,11 @@ void Game::CreateSpriteVerts()
 		2, 3, 0
 	};
 
-	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+	mVertexArray = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
 }
 
 void Game::UnloadData()
 {
-	if (mSpriteShader != nullptr)
-	{
-		delete mSpriteShader;
-		mSpriteShader = nullptr;
-	}
-
-	if (mSpriteVerts != nullptr)
-	{
-		delete mSpriteVerts;
-		mSpriteVerts = nullptr;
-	}
-
 	while (!mActors.empty())
 	{
 		delete mActors.back();
@@ -301,28 +284,5 @@ void Game::RemoveActor(Actor* actor)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
-}
-
-void Game::AddSprite(SpriteComponent* sprite)
-{
-	int myFuckingDrawOrder = sprite->GetDrawOrder();
-	auto iter = mSprites.begin();
-	for (;
-		iter != mSprites.end();
-		++iter)
-	{
-		if (myFuckingDrawOrder < (*iter)->GetDrawOrder())
-		{
-			break;
-		}
-	}
-
-	mSprites.insert(iter, sprite);
-}
-
-void Game::RemoveSprite(SpriteComponent* sprite)
-{
-	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
-	mSprites.erase(iter);
 }
 
