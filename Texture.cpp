@@ -1,8 +1,7 @@
 #include "Texture.h"
 
-#include <SDL.h>
-
 #include <GL/glew.h>
+#include <SDL/SDL.h>
 #include <SOIL/SOIL.h>
 
 Texture::Texture()

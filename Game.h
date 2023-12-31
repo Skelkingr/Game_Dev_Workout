@@ -1,10 +1,6 @@
 #pragma once
 
-#include "Shader.h"
-#include "Texture.h"
-#include "VertexArray.h"
-
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <string>
 #include <unordered_map>
@@ -17,6 +13,7 @@ class Game
 {
 public:
 	Game();
+	~Game() = default;
 
 	bool Initialize();
 	void RunLoop();
@@ -25,29 +22,22 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
-	Texture* GetTexture(const std::string& fileName);
+	class Renderer* GetRenderer() { return mRenderer; }
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 
-	bool LoadShaders();
-	void CreateSpriteVerts();
-
 	void LoadData();
 	void UnloadData();
 private:
-	std::unordered_map<std::string, Texture*> mTextures;
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
 
-	Shader* mShader;
-	VertexArray* mVertexArray;
-	
-	SDL_Window* mWindow;
-	SDL_GLContext mContext;
+	class Renderer* mRenderer;
 
 	Uint32 mTicksCount;
+
 	bool mIsRunning;
 	bool mUpdatingActors;
 };
