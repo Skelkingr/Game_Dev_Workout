@@ -178,7 +178,7 @@ void Game::LoadData()
 bool Game::LoadShaders()
 {
 	mShader = new Shader();
-	if (!mShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+	if (!mShader->Load("Shaders/Basic.vert", "Shaders/Basic.frag"))
 	{
 		return false;
 	}

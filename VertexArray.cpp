@@ -30,24 +30,37 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsign
 		GL_STATIC_DRAW
 	);
 
+	// Position
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(
 		0,
 		3,
 		GL_FLOAT,
 		GL_FALSE,
-		sizeof(float) * 5,
+		8 * sizeof(float),
 		0
 	);
 
+	// Normal
 	glEnableVertexAttribArray(1);
 	glVertexAttribPointer(
 		1,
+		3,
+		GL_FLOAT,
+		GL_FALSE,
+		8 * sizeof(float),
+		reinterpret_cast<void*>(sizeof(float) * 3)
+	);
+
+	// Texture coordinates
+	glEnableVertexAttribArray(2);
+	glVertexAttribPointer(
+		2,
 		2,
 		GL_FLOAT,
 		GL_FALSE,
-		sizeof(float) * 5,
-		reinterpret_cast<void*>(sizeof(float) * 3)
+		8 * sizeof(float),
+		reinterpret_cast<void*>(sizeof(float) * 6)
 	);
 }
 
