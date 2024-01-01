@@ -1,23 +1,25 @@
-#include "Asteroid.h"
 #include "Game.h"
-#include "Math.h"
-#include "Ship.h"
-#include "SpriteComponent.h"
 
-#include <GL/glew.h>
+#include "Actor.h"
+#include "CameraActor.h"
+#include "Math.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
+#include "PlaneActor.h"
+#include "Renderer.h"
+#include "SpriteComponent.h"
+#include "Texture.h"
 
 #include <algorithm>
 
 Game::Game()
 	:
-	mWindow(nullptr),
-	mContext(nullptr),
-	mSpriteShader(nullptr),
-	mSpriteVerts(nullptr),
+	mActors({}),
+	mPendingActors({}),
+	mRenderer(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false),
-	mShip(nullptr)
+	mUpdatingActors(false)
 {}
 
 bool Game::Initialize()
@@ -28,49 +30,14 @@ bool Game::Initialize()
 		return false;
 	}
 
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 3);
-	SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
-
-	SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-	SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-
-	SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
-
-	SDL_GL_SetAttribute(SDL_GL_ACCELERATED_VISUAL, 1);
-
-	mWindow = SDL_CreateWindow("Skelkingr", 100, 100, CLIENT_WIDTH, CLIENT_HEIGHT, SDL_WINDOW_OPENGL);
-	if (!mWindow)
+	mRenderer = new Renderer(this);
+	if (!mRenderer->Initialize(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT)))
 	{
-		SDL_Log("Failed to create window: %s", SDL_GetError());
+		SDL_Log("Failed to initialize renderer.");
+		delete mRenderer;
+		mRenderer = nullptr;
 		return false;
 	}
-
-	mContext = SDL_GL_CreateContext(mWindow);
-	if (!mContext)
-	{
-		SDL_Log("Failed to create OpenGL context: %s", SDL_GetError());
-		return false;
-	}
-
-	glewExperimental = GL_TRUE;
-	if (glewInit() != GLEW_OK)
-	{
-		SDL_Log("Failed to initialize GLEW: %s", SDL_GetError());
-		return false;
-	}
-	glGetError();
-
-	if (!LoadShaders())
-	{
-		SDL_Log("Failed to load shaders: %s", SDL_GetError());
-		return false;
-	}
-
-	CreateSpriteVerts();
 
 	LoadData();
 
@@ -108,12 +75,10 @@ void Game::ProcessInput()
 		mIsRunning = false;
 	}
 
-	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
 		actor->ProcessInput(keyState);
 	}
-	mUpdatingActors = false;
 }
 
 void Game::UpdateGame()
@@ -158,143 +123,116 @@ void Game::UpdateGame()
 
 void Game::GenerateOutput()
 {
-	glClearColor(0.86f, 0.86f, 0.86f, 1.0f);
-	glClear(GL_COLOR_BUFFER_BIT);
-
-	mSpriteShader->SetActive();
-	mSpriteVerts->SetActive();
-
-	glEnable(GL_BLEND);
-	glBlendFunc(
-		GL_SRC_ALPHA,
-		GL_ONE_MINUS_SRC_ALPHA
-	);
-
-	for (auto sprite : mSprites)
-	{
-		sprite->Draw(mSpriteShader);
-	}
-
-	SDL_GL_SwapWindow(mWindow);
+	mRenderer->Draw();
 }
 
 void Game::LoadData()
 {
-	mShip = new Ship(this);
-	mShip->SetRotation(Math::PiOver2);
+	// Create Cube
+	Actor* act = new Actor(this);
+	act->SetPosition(Vector3(200.0f, 75.0f, -50.0f));
+	act->SetScale(100.0f);
 
-	const int numAsteroids = 20;
-	for (int i = 0; i < numAsteroids; i++)
+	Quaternion quat(Vector3::UnitY, -Math::PiOver2);
+	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::Pi + Math::Pi / 4.0f));
+	act->SetRotation(quat);
+
+	MeshComponent* meshComp = new MeshComponent(act);
+	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Cube.gpmesh"));
+
+	// Create Sphere
+	act = new Actor(this);
+	act->SetPosition(Vector3(200.0f, -75.0f, -50.0f));
+	act->SetScale(3.0f);
+
+	meshComp = new MeshComponent(act);
+	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Sphere.gpmesh"));
+
+	// Create floor
+	const float start = -1250.0f;
+	const float size = 250.0f;
+	for (int i = 0; i < 10; i++)
 	{
-		new Asteroid(this);
+		for (int j = 0; j < 10; j++)
+		{
+			act = new PlaneActor(this);
+			act->SetPosition(Vector3(start + i * size, start + j * size, -100.0f));
+		}
 	}
-}
 
-bool Game::LoadShaders()
-{
-	mSpriteShader = new Shader();
-	if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+	// Create left and right walls
+	quat = Quaternion(Vector3::UnitX, Math::PiOver2);
+	for (int i = 0; i < 10; i++)
 	{
-		return false;
+		act = new PlaneActor(this);
+		act->SetPosition(Vector3(start + i * size, start - size, 0.0f));
+		act->SetRotation(quat);
+
+		act = new PlaneActor(this);
+		act->SetPosition(Vector3(start + i * size, -start + size, 0.0f));
+		act->SetRotation(quat);
+	}
+	
+	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::PiOver2));
+
+	// Create forward and back walls
+	for (int i = 0; i < 10; i++)
+	{
+		act = new PlaneActor(this);
+		act->SetPosition(Vector3(start - size, start + i * size, 0.0f));
+		act->SetRotation(quat);
+
+		act = new PlaneActor(this);
+		act->SetPosition(Vector3(-start + size, start + i * size, 0.0f));
+		act->SetRotation(quat);
 	}
 
-	mSpriteShader->SetActive();
+	// Let there be light !
+	mRenderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
+	
+	DirectionalLight& dir = mRenderer->GetDirectionalLight();
+	dir.mDirection = Vector3(0.0f, -0.7f, -0.7f);
+	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
+	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
-	Matrix4 viewProj = Matrix4::CreateSimpleViewProj(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT));
-	mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
+	// Create a camera actor
+	act = new CameraActor(this);
 
-	return true;
-}
+	// Add HUD elements
+	act = new Actor(this);
+	act->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
+	SpriteComponent* spriteComp = new SpriteComponent(act);
+	spriteComp->SetTexture(mRenderer->GetTexture("Assets/HealthBar.png"));
 
-void Game::CreateSpriteVerts()
-{
-	float vertexBuffer[] = {
-		-0.5f,  0.5f,  0.0f,  0.0f,  0.0f,
-		 0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-		 0.5f, -0.5f,  0.0f,  1.0f,  1.0f,
-		-0.5f, -0.5f,  0.0f,  0.0f,  1.0f
-	};
-
-	unsigned int indexBuffer[] = {
-		0, 1, 2,
-		2, 3, 0
-	};
-
-	mSpriteVerts = new VertexArray(vertexBuffer, 4, indexBuffer, 6);
+	act = new Actor(this);
+	act->SetPosition(Vector3(375.0f, -275.0f, 0.0f));
+	act->SetScale(0.75f);
+	spriteComp = new SpriteComponent(act);
+	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
 }
 
 void Game::UnloadData()
 {
-	if (mSpriteShader != nullptr)
-	{
-		delete mSpriteShader;
-		mSpriteShader = nullptr;
-	}
-
-	if (mSpriteVerts != nullptr)
-	{
-		delete mSpriteVerts;
-		mSpriteVerts = nullptr;
-	}
-
 	while (!mActors.empty())
 	{
 		delete mActors.back();
 	}
 
-	for (auto& texture : mTextures)
+	if (mRenderer)
 	{
-		texture.second->Unload();
-		delete texture.second;
-	}
-	mTextures.clear();
-}
-
-Texture* Game::GetTexture(const std::string& fileName)
-{
-	Texture* texture = nullptr;
-
-	auto iter = mTextures.find(fileName);
-	if (iter != mTextures.end())
-	{
-		texture = iter->second;
-	}
-	else
-	{
-		texture = new Texture();
-		if (texture->Load(fileName))
-		{
-			mTextures.emplace(fileName, texture);
-		}
-		else
-		{
-			delete texture;
-			texture = nullptr;
-		}
-	}
-
-	return texture;
-}
-
-void Game::AddAsteroid(Asteroid* ast)
-{
-	mAsteroids.emplace_back(ast);
-}
-
-void Game::RemoveAsteroid(Asteroid* ast)
-{
-	auto iter = std::find(mAsteroids.begin(), mAsteroids.end(), ast);
-	if (iter != mAsteroids.end())
-	{
-		mAsteroids.erase(iter);
+		mRenderer->UnloadData();
 	}
 }
 
 void Game::Shutdown()
 {
 	UnloadData();
-	SDL_GL_DeleteContext(mContext);
-	SDL_DestroyWindow(mWindow);
+	
+	if (mRenderer)
+	{
+		mRenderer->ShutDown();
+	}
+	
 	SDL_Quit();
 }
 
@@ -325,28 +263,5 @@ void Game::RemoveActor(Actor* actor)
 		std::iter_swap(iter, mActors.end() - 1);
 		mActors.pop_back();
 	}
-}
-
-void Game::AddSprite(SpriteComponent* sprite)
-{
-	int myFuckingDrawOrder = sprite->GetDrawOrder();
-	auto iter = mSprites.begin();
-	for (;
-		iter != mSprites.end();
-		++iter)
-	{
-		if (myFuckingDrawOrder < (*iter)->GetDrawOrder())
-		{
-			break;
-		}
-	}
-
-	mSprites.insert(iter, sprite);
-}
-
-void Game::RemoveSprite(SpriteComponent* sprite)
-{
-	auto iter = std::find(mSprites.begin(), mSprites.end(), sprite);
-	mSprites.erase(iter);
 }
 

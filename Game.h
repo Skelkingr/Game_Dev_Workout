@@ -1,12 +1,6 @@
 #pragma once
 
-#include "Asteroid.h"
-#include "Shader.h"
-#include "Ship.h"
-#include "Texture.h"
-#include "VertexArray.h"
-
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <string>
 #include <unordered_map>
@@ -19,6 +13,7 @@ class Game
 {
 public:
 	Game();
+	~Game() = default;
 
 	bool Initialize();
 	void RunLoop();
@@ -27,40 +22,22 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
-	void AddSprite(class SpriteComponent* sprite);
-	void RemoveSprite(class SpriteComponent* sprite);
-
-	Texture* GetTexture(const std::string& fileName);
-
-	void AddAsteroid(Asteroid* ast);
-	void RemoveAsteroid(Asteroid* ast);
-	std::vector<Asteroid*>& GetAsteroids() { return mAsteroids; }
+	class Renderer* GetRenderer() { return mRenderer; }
 private:
 	void ProcessInput();
 	void UpdateGame();
 	void GenerateOutput();
 
-	bool LoadShaders();
-	void CreateSpriteVerts();
-
 	void LoadData();
 	void UnloadData();
 private:
-	std::unordered_map<std::string, Texture*> mTextures;
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
-	std::vector<class SpriteComponent*> mSprites;
 
-	Shader* mSpriteShader;
-	VertexArray* mSpriteVerts;
-	
-	SDL_Window* mWindow;
-	SDL_GLContext mContext;
+	class Renderer* mRenderer;
 
 	Uint32 mTicksCount;
+
 	bool mIsRunning;
 	bool mUpdatingActors;
-
-	Ship* mShip;
-	std::vector<Asteroid*> mAsteroids;
 };

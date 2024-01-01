@@ -1,5 +1,10 @@
-#include "Game.h"
 #include "SpriteComponent.h"
+
+#include "Actor.h"
+#include "Game.h"
+#include "Renderer.h"
+#include "Shader.h"
+#include "Texture.h"
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:
@@ -9,12 +14,12 @@ SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	mTexWidth(0),
 	mTexHeight(0)
 {
-	mOwner->GetGame()->AddSprite(this);
+	mOwner->GetGame()->GetRenderer()->AddSprite(this);
 }
 
 SpriteComponent::~SpriteComponent()
 {
-	mOwner->GetGame()->RemoveSprite(this);
+	mOwner->GetGame()->GetRenderer()->RemoveSprite(this);
 }
 
 void SpriteComponent::Draw(Shader* shader)
@@ -26,9 +31,10 @@ void SpriteComponent::Draw(Shader* shader)
 			static_cast<float>(mTexHeight),
 			1.0f
 		);
-		Matrix4 world = scaleMat * mOwner->GetWorldTransform();
 
-		shader->SetMatrixUniform("uWorld", world);
+		Matrix4 worldMat = scaleMat * mOwner->GetWorldTransform();
+
+		shader->SetMatrixUniform("uWorldTransform", worldMat);
 
 		mTexture->SetActive();
 
@@ -39,7 +45,7 @@ void SpriteComponent::Draw(Shader* shader)
 void SpriteComponent::SetTexture(Texture* texture)
 {
 	mTexture = texture;
-	
+
 	mTexWidth = texture->GetWidth();
 	mTexHeight = texture->GetHeight();
 }

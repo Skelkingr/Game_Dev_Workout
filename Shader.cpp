@@ -1,6 +1,6 @@
 #include "Shader.h"
 
-#include <SDL.h>
+#include <SDL/SDL.h>
 
 #include <fstream>
 #include <sstream>
@@ -52,6 +52,20 @@ void Shader::SetMatrixUniform(const char* name, const Matrix4& matrix)
     GLuint location = glGetUniformLocation(mShaderProgram, name);
 
     glUniformMatrix4fv(location, 1, GL_TRUE, matrix.GetAsFloatPtr());
+}
+
+void Shader::SetVectorUniform(const char* name, const Vector3& vector)
+{
+    GLuint location = glGetUniformLocation(mShaderProgram, name);
+
+    glUniform3fv(location, 1, vector.GetAsFloatPtr());
+}
+
+void Shader::SetFloatUniform(const char* name, float value)
+{
+    GLuint location = glGetUniformLocation(mShaderProgram, name);
+
+    glUniform1f(location, value);
 }
 
 bool Shader::CompileShader(const std::string& fileName, GLenum shaderType, GLuint& outShader)

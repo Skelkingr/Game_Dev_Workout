@@ -1,8 +1,7 @@
 #include "Texture.h"
 
-#include <SDL.h>
-
 #include <GL/glew.h>
+#include <SDL/SDL.h>
 #include <SOIL/SOIL.h>
 
 Texture::Texture()
@@ -10,9 +9,6 @@ Texture::Texture()
     mTextureID(0),
     mWidth(0),
     mHeight(0)
-{}
-
-Texture::~Texture()
 {}
 
 bool Texture::Load(const std::string& fileName)

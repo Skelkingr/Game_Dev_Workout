@@ -7,9 +7,9 @@
 Actor::Actor(Game* game)
 	:
 	mState(EActive),
-	mPosition(Vector2::Zero),
+	mPosition(Vector3::Zero),
+	mRotation(Quaternion::Identity),
 	mScale(1.0f),
-	mRotation(0.0f),
 	mWorldTransform(Matrix4::Identity),
 	mRecomputWorldTransform(true),
 	mGame(game)
@@ -71,21 +71,21 @@ void Actor::UpdateActor(float deltaTime)
 void Actor::ActorInput(const uint8_t* keyState)
 {}
 
-void Actor::SetPosition(Vector2 position)
+void Actor::SetPosition(const Vector3& position)
 {
 	mPosition = position;
+	mRecomputWorldTransform = true;
+}
+
+void Actor::SetRotation(const Quaternion& rotation)
+{
+	mRotation = rotation;
 	mRecomputWorldTransform = true;
 }
 
 void Actor::SetScale(float scale)
 {
 	mScale = scale;
-	mRecomputWorldTransform = true;
-}
-
-void Actor::SetRotation(float rotation)
-{
-	mRotation = rotation;
 	mRecomputWorldTransform = true;
 }
 
@@ -96,8 +96,8 @@ void Actor::ComputeWorldTransform()
 		mRecomputWorldTransform = false;
 
 		mWorldTransform = Matrix4::CreateScale(mScale);
-		mWorldTransform *= Matrix4::CreateRotationZ(mRotation);
-		mWorldTransform *= Matrix4::CreateTranslation(Vector3(mPosition.x, mPosition.y, 0.0f));
+		mWorldTransform *= Matrix4::CreateFromQuaternion(mRotation);
+		mWorldTransform *= Matrix4::CreateTranslation(mPosition);
 	}
 
 	for (auto comp : mComponents)
