@@ -71,13 +71,13 @@ void Actor::UpdateActor(float deltaTime)
 void Actor::ActorInput(const uint8_t* keyState)
 {}
 
-void Actor::SetPosition(Vector3 position)
+void Actor::SetPosition(const Vector3& position)
 {
 	mPosition = position;
 	mRecomputWorldTransform = true;
 }
 
-void Actor::SetRotation(Quaternion rotation)
+void Actor::SetRotation(const Quaternion& rotation)
 {
 	mRotation = rotation;
 	mRecomputWorldTransform = true;
@@ -97,7 +97,7 @@ void Actor::ComputeWorldTransform()
 
 		mWorldTransform = Matrix4::CreateScale(mScale);
 		mWorldTransform *= Matrix4::CreateFromQuaternion(mRotation);
-		mWorldTransform *= Matrix4::CreateTranslation(Vector3(mPosition.x, mPosition.y, 0.0f));
+		mWorldTransform *= Matrix4::CreateTranslation(mPosition);
 	}
 
 	for (auto comp : mComponents)

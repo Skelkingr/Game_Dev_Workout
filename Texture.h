@@ -6,7 +6,7 @@ class Texture
 {
 public:
 	Texture();
-	~Texture();
+	~Texture() = default;
 
 	bool Load(const std::string& fileName);
 	void Unload();

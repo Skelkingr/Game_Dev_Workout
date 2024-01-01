@@ -1,15 +1,8 @@
 #include "MoveComponent.h"
 
-MoveComponent::MoveComponent()
-	:
-	Component(),
-	mAngularSpeed(0.0f),
-	mForwardSpeed(0.0f)
-{}
-
 MoveComponent::MoveComponent(Actor* owner, int updateOrder)
 	:
-	Component(owner),
+	Component(owner, updateOrder),
 	mAngularSpeed(0.0f),
 	mForwardSpeed(0.0f)
 {}

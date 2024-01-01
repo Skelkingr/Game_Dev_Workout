@@ -11,9 +11,6 @@ Texture::Texture()
     mHeight(0)
 {}
 
-Texture::~Texture()
-{}
-
 bool Texture::Load(const std::string& fileName)
 {
     int channels = 0;

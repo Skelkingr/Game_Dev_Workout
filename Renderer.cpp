@@ -126,6 +126,8 @@ void Renderer::Draw()
     mMeshShader->SetActive();
     mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
 
+    SetLightUniforms(mMeshShader);
+
     for (auto mc : mMeshComps)
     {
         mc->Draw(mMeshShader);
@@ -235,7 +237,7 @@ Texture* Renderer::GetTexture(const std::string& fileName)
 bool Renderer::LoadShaders()
 {
     mSpriteShader = new Shader();
-    if (!mSpriteShader->Load("Shaders/Main.vert", "Shaders/Main.frag"))
+    if (!mSpriteShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
     {
         return false;
     }
@@ -245,7 +247,7 @@ bool Renderer::LoadShaders()
     mSpriteShader->SetMatrixUniform("uViewProj", viewProj);
 
     mMeshShader = new Shader();
-    if (!mMeshShader->Load("Shaders/Main.vert", "Shaders/Main.frag"))
+    if (!mMeshShader->Load("Shaders/Phong.vert", "Shaders/Phong.frag"))
     {
         return false;
     }
@@ -274,4 +276,18 @@ void Renderer::CreateSpriteVerts()
     };
 
     mSpriteVerts = new VertexArray(vertices, 4, indices, 6);
+}
+
+void Renderer::SetLightUniforms(Shader* shader) const
+{
+    Matrix4 invView = mView;
+    invView.Invert();
+    
+    shader->SetVectorUniform("uCameraPos", invView.GetTranslation());
+    
+    shader->SetVectorUniform("uAmbientLight", mAmbientLight);
+    
+    shader->SetVectorUniform("uDirLight.mDirection", mDirLight.mDirection);
+    shader->SetVectorUniform("uDirLight.mDiffuseColor", mDirLight.mDiffuseColor);
+    shader->SetVectorUniform("uDirLight.mSpecColor", mDirLight.mSpecColor);
 }

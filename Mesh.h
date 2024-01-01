@@ -19,6 +19,7 @@ public:
 	const std::string& GetShaderName() const { return mShaderName; }
 
 	float GetRadius() const { return mRadius; }
+	float GetSpecPower() const { return mSpecPower; }
 private:
 	std::vector<class Texture*> mTextures;
 
@@ -27,5 +28,7 @@ private:
 	std::string mShaderName;
 
 	float mRadius;
+
+	float mSpecPower;
 };
 

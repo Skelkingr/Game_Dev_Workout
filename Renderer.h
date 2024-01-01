@@ -8,6 +8,13 @@
 #include <unordered_map>
 #include <vector>
 
+struct DirectionalLight
+{
+	Vector3 mDirection;
+	Vector3 mDiffuseColor;
+	Vector3 mSpecColor;
+};
+
 class Renderer
 {
 public:
@@ -33,11 +40,15 @@ public:
 
 	void SetViewMatrix(const Matrix4& view) { mView = view; }
 
+	void SetAmbientLight(const Vector3& ambient) { mAmbientLight = ambient; }
+	DirectionalLight& GetDirectionalLight() { return mDirLight; }
+
 	float GetScreenWidth() const { return mScreenWidth; }
 	float GetScreenHeight() const { return mScreenHeight; }
 private:
 	bool LoadShaders();
 	void CreateSpriteVerts();
+	void SetLightUniforms(class Shader* shader) const;
 private:
 	std::unordered_map<std::string, class Mesh*> mMeshes;
 	std::unordered_map<std::string, class Texture*> mTextures;
@@ -57,6 +68,9 @@ private:
 
 	float mScreenWidth;
 	float mScreenHeight;
+
+	Vector3 mAmbientLight;
+	DirectionalLight mDirLight;
 
 	SDL_Window* mWindow;
 	SDL_GLContext mContext;

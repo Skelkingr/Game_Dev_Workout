@@ -15,7 +15,8 @@ Mesh::Mesh()
     mTextures({}),
     mVertexArray(nullptr),
     mShaderName(""),
-    mRadius(0.0f)
+    mRadius(0.0f),
+    mSpecPower(100.0f)
 {}
 
 bool Mesh::Load(const std::string& fileName, Renderer* renderer)
@@ -58,6 +59,8 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
         SDL_Log("Mesh %s has no textures, there should be at least one.", fileName.c_str());
         return false;
     }
+
+    mSpecPower = static_cast<float>(doc["specularPower"].GetDouble());
 
     for (rapidjson::SizeType i = 0; i < textures.Size(); i++)
     {

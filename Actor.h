@@ -14,6 +14,7 @@ public:
 		EDead
 	};
 public:
+	Actor() = delete;
 	Actor(class Game* game);
 	virtual ~Actor();
 
@@ -35,8 +36,8 @@ public:
 
 	void SetState(State state) { mState = state; }
 
-	void SetPosition(Vector3 position);
-	void SetRotation(Quaternion rotation);
+	void SetPosition(const Vector3& position);
+	void SetRotation(const Quaternion& rotation);
 	void SetScale(float scale);
 
 	void ComputeWorldTransform();

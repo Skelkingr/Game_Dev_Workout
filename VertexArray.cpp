@@ -15,7 +15,7 @@ VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsign
 
 	glBufferData(
 		GL_ARRAY_BUFFER,
-		static_cast<unsigned long long>(numVerts) * 5 * sizeof(float),
+		static_cast<unsigned long long>(numVerts) * 8 * sizeof(float),
 		verts,
 		GL_STATIC_DRAW
 	);
