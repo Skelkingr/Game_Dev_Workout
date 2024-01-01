@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "Actor.h"
+#include "AudioSystem.h"
 #include "CameraActor.h"
 #include "Math.h"
 #include "Mesh.h"
@@ -36,6 +37,15 @@ bool Game::Initialize()
 		SDL_Log("Failed to initialize renderer.");
 		delete mRenderer;
 		mRenderer = nullptr;
+		return false;
+	}
+
+	mAudioSystem = new AudioSystem(this);
+	if (!mAudioSystem->Initialize())
+	{
+		SDL_Log("Failed to initialize audio system.");
+		delete mAudioSystem;
+		mAudioSystem = nullptr;
 		return false;
 	}
 
