@@ -26,7 +26,7 @@ protected:
 	friend class AudioSystem;
 	SoundEvent(class AudioSystem* system, unsigned int id);
 private:
-	class AudioSystem* mSystem;
+	AudioSystem* mSystem;
 	unsigned int mID;
 };
 

@@ -15,12 +15,12 @@
 
 Game::Game()
 	:
-	mActors({}),
-	mPendingActors({}),
 	mRenderer(nullptr),
+	mAudioSystem(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false)
+	mUpdatingActors(false),
+	mCameraActor(nullptr)
 {}
 
 bool Game::Initialize()
@@ -129,6 +129,8 @@ void Game::UpdateGame()
 	{
 		delete actor;
 	}
+
+	mAudioSystem->Update(deltaTime);
 }
 
 void Game::GenerateOutput()
@@ -206,7 +208,8 @@ void Game::LoadData()
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
 	// Create a camera actor
-	act = new CameraActor(this);
+	mCameraActor = new CameraActor(this);
+	mCameraActor->SetPosition(Vector3(-100.0f, 0.0f, 0.0f));
 
 	// Add HUD elements
 	act = new Actor(this);
@@ -219,6 +222,8 @@ void Game::LoadData()
 	act->SetScale(0.75f);
 	spriteComp = new SpriteComponent(act);
 	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
+
+	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 }
 
 void Game::UnloadData()
@@ -240,9 +245,14 @@ void Game::Shutdown()
 	
 	if (mRenderer)
 	{
-		mRenderer->ShutDown();
+		mRenderer->Shutdown();
 	}
-	
+
+	if (mAudioSystem)
+	{
+		mAudioSystem->Shutdown();
+	}
+
 	SDL_Quit();
 }
 

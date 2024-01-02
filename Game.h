@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SoundEvent.h"
+
 #include <SDL/SDL.h>
 
 #include <string>
@@ -42,4 +44,7 @@ private:
 
 	bool mIsRunning;
 	bool mUpdatingActors;
+
+	class CameraActor* mCameraActor;
+	SoundEvent mMusicEvent;
 };

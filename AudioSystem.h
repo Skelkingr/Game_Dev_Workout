@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SoundEvent.h"
+
 #include <string>
 #include <unordered_map>
 
@@ -25,10 +27,10 @@ public:
 	~AudioSystem() = default;
 
 	bool Initialize();
-	void ShutDown();
+	void Shutdown();
 	void Update(float deltaTime);
 
-	void PlayEvent(const std::string& name);
+	SoundEvent PlayEvent(const std::string& name);
 protected:
 	friend class SoundEvent;
 	FMOD::Studio::EventInstance* GetEventInstance(unsigned int id);

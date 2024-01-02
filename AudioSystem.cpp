@@ -1,6 +1,7 @@
 #include "AudioSystem.h"
 
 #include "Game.h"
+#include "SoundEvent.h"
 
 #include <fmod_studio.hpp>
 #include <fmod_errors.h>
@@ -56,9 +57,13 @@ bool AudioSystem::Initialize()
     return true;
 }
 
-void AudioSystem::ShutDown()
+void AudioSystem::Shutdown()
 {
-    mSystem->release();
+    UnloadAllBanks();
+    if (mSystem)
+    {
+        mSystem->release();
+    }
 }
 
 void AudioSystem::Update(float deltaTime)
@@ -208,7 +213,7 @@ void AudioSystem::UnloadAllBanks()
     mEvents.clear();
 }
 
-void AudioSystem::PlayEvent(const std::string& name)
+SoundEvent AudioSystem::PlayEvent(const std::string& name)
 {
     unsigned int retID = 0;
 
@@ -227,4 +232,6 @@ void AudioSystem::PlayEvent(const std::string& name)
             mEventInstances.emplace(retID, event);
         }
     }
+
+    return SoundEvent(this, retID);
 }

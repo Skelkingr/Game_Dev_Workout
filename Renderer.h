@@ -23,7 +23,7 @@ public:
 	~Renderer() = default;
 
 	bool Initialize(float screenWidth, float screenHeight);
-	void ShutDown();
+	void Shutdown();
 
 	void UnloadData();
 

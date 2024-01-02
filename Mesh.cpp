@@ -96,7 +96,11 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
             return false;
         }
 
-        Vector3 pos(vert[0].GetFloat(), vert[1].GetFloat(), vert[2].GetFloat());
+        Vector3 pos(
+            static_cast<float>(vert[0].GetDouble()),
+            static_cast<float>(vert[1].GetDouble()),
+            static_cast<float>(vert[2].GetDouble())
+        );
         mRadius = Math::Max(mRadius, pos.LengthSq());
 
         for (rapidjson::SizeType i = 0; i < vert.Size(); i++)
