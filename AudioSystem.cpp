@@ -1,5 +1,7 @@
 #include "AudioSystem.h"
 
+#include "Game.h"
+
 #include <fmod_studio.hpp>
 #include <fmod_errors.h>
 
@@ -7,13 +9,17 @@
 
 #include <vector>
 
+unsigned int AudioSystem::sNextID = 0;
+
 AudioSystem::AudioSystem(Game* game)
     :
     mGame(game),
-    mSystem(nullptr),
-    mLowLevelSystem(nullptr),
     mBanks({}),
-    mEvents({})
+    mEvents({}),
+    mEventInstances({}),
+    mBuses({}),
+    mSystem(nullptr),
+    mLowLevelSystem(nullptr)
 {}
 
 bool AudioSystem::Initialize()
@@ -57,7 +63,40 @@ void AudioSystem::ShutDown()
 
 void AudioSystem::Update(float deltaTime)
 {
+    std::vector<unsigned int> done;
+
+    for (auto& iter : mEventInstances)
+    {
+        FMOD::Studio::EventInstance* e = iter.second;
+
+        FMOD_STUDIO_PLAYBACK_STATE state;
+        e->getPlaybackState(&state);
+        if (state == FMOD_STUDIO_PLAYBACK_STOPPED)
+        {
+            e->release();
+            done.emplace_back(iter.first);
+        }
+    }
+
+    for (auto id : done)
+    {
+        mEventInstances.erase(id);
+    }
+
     mSystem->update();
+}
+
+FMOD::Studio::EventInstance* AudioSystem::GetEventInstance(unsigned int id)
+{
+    FMOD::Studio::EventInstance* event = nullptr;
+
+    auto iter = mEventInstances.find(id);
+    if (iter != mEventInstances.end())
+    {
+        event = iter->second;
+    }
+
+    return event;
 }
 
 void AudioSystem::LoadBank(const std::string& name)
@@ -171,6 +210,8 @@ void AudioSystem::UnloadAllBanks()
 
 void AudioSystem::PlayEvent(const std::string& name)
 {
+    unsigned int retID = 0;
+
     auto iter = mEvents.find(name);
     if (iter != mEvents.end())
     {
@@ -179,7 +220,11 @@ void AudioSystem::PlayEvent(const std::string& name)
         if (event)
         {
             event->start();
-            event->release();
+
+            sNextID++;
+            retID = sNextID;
+
+            mEventInstances.emplace(retID, event);
         }
     }
 }

@@ -29,6 +29,9 @@ public:
 	void Update(float deltaTime);
 
 	void PlayEvent(const std::string& name);
+protected:
+	friend class SoundEvent;
+	FMOD::Studio::EventInstance* GetEventInstance(unsigned int id);
 private:
 	void LoadBank(const std::string& name);
 	void UnloadBank(const std::string& name);
@@ -38,9 +41,12 @@ private:
 
 	std::unordered_map<std::string, FMOD::Studio::Bank*> mBanks;
 	std::unordered_map<std::string, FMOD::Studio::EventDescription*> mEvents;
+	std::unordered_map<unsigned int, FMOD::Studio::EventInstance*> mEventInstances;
 	std::unordered_map<std::string, FMOD::Studio::Bus*> mBuses;
 
 	FMOD::Studio::System* mSystem;
 	FMOD::System* mLowLevelSystem;
+
+	static unsigned int sNextID;
 };
 
