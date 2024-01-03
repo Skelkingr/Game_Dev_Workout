@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Math.h"
+
 #include <string>
 
 class SoundEvent
@@ -7,7 +9,8 @@ class SoundEvent
 public:
 	SoundEvent();
 
-	bool IsValid();
+	bool IsValid() const;
+	bool Is3D() const;
 
 	void Restart();
 
@@ -17,6 +20,7 @@ public:
 	void SetVolume(float value);
 	void SetPitch(float value);
 	void SetParameter(const std::string& name, float value);
+	void Set3DAttributes(const Matrix4& worldTrans);
 
 	bool GetPaused() const;
 	float GetVolume() const;

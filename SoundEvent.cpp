@@ -4,6 +4,19 @@
 
 #include <fmod_studio.hpp>
 
+namespace
+{
+	FMOD_VECTOR VecToFMOD(const Vector3& in)
+	{
+		FMOD_VECTOR vec = {};
+		vec.x = in.y;
+		vec.y = in.z;
+		vec.z = in.x;
+
+		return vec;
+	}
+}
+
 SoundEvent::SoundEvent()
 	:
 	mSystem(nullptr),
@@ -16,9 +29,26 @@ SoundEvent::SoundEvent(AudioSystem* system, unsigned int id)
 	mID(id)
 {}
 
-bool SoundEvent::IsValid()
+bool SoundEvent::IsValid() const
 {
 	return (mSystem && mSystem->GetEventInstance(mID) != nullptr);
+}
+
+bool SoundEvent::Is3D() const
+{
+	bool result = false;
+	
+	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
+	if (event)
+	{
+		FMOD::Studio::EventDescription* eventDesc = nullptr;
+		if (eventDesc)
+		{
+			eventDesc->is3D(&result);
+		}
+	}
+
+	return result;
 }
 
 void SoundEvent::Restart()
@@ -73,6 +103,22 @@ void SoundEvent::SetParameter(const std::string& name, float value)
 	if (event)
 	{
 		event->setParameterValue(name.c_str(), value);
+	}
+}
+
+void SoundEvent::Set3DAttributes(const Matrix4& worldTrans)
+{
+	auto event = mSystem ? mSystem->GetEventInstance(mID) : nullptr;
+	if (event)
+	{
+		FMOD_3D_ATTRIBUTES attr = {};
+		attr.position = VecToFMOD(worldTrans.GetTranslation());
+		attr.forward = VecToFMOD(worldTrans.GetXAxis());
+		attr.up = VecToFMOD(worldTrans.GetZAxis());
+
+		attr.velocity = { 0.0f, 0.0f, 0.0f };
+
+		event->set3DAttributes(&attr);
 	}
 }
 
