@@ -34,6 +34,11 @@ public:
 	void SetListener(const Matrix4& viewMatrix);
 
 	SoundEvent PlayEvent(const std::string& name);
+
+	float GetBusVolume(const std::string& name) const;
+	bool GetBusPaused(const std::string& name) const;
+	void SetBusVolume(const std::string& name, float volume);
+	void SetBusPaused(const std::string& name, bool pause);
 protected:
 	friend class SoundEvent;
 	FMOD::Studio::EventInstance* GetEventInstance(unsigned int id);

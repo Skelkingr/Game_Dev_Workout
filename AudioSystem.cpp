@@ -263,3 +263,47 @@ SoundEvent AudioSystem::PlayEvent(const std::string& name)
 
     return SoundEvent(this, retID);
 }
+
+float AudioSystem::GetBusVolume(const std::string& name) const
+{
+    float result = 0.0f;
+
+    auto iter = mBuses.find(name);
+    if (iter != mBuses.end())
+    {
+        iter->second->getVolume(&result);
+    }
+
+    return result;
+}
+
+bool AudioSystem::GetBusPaused(const std::string& name) const
+{
+    bool result = false;
+
+    auto iter = mBuses.find(name);
+    if (iter != mBuses.end())
+    {
+        iter->second->getPaused(&result);
+    }
+
+    return result;
+}
+
+void AudioSystem::SetBusVolume(const std::string& name, float volume)
+{
+    auto iter = mBuses.find(name);
+    if (iter != mBuses.end())
+    {
+        iter->second->setVolume(volume);
+    }
+}
+
+void AudioSystem::SetBusPaused(const std::string& name, bool pause)
+{
+    auto iter = mBuses.find(name);
+    if (iter != mBuses.end())
+    {
+        iter->second->setPaused(pause);
+    }
+}
