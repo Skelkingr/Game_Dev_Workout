@@ -120,7 +120,7 @@ void SoundEvent::Set3DAttributes(const Matrix4& worldTrans)
 
 		event->set3DAttributes(&attr);
 	}
-}
+} 
 
 bool SoundEvent::GetPaused() const
 {
