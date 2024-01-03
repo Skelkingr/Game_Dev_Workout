@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Math.h"
 #include "SoundEvent.h"
 
 #include <string>
@@ -29,6 +30,8 @@ public:
 	bool Initialize();
 	void Shutdown();
 	void Update(float deltaTime);
+
+	void SetListener(const Matrix4& viewMatrix);
 
 	SoundEvent PlayEvent(const std::string& name);
 protected:

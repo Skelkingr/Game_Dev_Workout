@@ -10,6 +10,19 @@
 
 #include <vector>
 
+namespace
+{
+    FMOD_VECTOR VecToFMOD(const Vector3& in)
+    {
+        FMOD_VECTOR vec = {};
+        vec.x = in.y;
+        vec.y = in.z;
+        vec.z = in.x;
+
+        return vec;
+    }
+}
+
 unsigned int AudioSystem::sNextID = 0;
 
 AudioSystem::AudioSystem(Game* game)
@@ -89,6 +102,21 @@ void AudioSystem::Update(float deltaTime)
     }
 
     mSystem->update();
+}
+
+void AudioSystem::SetListener(const Matrix4& viewMatrix)
+{
+    Matrix4 invView = viewMatrix;
+    invView.Invert();
+
+    FMOD_3D_ATTRIBUTES listener = {};
+    listener.position = VecToFMOD(invView.GetTranslation());
+    listener.forward = VecToFMOD(invView.GetZAxis());
+    listener.up = VecToFMOD(invView.GetYAxis());
+
+    listener.velocity = { 0.0f, 0.0f, 0.0f };
+
+    mSystem->setListenerAttributes(0, &listener);
 }
 
 FMOD::Studio::EventInstance* AudioSystem::GetEventInstance(unsigned int id)
