@@ -28,6 +28,7 @@ public:
 	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 private:
 	void ProcessInput();
+	void HandleKeyPress(int key);
 	void UpdateGame();
 	void GenerateOutput();
 
@@ -47,4 +48,5 @@ private:
 
 	class CameraActor* mCameraActor;
 	SoundEvent mMusicEvent;
+	SoundEvent mReverbSnap;
 };

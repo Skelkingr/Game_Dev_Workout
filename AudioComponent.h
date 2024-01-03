@@ -8,6 +8,7 @@
 
 class AudioComponent : public Component
 {
+public:
 	AudioComponent() = delete;
 	AudioComponent(class Actor* owner, int updateOrder = 200);
 	~AudioComponent();

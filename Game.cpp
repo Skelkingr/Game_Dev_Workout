@@ -91,6 +91,29 @@ void Game::ProcessInput()
 	}
 }
 
+void Game::HandleKeyPress(int key)
+{
+	switch (key)
+	{
+	case 'p':
+		mMusicEvent.SetPaused(!mMusicEvent.GetPaused());
+		break;
+	case 'r':
+		if (!mReverbSnap.IsValid())
+		{
+			mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
+			
+		}
+		else
+		{
+			mReverbSnap.Stop();
+		}
+		break;
+	default:
+		break;
+	}
+}
+
 void Game::UpdateGame()
 {
 	while (!SDL_TICKS_PASSED(SDL_GetTicks(), mTicksCount + 16));
