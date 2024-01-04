@@ -1,4 +1,5 @@
 #include "Actor.h"
+
 #include "Component.h"
 #include "Game.h"
 
@@ -53,22 +54,13 @@ void Actor::UpdateComponents(float deltaTime)
 	}
 }
 
-void Actor::ProcessInput(const uint8_t* keyState)
-{
-	if (mState == EActive)
-	{
-		for (auto comp : mComponents)
-		{
-			comp->ProcessInput(keyState);
-		}
-		ActorInput(keyState);
-	}
-}
+void Actor::ProcessInput(const InputState& state)
+{}
 
 void Actor::UpdateActor(float deltaTime)
 {}
 
-void Actor::ActorInput(const uint8_t* keyState)
+void Actor::ActorInput(const InputState& state)
 {}
 
 void Actor::SetPosition(const Vector3& position)

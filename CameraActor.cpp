@@ -46,9 +46,9 @@ void CameraActor::UpdateActor(float deltaTime)
 	mFootstep.Set3DAttributes(this->GetWorldTransform());
 }
 
-void CameraActor::ActorInput(const uint8_t* keys)
+void CameraActor::ActorInput(const InputState& state)
 {
-	float forwardSpeed = 0.0f;
+	/*float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;
 
 	if (keys[SDL_SCANCODE_W])
@@ -69,5 +69,5 @@ void CameraActor::ActorInput(const uint8_t* keys)
 	}
 
 	mMoveComp->SetForwardSpeed(forwardSpeed);
-	mMoveComp->SetAngularSpeed(angularSpeed);
+	mMoveComp->SetAngularSpeed(angularSpeed);*/
 }

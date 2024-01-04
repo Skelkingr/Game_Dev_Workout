@@ -20,6 +20,7 @@ Game::Game()
 	:
 	mRenderer(nullptr),
 	mAudioSystem(nullptr),
+	mInputSystem(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
@@ -41,6 +42,15 @@ bool Game::Initialize()
 		SDL_Log("Failed to initialize renderer.");
 		delete mRenderer;
 		mRenderer = nullptr;
+		return false;
+	}
+
+	mInputSystem = new InputSystem();
+	if (!mInputSystem->Initialize())
+	{
+		SDL_Log("Failed to initialize input system.");
+		delete mInputSystem;
+		mInputSystem = nullptr;
 		return false;
 	}
 
@@ -72,6 +82,8 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
+	mInputSystem->PrepareForUpdate();
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -91,7 +103,9 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* keyState = SDL_GetKeyboardState(NULL);
+	mInputSystem->Update();
+
+	/*const InputState& keyState = mInputSystem->GetState();
 	if (keyState[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
@@ -100,7 +114,7 @@ void Game::ProcessInput()
 	for (auto actor : mActors)
 	{
 		actor->ProcessInput(keyState);
-	}
+	}*/
 }
 
 void Game::HandleKeyPress(int key)
@@ -281,6 +295,11 @@ void Game::Shutdown()
 	if (mRenderer)
 	{
 		mRenderer->Shutdown();
+	}
+
+	if (mInputSystem)
+	{
+		mInputSystem->ShutDown();
 	}
 
 	if (mAudioSystem)

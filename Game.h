@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InputSystem.h"
 #include "SoundEvent.h"
 
 #include <SDL/SDL.h>
@@ -39,8 +40,10 @@ private:
 	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
-	class AudioSystem* mAudioSystem;
 
+	InputSystem* mInputSystem;
+	class AudioSystem* mAudioSystem;
+	
 	Uint32 mTicksCount;
 
 	bool mIsRunning;
