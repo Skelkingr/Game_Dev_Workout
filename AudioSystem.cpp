@@ -63,6 +63,7 @@ bool AudioSystem::Initialize()
     }
 
     mSystem->getLowLevelSystem(&mLowLevelSystem);
+    mLowLevelSystem->set3DSettings(1.0f, 50.0f, 1.0f);
 
     LoadBank("Audio Banks/Master Bank.strings.bank");
     LoadBank("Audio Banks/Master Bank.bank");
@@ -114,7 +115,7 @@ void AudioSystem::SetListener(const Matrix4& viewMatrix)
     listener.forward = VecToFMOD(invView.GetZAxis());
     listener.up = VecToFMOD(invView.GetYAxis());
 
-    listener.velocity = { 0.0f, 0.0f, 0.0f };
+    listener.velocity = { 0.25f, 0.25f, 0.25f };
 
     mSystem->setListenerAttributes(0, &listener);
 }

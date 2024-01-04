@@ -47,6 +47,8 @@ private:
 	bool mUpdatingActors;
 
 	class CameraActor* mCameraActor;
+	class SphereActor* mSphere;
+
 	SoundEvent mMusicEvent;
 	SoundEvent mReverbSnap;
 };

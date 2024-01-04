@@ -8,8 +8,11 @@
 #include "MeshComponent.h"
 #include "PlaneActor.h"
 #include "Renderer.h"
+#include "SphereActor.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
+
+#include <fmod_studio.hpp>
 
 #include <algorithm>
 
@@ -20,7 +23,8 @@ Game::Game()
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
-	mCameraActor(nullptr)
+	mCameraActor(nullptr),
+	mSphere(nullptr)
 {}
 
 bool Game::Initialize()
@@ -110,7 +114,6 @@ void Game::HandleKeyPress(int key)
 		if (!mReverbSnap.IsValid())
 		{
 			mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
-			
 		}
 		else
 		{
@@ -184,11 +187,11 @@ void Game::LoadData()
 	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Cube.gpmesh"));
 
 	// Create Sphere
-	act = new Actor(this);
-	act->SetPosition(Vector3(200.0f, -75.0f, -50.0f));
-	act->SetScale(3.0f);
-
-	meshComp = new MeshComponent(act);
+	mSphere = new SphereActor(this);
+	mSphere->SetPosition(Vector3(0.0f, -75.0f, -50.0f));
+	mSphere->SetScale(3.0f);
+	
+	meshComp = new MeshComponent(mSphere);
 	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Sphere.gpmesh"));
 
 	// Create floor
@@ -255,6 +258,7 @@ void Game::LoadData()
 	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
 
 	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+	mMusicEvent.SetVolume(mMusicEvent.GetVolume() / 2.0f);
 }
 
 void Game::UnloadData()
