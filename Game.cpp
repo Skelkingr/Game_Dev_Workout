@@ -1,25 +1,30 @@
 #include "Game.h"
 
 #include "Actor.h"
+#include "AudioSystem.h"
 #include "CameraActor.h"
 #include "Math.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
 #include "PlaneActor.h"
 #include "Renderer.h"
+#include "SphereActor.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
+
+#include <fmod_studio.hpp>
 
 #include <algorithm>
 
 Game::Game()
 	:
-	mActors({}),
-	mPendingActors({}),
 	mRenderer(nullptr),
+	mAudioSystem(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
-	mUpdatingActors(false)
+	mUpdatingActors(false),
+	mCameraActor(nullptr),
+	mSphere(nullptr)
 {}
 
 bool Game::Initialize()
@@ -36,6 +41,15 @@ bool Game::Initialize()
 		SDL_Log("Failed to initialize renderer.");
 		delete mRenderer;
 		mRenderer = nullptr;
+		return false;
+	}
+
+	mAudioSystem = new AudioSystem(this);
+	if (!mAudioSystem->Initialize())
+	{
+		SDL_Log("Failed to initialize audio system.");
+		delete mAudioSystem;
+		mAudioSystem = nullptr;
 		return false;
 	}
 
@@ -66,6 +80,14 @@ void Game::ProcessInput()
 		case SDL_QUIT:
 			mIsRunning = false;
 			break;
+		case SDL_KEYDOWN:
+			if (!event.key.repeat)
+			{
+				HandleKeyPress(event.key.keysym.sym);
+			}
+			break;
+		default:
+			break;
 		}
 	}
 
@@ -78,6 +100,28 @@ void Game::ProcessInput()
 	for (auto actor : mActors)
 	{
 		actor->ProcessInput(keyState);
+	}
+}
+
+void Game::HandleKeyPress(int key)
+{
+	switch (key)
+	{
+	case 'p':
+		mMusicEvent.SetPaused(!mMusicEvent.GetPaused());
+		break;
+	case 'r':
+		if (!mReverbSnap.IsValid())
+		{
+			mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
+		}
+		else
+		{
+			mReverbSnap.Stop();
+		}
+		break;
+	default:
+		break;
 	}
 }
 
@@ -119,6 +163,8 @@ void Game::UpdateGame()
 	{
 		delete actor;
 	}
+
+	mAudioSystem->Update(deltaTime);
 }
 
 void Game::GenerateOutput()
@@ -141,11 +187,11 @@ void Game::LoadData()
 	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Cube.gpmesh"));
 
 	// Create Sphere
-	act = new Actor(this);
-	act->SetPosition(Vector3(200.0f, -75.0f, -50.0f));
-	act->SetScale(3.0f);
-
-	meshComp = new MeshComponent(act);
+	mSphere = new SphereActor(this);
+	mSphere->SetPosition(Vector3(0.0f, -75.0f, -50.0f));
+	mSphere->SetScale(3.0f);
+	
+	meshComp = new MeshComponent(mSphere);
 	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Sphere.gpmesh"));
 
 	// Create floor
@@ -196,7 +242,8 @@ void Game::LoadData()
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
 	// Create a camera actor
-	act = new CameraActor(this);
+	mCameraActor = new CameraActor(this);
+	mCameraActor->SetPosition(Vector3(-100.0f, 0.0f, 0.0f));
 
 	// Add HUD elements
 	act = new Actor(this);
@@ -209,6 +256,9 @@ void Game::LoadData()
 	act->SetScale(0.75f);
 	spriteComp = new SpriteComponent(act);
 	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
+
+	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
+	mMusicEvent.SetVolume(mMusicEvent.GetVolume() / 2.0f);
 }
 
 void Game::UnloadData()
@@ -230,9 +280,14 @@ void Game::Shutdown()
 	
 	if (mRenderer)
 	{
-		mRenderer->ShutDown();
+		mRenderer->Shutdown();
 	}
-	
+
+	if (mAudioSystem)
+	{
+		mAudioSystem->Shutdown();
+	}
+
 	SDL_Quit();
 }
 

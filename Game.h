@@ -1,5 +1,7 @@
 #pragma once
 
+#include "SoundEvent.h"
+
 #include <SDL/SDL.h>
 
 #include <string>
@@ -22,9 +24,11 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
-	class Renderer* GetRenderer() { return mRenderer; }
+	class Renderer* GetRenderer() const { return mRenderer; }
+	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 private:
 	void ProcessInput();
+	void HandleKeyPress(int key);
 	void UpdateGame();
 	void GenerateOutput();
 
@@ -35,9 +39,16 @@ private:
 	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
+	class AudioSystem* mAudioSystem;
 
 	Uint32 mTicksCount;
 
 	bool mIsRunning;
 	bool mUpdatingActors;
+
+	class CameraActor* mCameraActor;
+	class SphereActor* mSphere;
+
+	SoundEvent mMusicEvent;
+	SoundEvent mReverbSnap;
 };

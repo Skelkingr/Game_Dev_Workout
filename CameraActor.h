@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "SoundEvent.h"
 
 class CameraActor :	public Actor
 {
@@ -12,5 +13,9 @@ public:
 	void ActorInput(const uint8_t* keys) override;
 private:
 	class MoveComponent* mMoveComp;
+	class AudioComponent* mAudioComp;
+
+	SoundEvent mFootstep;
+	float mLastFootstep;
 };
 

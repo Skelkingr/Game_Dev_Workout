@@ -83,7 +83,7 @@ bool Renderer::Initialize(float screenWidth, float screenHeight)
     return true;
 }
 
-void Renderer::ShutDown()
+void Renderer::Shutdown()
 {
     delete mSpriteVerts;
 

@@ -5,7 +5,10 @@
 VertexArray::VertexArray(const float* verts, unsigned int numVerts, const unsigned int* indices, unsigned int numIndices)
 	:
 	mNumVerts(numVerts),
-	mNumIndices(numIndices)
+	mNumIndices(numIndices),
+	mVertexBuffer(0),
+	mIndexBuffer(0),
+	mVertexArray(0)
 {
 	glGenVertexArrays(1, &mVertexArray);
 	glBindVertexArray(mVertexArray);
