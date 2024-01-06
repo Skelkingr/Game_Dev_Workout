@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SDL/SDL_scancode.h>
+
 enum ButtonState
 {
 	ENone,
@@ -8,9 +10,22 @@ enum ButtonState
 	EHeld
 };
 
+class KeyboardState
+{
+public:
+	friend class InputSystem;
+
+	bool GetKeyValue(SDL_Scancode keyCode) const;
+
+	ButtonState GetKeyState(SDL_Scancode keyCode) const;
+private:
+	const uint8_t* mCurrState;
+	uint8_t mPrevState[SDL_NUM_SCANCODES];
+};
+
 struct InputState
 {
-
+	KeyboardState Keyboard;
 };
 
 class InputSystem
@@ -31,4 +46,5 @@ public:
 private:
 	InputState mState;
 };
+
 

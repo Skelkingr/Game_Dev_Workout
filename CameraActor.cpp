@@ -8,8 +8,6 @@
 
 #include <SDL/SDL_scancode.h>
 
-#include <iostream>
-
 CameraActor::CameraActor(Game* game)
 	:
 	Actor(game)
@@ -48,26 +46,26 @@ void CameraActor::UpdateActor(float deltaTime)
 
 void CameraActor::ActorInput(const InputState& state)
 {
-	/*float forwardSpeed = 0.0f;
+	float forwardSpeed = 0.0f;
 	float angularSpeed = 0.0f;
 
-	if (keys[SDL_SCANCODE_W])
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_W))
 	{
-		forwardSpeed += 300.0f;
+		forwardSpeed += 200.0f;
 	}
-	if (keys[SDL_SCANCODE_S])
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_S))
 	{
-		forwardSpeed -= 300.0f;
+		forwardSpeed -= 200.0f;
 	}
-	if (keys[SDL_SCANCODE_A])
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_A))
 	{
-		angularSpeed -= Math::TwoPi;
+		angularSpeed -= Math::Pi;
 	}
-	if (keys[SDL_SCANCODE_D])
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_D))
 	{
-		angularSpeed += Math::TwoPi;
+		angularSpeed += Math::Pi;
 	}
 
 	mMoveComp->SetForwardSpeed(forwardSpeed);
-	mMoveComp->SetAngularSpeed(angularSpeed);*/
+	mMoveComp->SetAngularSpeed(angularSpeed);
 }

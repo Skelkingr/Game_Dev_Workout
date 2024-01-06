@@ -29,7 +29,7 @@ public:
 	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 private:
 	void ProcessInput();
-	void HandleKeyPress(int key);
+	void HandleKeyPress(const InputState& state);
 	void UpdateGame();
 	void GenerateOutput();
 

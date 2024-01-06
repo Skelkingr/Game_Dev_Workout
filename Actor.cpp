@@ -55,7 +55,17 @@ void Actor::UpdateComponents(float deltaTime)
 }
 
 void Actor::ProcessInput(const InputState& state)
-{}
+{
+	if (mState == EActive)
+	{
+		for (auto comp : mComponents)
+		{
+			comp->ProcessInput(state);
+		}
+
+		ActorInput(state);
+	}
+}
 
 void Actor::UpdateActor(float deltaTime)
 {}

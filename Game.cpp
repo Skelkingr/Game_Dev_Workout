@@ -84,6 +84,8 @@ void Game::ProcessInput()
 {
 	mInputSystem->PrepareForUpdate();
 
+	const InputState& state = mInputSystem->GetState();
+
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -95,7 +97,7 @@ void Game::ProcessInput()
 		case SDL_KEYDOWN:
 			if (!event.key.repeat)
 			{
-				HandleKeyPress(event.key.keysym.sym);
+				HandleKeyPress(state);
 			}
 			break;
 		default:
@@ -104,27 +106,29 @@ void Game::ProcessInput()
 	}
 
 	mInputSystem->Update();
-
-	/*const InputState& keyState = mInputSystem->GetState();
-	if (keyState[SDL_SCANCODE_ESCAPE])
+	
+	if (state.Keyboard.GetKeyState(SDL_SCANCODE_ESCAPE) == EReleased)
 	{
 		mIsRunning = false;
 	}
 
+	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
-		actor->ProcessInput(keyState);
-	}*/
+		actor->ProcessInput(state);
+	}
+	mUpdatingActors = false;
 }
 
-void Game::HandleKeyPress(int key)
+void Game::HandleKeyPress(const InputState& state)
 {
-	switch (key)
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_P))
 	{
-	case 'p':
 		mMusicEvent.SetPaused(!mMusicEvent.GetPaused());
-		break;
-	case 'r':
+	}
+
+	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_R))
+	{
 		if (!mReverbSnap.IsValid())
 		{
 			mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
@@ -133,9 +137,6 @@ void Game::HandleKeyPress(int key)
 		{
 			mReverbSnap.Stop();
 		}
-		break;
-	default:
-		break;
 	}
 }
 
