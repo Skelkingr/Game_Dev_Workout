@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Actor.h"
+#include "InputSystem.h"
 
 class Component
 {
@@ -10,7 +11,7 @@ public:
 	virtual ~Component();
 
 	virtual void Update(float deltaTime);
-	virtual void ProcessInput(const uint8_t* keyState);
+	virtual void ProcessInput(const InputState& state);
 
 	Actor* GetOwner() const { return this->mOwner; }
 	int GetUpdateOrder() const { return this->mUpdateOrder; }

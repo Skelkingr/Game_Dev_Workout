@@ -9,7 +9,7 @@ public:
 	~Texture() = default;
 
 	bool Load(const std::string& fileName);
-	void Unload();
+	void Unload() const;
 
 	void SetActive();
 

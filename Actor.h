@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InputSystem.h"
 #include "Math.h"
 
 #include <vector>
@@ -20,10 +21,10 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
-	void ProcessInput(const uint8_t* keyState);
+	void ProcessInput(const InputState& state);
 
 	virtual void UpdateActor(float deltaTime);
-	virtual void ActorInput(const uint8_t* keyState);
+	virtual void ActorInput(const InputState& state);
 
 	class Game* GetGame() const { return mGame; }
 	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX, mRotation); }

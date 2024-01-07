@@ -24,6 +24,7 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
     std::ifstream file(fileName);
     if (!file.is_open())
     {
+        SDL_Log("File not found: Mesh %s", fileName.c_str());
         return false;
     }
 
@@ -90,7 +91,7 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
     for (rapidjson::SizeType i = 0; i < vertsJson.Size(); i++)
     {
         const rapidjson::Value& vert = vertsJson[i];
-        if (!vert.IsArray() || vert.Size() < 1)
+        if (!vert.IsArray() || vert.Size() != 8)
         {
             SDL_Log("Unexpected vertex format for %s", fileName.c_str());
             return false;
@@ -119,7 +120,7 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
     }
 
     std::vector<unsigned int> indices;
-    indices.reserve(static_cast<size_t>(indJson.Size()) * 3);
+    indices.reserve(static_cast<size_t>(indJson.Size()) * 3); //
     for (rapidjson::SizeType i = 0; i < indJson.Size(); i++)
     {
         const rapidjson::Value& ind = indJson[i];
@@ -129,14 +130,14 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
             return false;
         }
 
-        indices.emplace_back(ind[0].GetUint());
-        indices.emplace_back(ind[1].GetUint());
-        indices.emplace_back(ind[2].GetUint());
+        indices.emplace_back(static_cast<size_t>(ind[0].GetUint()));
+        indices.emplace_back(static_cast<size_t>(ind[1].GetUint()));
+        indices.emplace_back(static_cast<size_t>(ind[2].GetUint()));
     }
 
     mVertexArray = new VertexArray(
         vertices.data(),
-        static_cast<unsigned>(vertices.size()),
+        static_cast<unsigned>(vertices.size() / vertSize),
         indices.data(),
         static_cast<unsigned>(indices.size())
     );

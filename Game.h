@@ -1,5 +1,6 @@
 #pragma once
 
+#include "InputSystem.h"
 #include "SoundEvent.h"
 
 #include <SDL/SDL.h>
@@ -28,7 +29,7 @@ public:
 	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 private:
 	void ProcessInput();
-	void HandleKeyPress(int key);
+	void HandleKeyPress(const InputState& state);
 	void UpdateGame();
 	void GenerateOutput();
 
@@ -39,8 +40,10 @@ private:
 	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
-	class AudioSystem* mAudioSystem;
 
+	InputSystem* mInputSystem;
+	class AudioSystem* mAudioSystem;
+	
 	Uint32 mTicksCount;
 
 	bool mIsRunning;

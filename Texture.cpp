@@ -2,7 +2,7 @@
 
 #include <GL/glew.h>
 #include <SDL/SDL.h>
-#include <SOIL/SOIL.h>
+#include <SOIL2/SOIL2.h>
 
 Texture::Texture()
     :
@@ -39,7 +39,7 @@ bool Texture::Load(const std::string& fileName)
     return true;
 }
 
-void Texture::Unload()
+void Texture::Unload() const
 {
     glDeleteTextures(1, &mTextureID);
 }
