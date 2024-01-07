@@ -70,6 +70,8 @@ ButtonState MouseState::GetButtonState(int button) const
 
 bool InputSystem::Initialize()
 {
+	SDL_ShowCursor(SDL_FALSE);
+
 	mState.Keyboard.mCurrState = SDL_GetKeyboardState(nullptr);
 	memset(mState.Keyboard.mPrevState, 0, SDL_NUM_SCANCODES);
 
@@ -87,6 +89,7 @@ void InputSystem::PrepareForUpdate()
 	memcpy(mState.Keyboard.mPrevState, mState.Keyboard.mCurrState, SDL_NUM_SCANCODES);
 
 	mState.Mouse.mPrevButtons = mState.Mouse.mCurrButtons;
+	mState.Mouse.mIsRelative = false;
 }
 
 void InputSystem::Update()
@@ -94,7 +97,23 @@ void InputSystem::Update()
 	int x = 0;
 	int y = 0;
 
-	mState.Mouse.mCurrButtons = SDL_GetMouseState(&x, &y);
+	if (mState.Mouse.IsRelative())
+	{
+		mState.Mouse.mCurrButtons = SDL_GetRelativeMouseState(&x, &y);
+	}
+	else
+	{
+		mState.Mouse.mCurrButtons = SDL_GetMouseState(&x, &y);
+	}
+
 	mState.Mouse.mMousePos.x = static_cast<float>(x);
 	mState.Mouse.mMousePos.y = static_cast<float>(y);
+}
+
+void InputSystem::SetRelativeMouseMode(bool value)
+{
+	SDL_bool set = value ? SDL_TRUE : SDL_FALSE;
+	SDL_SetRelativeMouseMode(set);
+
+	mState.Mouse.mIsRelative = value;
 }

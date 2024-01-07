@@ -31,6 +31,7 @@ public:
 	friend class InputSystem;
 
 	const Vector2& GetPosition() const { return mMousePos; }
+	bool IsRelative() const { return mIsRelative; }
 
 	bool GetButtonValue(int button) const;
 	ButtonState GetButtonState(int button) const;
@@ -39,6 +40,8 @@ private:
 
 	uint32_t mCurrButtons;
 	uint32_t mPrevButtons;
+
+	bool mIsRelative;
 };
 
 struct InputState
@@ -62,6 +65,8 @@ public:
 	void Update();
 
 	const InputState& GetState() const { return mState; }
+
+	void SetRelativeMouseMode(bool value);
 private:
 	InputState mState;
 };

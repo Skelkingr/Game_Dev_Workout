@@ -35,7 +35,6 @@ bool Game::Initialize()
 		SDL_Log("Unable to initialize SDL: %s", SDL_GetError());
 		return false;
 	}
-	SDL_ShowCursor(SDL_FALSE);
 
 	mRenderer = new Renderer(this);
 	if (!mRenderer->Initialize(static_cast<float>(CLIENT_WIDTH), static_cast<float>(CLIENT_HEIGHT)))
