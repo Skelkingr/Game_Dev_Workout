@@ -31,12 +31,14 @@ public:
 	friend class InputSystem;
 
 	const Vector2& GetPosition() const { return mMousePos; }
+	const Vector2& GetScrollWheel() const { return mScrollWheel; }
 	bool IsRelative() const { return mIsRelative; }
 
 	bool GetButtonValue(int button) const;
 	ButtonState GetButtonState(int button) const;
 private:
 	Vector2 mMousePos;
+	Vector2 mScrollWheel;
 
 	uint32_t mCurrButtons;
 	uint32_t mPrevButtons;
@@ -63,6 +65,7 @@ public:
 
 	void PrepareForUpdate();
 	void Update();
+	void ProcessEvent(union SDL_Event& event);
 
 	const InputState& GetState() const { return mState; }
 

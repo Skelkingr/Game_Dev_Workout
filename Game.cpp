@@ -100,6 +100,9 @@ void Game::ProcessInput()
 				HandleKeyPress(state);
 			}
 			break;
+		case SDL_MOUSEWHEEL:
+			mInputSystem->ProcessEvent(event);
+			break;
 		default:
 			break;
 		}
