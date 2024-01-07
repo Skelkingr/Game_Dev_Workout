@@ -10,14 +10,15 @@
 
 CameraActor::CameraActor(Game* game)
 	:
-	Actor(game)
+	Actor(game),
+	mIsDashing(false)
 {
 	mMoveComp = new MoveComponent(this);
 	mAudioComp = new AudioComponent(this);
 
 	mLastFootstep = 0.0f;
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
-	mFootstep.SetVolume(mFootstep.GetVolume() / 4.0f);
+	mFootstep.SetVolume(0.25f);
 	mFootstep.SetPaused(true);
 }
 
@@ -25,7 +26,15 @@ void CameraActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
 
-	mLastFootstep -= deltaTime;
+	if (!mIsDashing)
+	{
+		mLastFootstep -= deltaTime;
+	}
+	else
+	{
+		mLastFootstep -= deltaTime * 1.5f;
+	}
+
 	if (!Math::NearZero(mMoveComp->GetForwardSpeed()) && mLastFootstep <= 0.0f)
 	{
 		mFootstep.SetPaused(false);
@@ -51,7 +60,22 @@ void CameraActor::ActorInput(const InputState& state)
 
 	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_W))
 	{
-		forwardSpeed += 200.0f;
+		if (state.Keyboard.GetKeyState(SDL_SCANCODE_LSHIFT) == EHeld)
+		{
+			mIsDashing = true;
+
+			forwardSpeed += 400.0f;
+			mFootstep.SetPitch(1.1f);
+			mFootstep.SetVolume(0.75f);
+		}
+		else
+		{
+			mIsDashing = false;
+
+			forwardSpeed += 200.0f;
+			mFootstep.SetPitch(1.0f);
+			mFootstep.SetVolume(0.25f);
+		}
 	}
 	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_S))
 	{
@@ -59,11 +83,11 @@ void CameraActor::ActorInput(const InputState& state)
 	}
 	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_A))
 	{
-		angularSpeed -= Math::Pi;
+		angularSpeed -= Math::PiOver2;
 	}
 	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_D))
 	{
-		angularSpeed += Math::Pi;
+		angularSpeed += Math::PiOver2;
 	}
 
 	mMoveComp->SetForwardSpeed(forwardSpeed);

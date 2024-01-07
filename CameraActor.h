@@ -12,11 +12,15 @@ public:
 
 	void UpdateActor(float deltaTime) override;
 	void ActorInput(const InputState& state) override;
+
+	void SetLastFootStep(float value) { mLastFootstep = value; }
 private:
 	class MoveComponent* mMoveComp;
 	class AudioComponent* mAudioComp;
 
 	SoundEvent mFootstep;
 	float mLastFootstep;
+
+	bool mIsDashing;
 };
 
