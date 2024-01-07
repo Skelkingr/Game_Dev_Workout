@@ -21,13 +21,14 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
-	void ProcessInput(const InputState& state);
+	void ProcessInput(const uint8_t* keys);
 
 	virtual void UpdateActor(float deltaTime);
-	virtual void ActorInput(const InputState& state);
+	virtual void ActorInput(const uint8_t* keys);
 
 	class Game* GetGame() const { return mGame; }
 	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX, mRotation); }
+	Vector3 GetRight() const { return Vector3::Transform(Vector3::UnitY, mRotation); }
 	const Vector3& GetPosition() const { return mPosition; }
 	const Quaternion& GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
