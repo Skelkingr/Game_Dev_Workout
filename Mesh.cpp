@@ -97,7 +97,11 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
             return false;
         }
 
-        Vector3 pos(vert[0].GetDouble(), vert[1].GetDouble(), vert[2].GetDouble());
+        Vector3 pos(
+            static_cast<float>(vert[0].GetDouble()),
+            static_cast<float>(vert[1].GetDouble()),
+            static_cast<float>(vert[2].GetDouble())
+        );
         mRadius = Math::Max(mRadius, pos.LengthSq());
 
         for (rapidjson::SizeType i = 0; i < vert.Size(); i++)
@@ -126,14 +130,14 @@ bool Mesh::Load(const std::string& fileName, Renderer* renderer)
             return false;
         }
 
-        indices.emplace_back(ind[0].GetUint());
-        indices.emplace_back(ind[1].GetUint());
-        indices.emplace_back(ind[2].GetUint());
+        indices.emplace_back(static_cast<size_t>(ind[0].GetUint()));
+        indices.emplace_back(static_cast<size_t>(ind[1].GetUint()));
+        indices.emplace_back(static_cast<size_t>(ind[2].GetUint()));
     }
 
     mVertexArray = new VertexArray(
         vertices.data(),
-        static_cast<unsigned>(vertices.size()) / vertSize,
+        static_cast<unsigned>(vertices.size() / vertSize),
         indices.data(),
         static_cast<unsigned>(indices.size())
     );
