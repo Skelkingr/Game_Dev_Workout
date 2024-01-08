@@ -28,7 +28,6 @@ public:
 	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 private:
 	void ProcessInput();
-	void HandleKeyPress(const uint8_t* keys);
 	void UpdateGame();
 	void GenerateOutput();
 
@@ -39,16 +38,15 @@ private:
 	std::vector<class Actor*> mPendingActors;
 
 	class Renderer* mRenderer;
-
-	class AudioSystem* mAudioSystem;
 	
 	Uint32 mTicksCount;
 
 	bool mIsRunning;
 	bool mUpdatingActors;
 
-	class SphereActor* mSphere;
-
 	SoundEvent mMusicEvent;
 	SoundEvent mReverbSnap;
+
+	class AudioSystem* mAudioSystem;
+	class FPSActor* mFPSActor;
 };

@@ -115,7 +115,7 @@ void AudioSystem::SetListener(const Matrix4& viewMatrix)
     listener.forward = VecToFMOD(invView.GetZAxis());
     listener.up = VecToFMOD(invView.GetYAxis());
 
-    listener.velocity = { 0.25f, 0.25f, 0.25f };
+    listener.velocity = { 0.0f, 0.0f, 0.0f };
 
     mSystem->setListenerAttributes(0, &listener);
 }

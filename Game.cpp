@@ -2,12 +2,12 @@
 
 #include "Actor.h"
 #include "AudioSystem.h"
+#include "FPSActor.h"
 #include "Math.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
 #include "PlaneActor.h"
 #include "Renderer.h"
-#include "SphereActor.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
 
@@ -22,7 +22,7 @@ Game::Game()
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
-	mSphere(nullptr)
+	mFPSActor(nullptr)
 {}
 
 bool Game::Initialize()
@@ -208,7 +208,11 @@ void Game::LoadData()
 	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
 
 	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
-	mMusicEvent.SetVolume(mMusicEvent.GetVolume() / 2.0f);
+	mMusicEvent.SetVolume(0.5f);
+
+	SDL_SetRelativeMouseMode(SDL_TRUE);
+	SDL_GetRelativeMouseState(nullptr, nullptr);
+	mFPSActor = new FPSActor(this);
 }
 
 void Game::UnloadData()
