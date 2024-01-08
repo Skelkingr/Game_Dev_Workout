@@ -22,7 +22,7 @@ Component::~Component()
 void Component::Update(float deltaTime)
 {}
 
-void Component::ProcessInput(const InputState& state)
+void Component::ProcessInput(const uint8_t* keys)
 {}
 
 void Component::OnUpdateWorldTransform()

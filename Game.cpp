@@ -2,7 +2,6 @@
 
 #include "Actor.h"
 #include "AudioSystem.h"
-#include "CameraActor.h"
 #include "Math.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
@@ -20,11 +19,9 @@ Game::Game()
 	:
 	mRenderer(nullptr),
 	mAudioSystem(nullptr),
-	mInputSystem(nullptr),
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
-	mCameraActor(nullptr),
 	mSphere(nullptr)
 {}
 
@@ -42,15 +39,6 @@ bool Game::Initialize()
 		SDL_Log("Failed to initialize renderer.");
 		delete mRenderer;
 		mRenderer = nullptr;
-		return false;
-	}
-
-	mInputSystem = new InputSystem();
-	if (!mInputSystem->Initialize())
-	{
-		SDL_Log("Failed to initialize input system.");
-		delete mInputSystem;
-		mInputSystem = nullptr;
 		return false;
 	}
 
@@ -82,10 +70,6 @@ void Game::RunLoop()
 
 void Game::ProcessInput()
 {
-	mInputSystem->PrepareForUpdate();
-
-	const InputState& state = mInputSystem->GetState();
-
 	SDL_Event event;
 	while (SDL_PollEvent(&event))
 	{
@@ -94,52 +78,20 @@ void Game::ProcessInput()
 		case SDL_QUIT:
 			mIsRunning = false;
 			break;
-		case SDL_KEYDOWN:
-			if (!event.key.repeat)
-			{
-				HandleKeyPress(state);
-			}
-			break;
-		case SDL_MOUSEWHEEL:
-			mInputSystem->ProcessEvent(event);
-			break;
 		default:
 			break;
 		}
 	}
 
-	mInputSystem->Update();
-	
-	if (state.Keyboard.GetKeyState(SDL_SCANCODE_ESCAPE) == EReleased)
+	const Uint8* state = SDL_GetKeyboardState(NULL);
+	if (state[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
 	}
 
-	mUpdatingActors = true;
 	for (auto actor : mActors)
 	{
 		actor->ProcessInput(state);
-	}
-	mUpdatingActors = false;
-}
-
-void Game::HandleKeyPress(const InputState& state)
-{
-	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_P))
-	{
-		mMusicEvent.SetPaused(!mMusicEvent.GetPaused());
-	}
-
-	if (state.Keyboard.GetKeyValue(SDL_SCANCODE_R))
-	{
-		if (!mReverbSnap.IsValid())
-		{
-			mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
-		}
-		else
-		{
-			mReverbSnap.Stop();
-		}
 	}
 }
 
@@ -192,25 +144,9 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	// Create Cube
 	Actor* act = new Actor(this);
-	act->SetPosition(Vector3(200.0f, 75.0f, -50.0f));
-	act->SetScale(100.0f);
-
 	Quaternion quat(Vector3::UnitY, -Math::PiOver2);
 	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::Pi + Math::Pi / 4.0f));
-	act->SetRotation(quat);
-
-	MeshComponent* meshComp = new MeshComponent(act);
-	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Cube.gpmesh"));
-
-	// Create Sphere
-	mSphere = new SphereActor(this);
-	mSphere->SetPosition(Vector3(0.0f, -75.0f, -50.0f));
-	mSphere->SetScale(3.0f);
-	
-	meshComp = new MeshComponent(mSphere);
-	meshComp->SetMesh(mRenderer->GetMesh("Meshes/Sphere.gpmesh"));
 
 	// Create floor
 	const float start = -1250.0f;
@@ -259,10 +195,6 @@ void Game::LoadData()
 	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
-	// Create a camera actor
-	mCameraActor = new CameraActor(this);
-	mCameraActor->SetPosition(Vector3(-100.0f, 0.0f, 0.0f));
-
 	// Add HUD elements
 	act = new Actor(this);
 	act->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
@@ -299,11 +231,6 @@ void Game::Shutdown()
 	if (mRenderer)
 	{
 		mRenderer->Shutdown();
-	}
-
-	if (mInputSystem)
-	{
-		mInputSystem->ShutDown();
 	}
 
 	if (mAudioSystem)

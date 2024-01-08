@@ -1,6 +1,5 @@
 #pragma once
 
-#include "InputSystem.h"
 #include "Math.h"
 
 #include <vector>
