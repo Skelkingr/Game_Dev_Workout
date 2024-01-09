@@ -10,8 +10,6 @@
 
 #include <SDL/SDL.h>
 
-#include <iostream>
-
 FPSActor::FPSActor(Game* game)
 	:
 	Actor(game),
@@ -22,7 +20,7 @@ FPSActor::FPSActor(Game* game)
 	mMoveComp = new MoveComponent(this);
 
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
-	mFootstep.SetVolume(0.125f);
+	mFootstep.SetVolume(0.0625f);
 	mFootstep.SetPaused(true);
 }
 
@@ -56,8 +54,6 @@ void FPSActor::UpdateActor(float deltaTime)
 		mFootstep.Restart();
 		mLastFootstep = 0.5f;
 	}
-
-	std::cout << mFootstep.GetPaused() << std::endl;
 }
 
 void FPSActor::ActorInput(const uint8_t* keys)
