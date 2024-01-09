@@ -50,6 +50,7 @@ bool Game::Initialize()
 		mAudioSystem = nullptr;
 		return false;
 	}
+	mReverbSnap = mAudioSystem->PlayEvent("snapshot:/WithReverb");
 
 	LoadData();
 
@@ -83,7 +84,7 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(NULL);
+	const Uint8* state = SDL_GetKeyboardState(nullptr);
 	if (state[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
@@ -145,8 +146,6 @@ void Game::GenerateOutput()
 void Game::LoadData()
 {
 	Actor* act = new Actor(this);
-	Quaternion quat(Vector3::UnitY, -Math::PiOver2);
-	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::Pi + Math::Pi / 4.0f));
 
 	// Create floor
 	const float start = -1250.0f;
@@ -161,7 +160,7 @@ void Game::LoadData()
 	}
 
 	// Create left and right walls
-	quat = Quaternion(Vector3::UnitX, Math::PiOver2);
+	Quaternion quat = Quaternion(Vector3::UnitX, Math::PiOver2);
 	for (int i = 0; i < 10; i++)
 	{
 		act = new PlaneActor(this);
@@ -195,20 +194,14 @@ void Game::LoadData()
 	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
-	// Add HUD elements
+	// Add Healthbar
 	act = new Actor(this);
 	act->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
 	SpriteComponent* spriteComp = new SpriteComponent(act);
 	spriteComp->SetTexture(mRenderer->GetTexture("Assets/HealthBar.png"));
 
-	act = new Actor(this);
-	act->SetPosition(Vector3(375.0f, -275.0f, 0.0f));
-	act->SetScale(0.75f);
-	spriteComp = new SpriteComponent(act);
-	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Radar.png"));
-
 	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
-	mMusicEvent.SetVolume(0.5f);
+	mMusicEvent.SetVolume(0.125f);
 
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);

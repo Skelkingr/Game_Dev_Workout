@@ -1,5 +1,6 @@
 #include "AudioComponent.h"
 
+#include "Actor.h"
 #include "AudioSystem.h"
 #include "Game.h"
 

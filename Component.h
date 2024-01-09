@@ -1,22 +1,22 @@
 #pragma once
 
-#include "Actor.h"
+#include <cstdint>
 
 class Component
 {
 public:
-	Component();
-	Component(Actor* owner, int updateOrder = 100);
+	Component() = delete;
+	Component(class Actor* owner, int updateOrder = 100);
 	virtual ~Component();
 
 	virtual void Update(float deltaTime);
 	virtual void ProcessInput(const uint8_t* keys);
 
-	Actor* GetOwner() const { return this->mOwner; }
-	int GetUpdateOrder() const { return this->mUpdateOrder; }
+	class Actor* GetOwner() const { return mOwner; }
+	int GetUpdateOrder() const { return mUpdateOrder; }
 
 	virtual void OnUpdateWorldTransform();
 protected:
-	Actor* mOwner;
+	class Actor* mOwner;
 	int mUpdateOrder;
 };

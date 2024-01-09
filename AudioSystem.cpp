@@ -1,6 +1,7 @@
 #include "AudioSystem.h"
 
 #include "Game.h"
+#include "Math.h"
 #include "SoundEvent.h"
 
 #include <fmod_studio.hpp>
@@ -63,7 +64,6 @@ bool AudioSystem::Initialize()
     }
 
     mSystem->getLowLevelSystem(&mLowLevelSystem);
-    mLowLevelSystem->set3DSettings(1.0f, 50.0f, 1.0f);
 
     LoadBank("Audio Banks/Master Bank.strings.bank");
     LoadBank("Audio Banks/Master Bank.bank");

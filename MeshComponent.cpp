@@ -1,5 +1,6 @@
 #include "MeshComponent.h"
 
+#include "Actor.h"
 #include "Game.h"
 #include "Mesh.h"
 #include "Renderer.h"

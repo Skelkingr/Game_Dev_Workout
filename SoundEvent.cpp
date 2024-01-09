@@ -1,6 +1,7 @@
 #include "SoundEvent.h"
 
 #include "AudioSystem.h"
+#include "Math.h"
 
 #include <fmod_studio.hpp>
 

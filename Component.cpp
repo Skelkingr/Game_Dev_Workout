@@ -1,10 +1,6 @@
 #include "Component.h"
 
-Component::Component()
-	:
-	mOwner(nullptr),
-	mUpdateOrder(0)
-{}
+#include "Actor.h"
 
 Component::Component(Actor* owner, int updateOrder)
 	:

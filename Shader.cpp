@@ -1,5 +1,7 @@
 #include "Shader.h"
 
+#include "Math.h"
+
 #include <SDL/SDL.h>
 
 #include <fstream>

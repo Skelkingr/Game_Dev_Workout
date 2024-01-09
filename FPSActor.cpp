@@ -2,11 +2,15 @@
 
 #include "AudioComponent.h"
 #include "AudioSystem.h"
+#include "FPSCamera.h"
 #include "Game.h"
+#include "Math.h"
 #include "MoveComponent.h"
 #include "Renderer.h"
 
 #include <SDL/SDL.h>
+
+#include <iostream>
 
 FPSActor::FPSActor(Game* game)
 	:
@@ -14,9 +18,11 @@ FPSActor::FPSActor(Game* game)
 	mLastFootstep(0.0f)
 {
 	mAudioComp = new AudioComponent(this);
+	mCameraComp = new FPSCamera(this);
 	mMoveComp = new MoveComponent(this);
 
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
+	mFootstep.SetVolume(0.125f);
 	mFootstep.SetPaused(true);
 }
 
@@ -26,6 +32,11 @@ FPSActor::~FPSActor()
 	{
 		delete mMoveComp;
 		mMoveComp = nullptr;
+	}
+	if (mCameraComp)
+	{
+		delete mCameraComp;
+		mCameraComp = nullptr;
 	}
 	if (mAudioComp)
 	{
@@ -46,12 +57,7 @@ void FPSActor::UpdateActor(float deltaTime)
 		mLastFootstep = 0.5f;
 	}
 
-	Vector3 cameraPos = GetPosition();
-	Vector3 target = GetPosition() + GetForward() * 100.0f;
-	Vector3 up = Vector3::UnitZ;
-	Matrix4 view = Matrix4::CreateLookAt(cameraPos, target, up);
-	GetGame()->GetRenderer()->SetViewMatrix(view);
-	/*GetGame()->GetAudioSystem()->SetListener(view); */
+	std::cout << mFootstep.GetPaused() << std::endl;
 }
 
 void FPSActor::ActorInput(const uint8_t* keys)
@@ -81,20 +87,27 @@ void FPSActor::ActorInput(const uint8_t* keys)
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
 
 	// Mouse stuff:
-	int x;
-	int y;
+	int x, y;
 	uint32_t buttons = SDL_GetRelativeMouseState(&x, &y);
 
+	// Yaw:
 	const float maxMouseSpeed = 500.0f;
 	const float maxAngularSpeed = Math::Pi * 8.0f;
-
 	float angularSpeed = 0.0f;
-
 	if (x != 0)
 	{
-		angularSpeed = x / maxMouseSpeed;
+		angularSpeed = static_cast<float>(x) / maxMouseSpeed;
 		angularSpeed *= maxAngularSpeed;
 	}
-
 	mMoveComp->SetAngularSpeed(angularSpeed);
+
+	// Pitch:
+	const float maxPitchSpeed = Math::Pi * 8.0f;
+	float pitchSpeed = 0.0f;
+	if (y != 0)
+	{
+		pitchSpeed = static_cast<float>(y) / maxMouseSpeed;
+		pitchSpeed *= maxPitchSpeed;
+	}
+	mCameraComp->SetPitchSpeed(pitchSpeed);
 }

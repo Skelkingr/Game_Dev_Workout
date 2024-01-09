@@ -2,6 +2,7 @@
 
 #include "Component.h"
 #include "Game.h"
+#include "Math.h"
 
 #include <algorithm>
 
@@ -9,8 +10,8 @@ Actor::Actor(Game* game)
 	:
 	mState(EActive),
 	mPosition(Vector3::Zero),
-	mRotation(Quaternion::Identity),
 	mScale(1.0f),
+	mRotation(Quaternion::Identity),
 	mWorldTransform(Matrix4::Identity),
 	mRecomputWorldTransform(true),
 	mGame(game)
@@ -38,11 +39,6 @@ void Actor::Update(float deltaTime)
 		UpdateActor(deltaTime);
 
 		ComputeWorldTransform();
-	}
-
-	for (auto comp : mComponents)
-	{
-		comp->OnUpdateWorldTransform();
 	}
 }
 

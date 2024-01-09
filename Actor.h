@@ -20,42 +20,41 @@ public:
 
 	void Update(float deltaTime);
 	void UpdateComponents(float deltaTime);
-	void ProcessInput(const uint8_t* keys);
-
 	virtual void UpdateActor(float deltaTime);
+	
+	void ProcessInput(const uint8_t* keys);
 	virtual void ActorInput(const uint8_t* keys);
 
-	class Game* GetGame() const { return mGame; }
-	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX, mRotation); }
-	Vector3 GetRight() const { return Vector3::Transform(Vector3::UnitY, mRotation); }
 	const Vector3& GetPosition() const { return mPosition; }
-	const Quaternion& GetRotation() const { return mRotation; }
 	float GetScale() const { return mScale; }
-	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
-
-	int GetState() const { return mState; }
-
-	void SetState(State state) { mState = state; }
+	const Quaternion& GetRotation() const { return mRotation; }
 
 	void SetPosition(const Vector3& position);
-	void SetRotation(const Quaternion& rotation);
 	void SetScale(float scale);
+	void SetRotation(const Quaternion& rotation);
 
 	void ComputeWorldTransform();
+	const Matrix4& GetWorldTransform() const { return mWorldTransform; }
+
+	Vector3 GetForward() const { return Vector3::Transform(Vector3::UnitX, mRotation); }
+	Vector3 GetRight() const { return Vector3::Transform(Vector3::UnitY, mRotation); }
+	
+	State GetState() const { return mState; }
+	void SetState(State state) { mState = state; }
+	
+	class Game* GetGame() const { return mGame; }
 
 	void AddComponent(class Component* component);
 	void RemoveComponent(class Component* component);
 private:
 	State mState;
 	
+	Matrix4 mWorldTransform;
 	Vector3 mPosition;
 	Quaternion mRotation;
 	float mScale;
-	
-	Matrix4 mWorldTransform;
 	bool mRecomputWorldTransform;
 	
 	std::vector<class Component*> mComponents;
-
 	class Game* mGame;
 };

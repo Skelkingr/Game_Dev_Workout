@@ -37,6 +37,7 @@ private:
 	std::vector<class Actor*> mActors;
 	std::vector<class Actor*> mPendingActors;
 
+	class AudioSystem* mAudioSystem;
 	class Renderer* mRenderer;
 	
 	Uint32 mTicksCount;
@@ -47,6 +48,6 @@ private:
 	SoundEvent mMusicEvent;
 	SoundEvent mReverbSnap;
 
-	class AudioSystem* mAudioSystem;
+	
 	class FPSActor* mFPSActor;
 };

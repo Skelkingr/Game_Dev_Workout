@@ -8,7 +8,7 @@
 
 SpriteComponent::SpriteComponent(Actor* owner, int drawOrder)
 	:
-	Component(owner),
+	Component(owner, drawOrder),
 	mTexture(nullptr),
 	mDrawOrder(drawOrder),
 	mTexWidth(0),
