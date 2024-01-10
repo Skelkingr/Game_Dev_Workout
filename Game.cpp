@@ -14,7 +14,6 @@
 #include <fmod_studio.hpp>
 
 #include <algorithm>
-#include <iostream>
 
 Game::Game()
 	:
