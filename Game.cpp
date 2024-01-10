@@ -6,7 +6,7 @@
 #include "Math.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
-#include "PlaneActor.h"
+#include "Actor.h"
 #include "Renderer.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
@@ -14,6 +14,7 @@
 #include <fmod_studio.hpp>
 
 #include <algorithm>
+#include <iostream>
 
 Game::Game()
 	:
@@ -145,46 +146,81 @@ void Game::GenerateOutput()
 
 void Game::LoadData()
 {
-	Actor* act = new Actor(this);
+	Actor* act = new Actor();
+	MeshComponent* meshComp = new MeshComponent();
+	Texture* currTexture = new Texture();
 
 	// Create floor
-	const float start = -1250.0f;
-	const float size = 250.0f;
-	for (int i = 0; i < 10; i++)
+	currTexture->Load("Assets/Plane.png");
+	for (int i = 0; i < 4; i++)
 	{
-		for (int j = 0; j < 10; j++)
+		for (int j = 0; j < 4; j++)
 		{
-			act = new PlaneActor(this);
-			act->SetPosition(Vector3(start + i * size, start + j * size, -100.0f));
+			act = new Actor(this);
+			act->SetScale(10.25f);
+			act->SetPosition(Vector3(i * TEXTURE_WIDTH, j * TEXTURE_WIDTH, -200.0f));
+			meshComp = new MeshComponent(act);
+			meshComp->SetMesh(mRenderer->GetMesh("Meshes/Plane.gpmesh"));
 		}
 	}
 
-	// Create left and right walls
+	/* Create walls */
+	currTexture->Load("Assets/Brick.png");
+
+	// Left
 	Quaternion quat = Quaternion(Vector3::UnitX, Math::PiOver2);
-	for (int i = 0; i < 10; i++)
-	{
-		act = new PlaneActor(this);
-		act->SetPosition(Vector3(start + i * size, start - size, 0.0f));
-		act->SetRotation(quat);
 
-		act = new PlaneActor(this);
-		act->SetPosition(Vector3(start + i * size, -start + size, 0.0f));
+	for (int i = 0; i < 4; i++)
+	{
+		act = new Actor(this);
+		act->SetScale(10.25f);
 		act->SetRotation(quat);
+		act->SetPosition(Vector3(i * TEXTURE_WIDTH, -TEXTURE_WIDTH / 2.0f, 45.0f));
+		meshComp = new MeshComponent(act);
+		meshComp->SetTextureIndex(1);
+		meshComp->SetMesh(mRenderer->GetMesh("Meshes/Plane.gpmesh"));
 	}
-	
+
+	// Forward
 	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::PiOver2));
-
-	// Create forward and back walls
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < 4; i++)
 	{
-		act = new PlaneActor(this);
-		act->SetPosition(Vector3(start - size, start + i * size, 0.0f));
+		act = new Actor(this);
+		act->SetScale(10.25f);
 		act->SetRotation(quat);
-
-		act = new PlaneActor(this);
-		act->SetPosition(Vector3(-start + size, start + i * size, 0.0f));
-		act->SetRotation(quat);
+		act->SetPosition(Vector3(TEXTURE_WIDTH * 3.5f, TEXTURE_WIDTH * i, 45.0f));
+		meshComp = new MeshComponent(act);
+		meshComp->SetTextureIndex(1);
+		meshComp->SetMesh(mRenderer->GetMesh("Meshes/Plane.gpmesh"));
 	}
+
+	// Right
+	quat = Quaternion(Vector3::UnitX, Math::PiOver2);
+
+	for (int i = 0; i < 4; i++)
+	{
+		act = new Actor(this);
+		act->SetScale(10.25f);
+		act->SetRotation(quat);
+		act->SetPosition(Vector3(i * TEXTURE_WIDTH, TEXTURE_WIDTH * 3.5f, 45.0f));
+		meshComp = new MeshComponent(act);
+		meshComp->SetTextureIndex(1);
+		meshComp->SetMesh(mRenderer->GetMesh("Meshes/Plane.gpmesh"));
+	}
+
+	// Back
+	quat = Quaternion::Concatenate(quat, Quaternion(Vector3::UnitZ, Math::PiOver2));
+	for (int i = 0; i < 4; i++)
+	{
+		act = new Actor(this);
+		act->SetScale(10.25f);
+		act->SetRotation(quat);
+		act->SetPosition(Vector3(-TEXTURE_WIDTH + (TEXTURE_WIDTH / 2.0f), TEXTURE_WIDTH * i, 45.0f));
+		meshComp = new MeshComponent(act);
+		meshComp->SetTextureIndex(1);
+		meshComp->SetMesh(mRenderer->GetMesh("Meshes/Plane.gpmesh"));
+	}
+	/* Finished creating walls */
 
 	// Let there be light !
 	mRenderer->SetAmbientLight(Vector3(0.2f, 0.2f, 0.2f));
@@ -206,6 +242,7 @@ void Game::LoadData()
 	SDL_SetRelativeMouseMode(SDL_TRUE);
 	SDL_GetRelativeMouseState(nullptr, nullptr);
 	mFPSActor = new FPSActor(this);
+	mFPSActor->SetPosition(Vector3(1388.0f, 1647.0f, 0.0f));
 }
 
 void Game::UnloadData()

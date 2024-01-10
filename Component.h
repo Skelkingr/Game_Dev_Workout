@@ -5,7 +5,7 @@
 class Component
 {
 public:
-	Component() = delete;
+	Component() = default;
 	Component(class Actor* owner, int updateOrder = 100);
 	virtual ~Component();
 

@@ -14,7 +14,7 @@ public:
 		EDead
 	};
 public:
-	Actor() = delete;
+	Actor() = default;
 	Actor(class Game* game);
 	virtual ~Actor();
 

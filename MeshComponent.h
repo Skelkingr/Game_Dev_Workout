@@ -5,7 +5,7 @@
 class MeshComponent : public Component
 {
 public:
-	MeshComponent() = delete;
+	MeshComponent() = default;
 	MeshComponent(class Actor* owner);
 	~MeshComponent();
 

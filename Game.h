@@ -11,6 +11,8 @@
 constexpr int CLIENT_WIDTH = 1024;
 constexpr int CLIENT_HEIGHT = 768;
 
+constexpr float TEXTURE_WIDTH = 1024.0f;
+
 class Game
 {
 public:
@@ -48,6 +50,5 @@ private:
 	SoundEvent mMusicEvent;
 	SoundEvent mReverbSnap;
 
-	
 	class FPSActor* mFPSActor;
 };
