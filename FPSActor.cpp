@@ -4,11 +4,12 @@
 #include "AudioSystem.h"
 #include "FPSCamera.h"
 #include "Game.h"
-#include "Math.h"
+#include "Mesh.h"
+#include "MeshComponent.h"
 #include "MoveComponent.h"
 #include "Renderer.h"
-
-#include <SDL/SDL.h>
+#include "Shader.h"
+#include "SoundEvent.h"
 
 FPSActor::FPSActor(Game* game)
 	:
@@ -16,12 +17,13 @@ FPSActor::FPSActor(Game* game)
 	mLastFootstep(0.0f)
 {
 	mAudioComp = new AudioComponent(this);
-	mCameraComp = new FPSCamera(this);
-	mMoveComp = new MoveComponent(this);
-
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
-	mFootstep.SetVolume(0.0625f);
+	mFootstep.SetVolume(0.125f);
 	mFootstep.SetPaused(true);
+
+	mCameraComp = new FPSCamera(this);
+
+	mMoveComp = new MoveComponent(this);
 }
 
 FPSActor::~FPSActor()
@@ -38,8 +40,8 @@ FPSActor::~FPSActor()
 	}
 	if (mAudioComp)
 	{
-		delete mAudioComp;
-		mAudioComp = nullptr;
+		delete mCameraComp;
+		mCameraComp = nullptr;
 	}
 }
 
@@ -48,47 +50,43 @@ void FPSActor::UpdateActor(float deltaTime)
 	Actor::UpdateActor(deltaTime);
 
 	mLastFootstep -= deltaTime;
-	if ((!Math::NearZero(mMoveComp->GetForwardSpeed()) || !Math::NearZero(mMoveComp->GetStrafeSpeed())) && mLastFootstep <= 0.0f)
+	if (!Math::NearZero(mMoveComp->GetForwardSpeed()) && mLastFootstep <= 0.0f)
 	{
 		mFootstep.SetPaused(false);
 		mFootstep.Restart();
-		mLastFootstep = 0.5f;
+		mLastFootstep = 0.45f;
 	}
 }
 
 void FPSActor::ActorInput(const uint8_t* keys)
 {
-	//Keyboard stuff
 	float forwardSpeed = 0.0f;
 	float strafeSpeed = 0.0f;
 
 	if (keys[SDL_SCANCODE_W])
 	{
-		forwardSpeed += 200.0f;
+		forwardSpeed += MEDIUM_SPEED;
 	}
 	if (keys[SDL_SCANCODE_S])
 	{
-		forwardSpeed -= 200.0f;
+		forwardSpeed -= MEDIUM_SPEED;
 	}
 	if (keys[SDL_SCANCODE_A])
 	{
-		strafeSpeed -= 200.0f;
+		strafeSpeed -= MEDIUM_SPEED;
 	}
 	if (keys[SDL_SCANCODE_D])
 	{
-		strafeSpeed += 200.0f;
+		strafeSpeed += MEDIUM_SPEED;
 	}
 
 	mMoveComp->SetForwardSpeed(forwardSpeed);
 	mMoveComp->SetStrafeSpeed(strafeSpeed);
 
-	// Mouse stuff:
 	int x, y;
-	uint32_t buttons = SDL_GetRelativeMouseState(&x, &y);
-
-	// Yaw:
-	const float maxMouseSpeed = 500.0f;
-	const float maxAngularSpeed = Math::Pi * 8.0f;
+	SDL_GetRelativeMouseState(&x, &y);
+	const float maxMouseSpeed = 500;
+	const float maxAngularSpeed = Math::Pi * 8;
 	float angularSpeed = 0.0f;
 	if (x != 0)
 	{
@@ -97,11 +95,11 @@ void FPSActor::ActorInput(const uint8_t* keys)
 	}
 	mMoveComp->SetAngularSpeed(angularSpeed);
 
-	// Pitch:
-	const float maxPitchSpeed = Math::Pi * 8.0f;
+	const float maxPitchSpeed = Math::Pi * 8;
 	float pitchSpeed = 0.0f;
 	if (y != 0)
 	{
+
 		pitchSpeed = static_cast<float>(y) / maxMouseSpeed;
 		pitchSpeed *= maxPitchSpeed;
 	}

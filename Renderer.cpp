@@ -256,8 +256,18 @@ bool Renderer::LoadShaders()
 
     mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitZ);
     mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f), mScreenWidth, mScreenHeight, 25.0f, 10000.0f);
-
     mMeshShader->SetMatrixUniform("uViewProj", mView * mProjection);
+
+   // mRifleShader = new Shader();
+   // if (!mRifleShader->Load("Shaders/Sprite.vert", "Shaders/Sprite.frag"))
+   // {
+   //     return false;
+   // }
+   // mRifleShader->SetActive();
+
+   ///* mView = Matrix4::CreateLookAt(Vector3::Zero, Vector3::UnitX, Vector3::UnitY);
+   // mProjection = Matrix4::CreatePerspectiveFOV(Math::ToRadians(70.0f), mScreenWidth, mScreenHeight, 25.0f, 10000.0f);*/
+   // mRifleShader->SetMatrixUniform("uViewProj", viewProj);
 
     return true;
 }

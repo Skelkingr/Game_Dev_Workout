@@ -2,12 +2,11 @@
 
 #include "Actor.h"
 #include "AudioSystem.h"
-#include "FPSActor.h"
 #include "Math.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
-#include "Actor.h"
 #include "Renderer.h"
+#include "FPSActor.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
 
@@ -229,11 +228,10 @@ void Game::LoadData()
 	dir.mDiffuseColor = Vector3(0.78f, 0.88f, 1.0f);
 	dir.mSpecColor = Vector3(0.8f, 0.8f, 0.8f);
 
-	// Add Healthbar
+	// Add Crosshair
 	act = new Actor(this);
-	act->SetPosition(Vector3(-350.0f, -350.0f, 0.0f));
 	SpriteComponent* spriteComp = new SpriteComponent(act);
-	spriteComp->SetTexture(mRenderer->GetTexture("Assets/HealthBar.png"));
+	spriteComp->SetTexture(mRenderer->GetTexture("Assets/Crosshair.png"));
 
 	mMusicEvent = mAudioSystem->PlayEvent("event:/Music");
 	mMusicEvent.SetVolume(0.125f);

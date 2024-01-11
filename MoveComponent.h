@@ -2,6 +2,8 @@
 
 #include "Component.h"
 
+constexpr float MEDIUM_SPEED = 300.0f;
+
 class MoveComponent : public Component
 {
 public:
