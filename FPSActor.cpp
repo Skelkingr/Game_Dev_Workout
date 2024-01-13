@@ -55,7 +55,7 @@ void FPSActor::UpdateActor(float deltaTime)
 	Actor::UpdateActor(deltaTime);
 
 	mLastFootstep -= deltaTime;
-	if (!Math::NearZero(mMoveComp->GetForwardSpeed()) && mLastFootstep <= 0.0f)
+	if ((!Math::NearZero(mMoveComp->GetForwardSpeed()) || !Math::NearZero(mMoveComp->GetStrafeSpeed())) && mLastFootstep <= 0.0f)
 	{
 		mFootstep.SetPaused(false);
 		mFootstep.Restart();
