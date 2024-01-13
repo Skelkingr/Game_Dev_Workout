@@ -104,6 +104,11 @@ void Actor::ComputeWorldTransform()
 	}
 }
 
+Vector3 Actor::GetForward() const
+{
+	return Vector3::Transform(Vector3::UnitX, mRotation);
+}
+
 void Actor::AddComponent(Component* component)
 {
 	int myFuckingOrder = component->GetUpdateOrder();

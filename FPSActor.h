@@ -13,10 +13,13 @@ public:
 
 	void UpdateActor(float deltaTime) override;
 	void ActorInput(const uint8_t* keys) override;
+
+	void UpdateRifle();
 private:
 	class AudioComponent* mAudioComp;
 	class FPSCamera* mCameraComp;
 	class MoveComponent* mMoveComp;
+	class RifleActor* mRifle;
 
 	SoundEvent mFootstep;
 

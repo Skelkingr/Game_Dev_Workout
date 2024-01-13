@@ -8,6 +8,7 @@
 #include "MeshComponent.h"
 #include "MoveComponent.h"
 #include "Renderer.h"
+#include "RifleActor.h"
 #include "Shader.h"
 #include "SoundEvent.h"
 
@@ -24,10 +25,14 @@ FPSActor::FPSActor(Game* game)
 	mCameraComp = new FPSCamera(this);
 
 	mMoveComp = new MoveComponent(this);
+
+	mRifle = new RifleActor(game);
 }
 
 FPSActor::~FPSActor()
 {
+	GetGame()->RemoveActor(mRifle);
+
 	if (mMoveComp)
 	{
 		delete mMoveComp;
@@ -56,6 +61,8 @@ void FPSActor::UpdateActor(float deltaTime)
 		mFootstep.Restart();
 		mLastFootstep = 0.45f;
 	}
+
+	UpdateRifle();
 }
 
 void FPSActor::ActorInput(const uint8_t* keys)
@@ -104,4 +111,16 @@ void FPSActor::ActorInput(const uint8_t* keys)
 		pitchSpeed *= maxPitchSpeed;
 	}
 	mCameraComp->SetPitchSpeed(pitchSpeed);
+}
+
+void FPSActor::UpdateRifle()
+{
+	Vector3 position = GetPosition();
+	Vector3 riflePosition = position + Vector3(12.0f, 10.0f, -10.0f);
+	mRifle->SetPosition(riflePosition);
+	Vector3 target = GetPosition() + GetForward() * 100.0f;
+	Vector3 up = Vector3::UnitZ;
+
+	Matrix4 view = Matrix4::CreateLookAt(position, target, up);
+	GetGame()->GetRenderer()->SetViewMatrix(view);
 }
