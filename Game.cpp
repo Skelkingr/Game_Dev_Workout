@@ -83,7 +83,7 @@ void Game::ProcessInput()
 		}
 	}
 
-	const Uint8* state = SDL_GetKeyboardState(nullptr);
+	const uint8_t* state = SDL_GetKeyboardState(nullptr);
 	if (state[SDL_SCANCODE_ESCAPE])
 	{
 		mIsRunning = false;
@@ -155,6 +155,7 @@ void Game::LoadData()
 		for (int j = 0; j < 4; j++)
 		{
 			act = new Actor(this);
+			act->SetRotation(Quaternion(Vector3::UnitZ, Math::PiOver2));
 			act->SetScale(10.25f);
 			act->SetPosition(Vector3(i * TEXTURE_WIDTH, j * TEXTURE_WIDTH, -200.0f));
 			meshComp = new MeshComponent(act);

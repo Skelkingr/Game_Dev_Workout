@@ -24,5 +24,7 @@ private:
 	SoundEvent mFootstep;
 
 	float mLastFootstep;
+
+	bool mIsDashing;
 };
 

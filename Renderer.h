@@ -60,7 +60,6 @@ private:
 
 	class Shader* mSpriteShader;
 	class Shader* mMeshShader;
-	class Shader* mRifleShader;
 
 	class VertexArray* mSpriteVerts;
 

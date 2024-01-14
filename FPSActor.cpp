@@ -15,7 +15,8 @@
 FPSActor::FPSActor(Game* game)
 	:
 	Actor(game),
-	mLastFootstep(0.0f)
+	mLastFootstep(0.0f),
+	mIsDashing(false)
 {
 	mAudioComp = new AudioComponent(this);
 	mFootstep = mAudioComp->PlayEvent("event:/Footstep");
@@ -54,7 +55,15 @@ void FPSActor::UpdateActor(float deltaTime)
 {
 	Actor::UpdateActor(deltaTime);
 
-	mLastFootstep -= deltaTime;
+	if (!mIsDashing)
+	{
+		mLastFootstep -= deltaTime;
+	}
+	else
+	{
+		mLastFootstep -= deltaTime * 1.5f;
+	}
+
 	if ((!Math::NearZero(mMoveComp->GetForwardSpeed()) || !Math::NearZero(mMoveComp->GetStrafeSpeed())) && mLastFootstep <= 0.0f)
 	{
 		mFootstep.SetPaused(false);
@@ -67,24 +76,35 @@ void FPSActor::UpdateActor(float deltaTime)
 
 void FPSActor::ActorInput(const uint8_t* keys)
 {
+	mIsDashing = false;
+
 	float forwardSpeed = 0.0f;
 	float strafeSpeed = 0.0f;
 
 	if (keys[SDL_SCANCODE_W])
 	{
-		forwardSpeed += MEDIUM_SPEED;
+		if (keys[SDL_SCANCODE_LSHIFT])
+		{
+			mIsDashing = true;
+			forwardSpeed += DASHING_SPEED;
+		}
+		else
+		{
+			mIsDashing = false;
+			forwardSpeed += NORMAL_SPEED;
+		}
 	}
 	if (keys[SDL_SCANCODE_S])
 	{
-		forwardSpeed -= MEDIUM_SPEED;
+		forwardSpeed -= NORMAL_SPEED;
 	}
 	if (keys[SDL_SCANCODE_A])
 	{
-		strafeSpeed -= MEDIUM_SPEED;
+		strafeSpeed -= NORMAL_SPEED;
 	}
 	if (keys[SDL_SCANCODE_D])
 	{
-		strafeSpeed += MEDIUM_SPEED;
+		strafeSpeed += NORMAL_SPEED;
 	}
 
 	mMoveComp->SetForwardSpeed(forwardSpeed);
@@ -118,9 +138,4 @@ void FPSActor::UpdateRifle()
 	Vector3 position = GetPosition();
 	Vector3 riflePosition = position + Vector3(12.0f, 10.0f, -10.0f);
 	mRifle->SetPosition(riflePosition);
-	Vector3 target = GetPosition() + GetForward() * 100.0f;
-	Vector3 up = Vector3::UnitZ;
-
-	Matrix4 view = Matrix4::CreateLookAt(position, target, up);
-	GetGame()->GetRenderer()->SetViewMatrix(view);
 }
