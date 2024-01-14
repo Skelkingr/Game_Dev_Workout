@@ -26,8 +26,10 @@ public:
 	void AddActor(class Actor* actor);
 	void RemoveActor(class Actor* actor);
 
-	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 	class FPSActor* GetFPSActor() const { return mFPSActor; }
+	class RifleActor* GetRifleActor() const { return mRifleActor; }
+
+	class AudioSystem* GetAudioSystem() const { return mAudioSystem; }
 	class Renderer* GetRenderer() const { return mRenderer; }
 private:
 	void ProcessInput();
@@ -52,4 +54,5 @@ private:
 	SoundEvent mReverbSnap;
 
 	class FPSActor* mFPSActor;
+	class RifleActor* mRifleActor;
 };

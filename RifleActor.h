@@ -9,7 +9,10 @@ class RifleActor : public Actor
 public:
 	RifleActor() = delete;
 	RifleActor(class Game* game);
-	~RifleActor();
+	~RifleActor() = default;
+
+	void UpdateActor(float deltaTime) override;
+	void ActorInput(const uint8_t* keys) override;
 private:
-	class MeshComponent* mRifleMesh;
+	class MeshComponent* mRifleMeshComp;
 };

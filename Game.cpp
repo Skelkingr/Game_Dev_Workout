@@ -7,6 +7,7 @@
 #include "MeshComponent.h"
 #include "Renderer.h"
 #include "FPSActor.h"
+#include "RifleActor.h"
 #include "SpriteComponent.h"
 #include "Texture.h"
 
@@ -21,7 +22,8 @@ Game::Game()
 	mTicksCount(0),
 	mIsRunning(true),
 	mUpdatingActors(false),
-	mFPSActor(nullptr)
+	mFPSActor(nullptr),
+	mRifleActor(nullptr)
 {}
 
 bool Game::Initialize()
@@ -241,6 +243,8 @@ void Game::LoadData()
 	SDL_GetRelativeMouseState(nullptr, nullptr);
 	mFPSActor = new FPSActor(this);
 	mFPSActor->SetPosition(Vector3(1388.0f, 1647.0f, 0.0f));
+
+	mRifleActor = new RifleActor(this);
 }
 
 void Game::UnloadData()

@@ -1,6 +1,7 @@
 #include "RifleActor.h"
 
 #include "Actor.h"
+#include "FPSActor.h"
 #include "Game.h"
 #include "Mesh.h"
 #include "MeshComponent.h"
@@ -14,15 +15,20 @@ RifleActor::RifleActor(Game* game)
 {
 	SetScale(0.75f);
 
-	mRifleMesh = new MeshComponent(this);
-	mRifleMesh->SetMesh(game->GetRenderer()->GetMesh("Meshes/Rifle.gpmesh"));
+	mRifleMeshComp = new MeshComponent(this);
+	mRifleMeshComp->SetMesh(game->GetRenderer()->GetMesh("Meshes/Rifle.gpmesh"));
 }
 
-RifleActor::~RifleActor()
+void RifleActor::UpdateActor(float deltaTime)
 {
-	if (mRifleMesh)
-	{
-		delete mRifleMesh;
-		mRifleMesh = nullptr;
-	}
+	Actor::UpdateActor(deltaTime);
+
+	FPSActor* fpsActor = GetGame()->GetFPSActor();
+
+	Vector3 position = fpsActor->GetPosition();
+	Vector3 riflePosition = position + Vector3(12.0f, 10.0f, -10.0f);
+	SetPosition(riflePosition);
 }
+
+void RifleActor::ActorInput(const uint8_t* keys)
+{}

@@ -26,29 +26,6 @@ FPSActor::FPSActor(Game* game)
 	mCameraComp = new FPSCamera(this);
 
 	mMoveComp = new MoveComponent(this);
-
-	mRifle = new RifleActor(game);
-}
-
-FPSActor::~FPSActor()
-{
-	GetGame()->RemoveActor(mRifle);
-
-	if (mMoveComp)
-	{
-		delete mMoveComp;
-		mMoveComp = nullptr;
-	}
-	if (mCameraComp)
-	{
-		delete mCameraComp;
-		mCameraComp = nullptr;
-	}
-	if (mAudioComp)
-	{
-		delete mCameraComp;
-		mCameraComp = nullptr;
-	}
 }
 
 void FPSActor::UpdateActor(float deltaTime)
@@ -70,8 +47,6 @@ void FPSActor::UpdateActor(float deltaTime)
 		mFootstep.Restart();
 		mLastFootstep = 0.45f;
 	}
-
-	UpdateRifle();
 }
 
 void FPSActor::ActorInput(const uint8_t* keys)
@@ -131,11 +106,4 @@ void FPSActor::ActorInput(const uint8_t* keys)
 		pitchSpeed *= maxPitchSpeed;
 	}
 	mCameraComp->SetPitchSpeed(pitchSpeed);
-}
-
-void FPSActor::UpdateRifle()
-{
-	Vector3 position = GetPosition();
-	Vector3 riflePosition = position + Vector3(12.0f, 10.0f, -10.0f);
-	mRifle->SetPosition(riflePosition);
 }
